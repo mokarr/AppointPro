@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="800" height="600" fill="#F8FAFC" rx="12"/>
+    
+    <!-- Calendar Grid -->
+    <g transform="translate(50, 80)">
+        <!-- Calendar Header -->
+        <rect width="700" height="60" fill="#FFFFFF" rx="8"/>
+        <text x="30" y="38" font-family="Arial" font-size="18" fill="#1E293B">April 2024</text>
+        
+        <!-- Days of Week -->
+        <g transform="translate(0, 80)">
+            <text x="30" y="0" font-family="Arial" font-size="14" fill="#64748B">Ma</text>
+            <text x="130" y="0" font-family="Arial" font-size="14" fill="#64748B">Di</text>
+            <text x="230" y="0" font-family="Arial" font-size="14" fill="#64748B">Wo</text>
+            <text x="330" y="0" font-family="Arial" font-size="14" fill="#64748B">Do</text>
+            <text x="430" y="0" font-family="Arial" font-size="14" fill="#64748B">Vr</text>
+            <text x="530" y="0" font-family="Arial" font-size="14" fill="#64748B">Za</text>
+            <text x="630" y="0" font-family="Arial" font-size="14" fill="#64748B">Zo</text>
+        </g>
+
+        <!-- Calendar Days -->
+        <g transform="translate(0, 120)">
+            <!-- Week 1 -->
+            <g>
+                <rect x="20" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="45" y="35" font-family="Arial" font-size="16" fill="#1E293B">1</text>
+            </g>
+            <g>
+                <rect x="120" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="145" y="35" font-family="Arial" font-size="16" fill="#1E293B">2</text>
+            </g>
+            <g>
+                <rect x="220" y="0" width="80" height="60" fill="#2563EB" rx="8"/>
+                <text x="245" y="35" font-family="Arial" font-size="16" fill="#FFFFFF">3</text>
+                <text x="235" y="52" font-family="Arial" font-size="12" fill="#FFFFFF">2 afspraken</text>
+            </g>
+            <g>
+                <rect x="320" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="345" y="35" font-family="Arial" font-size="16" fill="#1E293B">4</text>
+            </g>
+            <g>
+                <rect x="420" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="445" y="35" font-family="Arial" font-size="16" fill="#1E293B">5</text>
+            </g>
+            <g>
+                <rect x="520" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="545" y="35" font-family="Arial" font-size="16" fill="#1E293B">6</text>
+            </g>
+            <g>
+                <rect x="620" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="645" y="35" font-family="Arial" font-size="16" fill="#1E293B">7</text>
+            </g>
+
+            <!-- Week 2 -->
+            <g transform="translate(0, 80)">
+                <rect x="20" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="45" y="35" font-family="Arial" font-size="16" fill="#1E293B">8</text>
+            </g>
+            <g transform="translate(0, 80)">
+                <rect x="120" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="145" y="35" font-family="Arial" font-size="16" fill="#1E293B">9</text>
+            </g>
+            <g transform="translate(0, 80)">
+                <rect x="220" y="0" width="80" height="60" fill="#FFFFFF" rx="8"/>
+                <text x="245" y="35" font-family="Arial" font-size="16" fill="#1E293B">10</text>
+            </g>
+            <g transform="translate(0, 80)">
+                <rect x="320" y="0" width="80" height="60" fill="#DBEAFE" rx="8"/>
+                <text x="345" y="35" font-family="Arial" font-size="16" fill="#2563EB">11</text>
+                <text x="335" y="52" font-family="Arial" font-size="12" fill="#2563EB">Beschikbaar</text>
+            </g>
+        </g>
+
+        <!-- Appointments List -->
+        <g transform="translate(0, 320)">
+            <rect width="700" height="120" fill="#FFFFFF" rx="8"/>
+            <text x="30" y="40" font-family="Arial" font-size="16" fill="#1E293B">14:00 - Sarah de Vries</text>
+            <text x="30" y="90" font-family="Arial" font-size="16" fill="#1E293B">15:30 - Mark Jansen</text>
+        </g>
+    </g>
+
+    <!-- Decorative Elements -->
+    <circle cx="720" cy="40" r="20" fill="#2563EB" opacity="0.1"/>
+    <circle cx="80" cy="560" r="30" fill="#2563EB" opacity="0.1"/>
+    <circle cx="750" cy="520" r="25" fill="#2563EB" opacity="0.1"/>
+</svg> 

@@ -1,0 +1,22 @@
+{
+    "root": true,
+    "extends": [
+        "next/core-web-vitals"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
+}

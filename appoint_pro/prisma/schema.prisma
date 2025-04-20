@@ -1,0 +1,234 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                    String         @id @default(cuid())
+  name                  String
+  branche               String
+  description           String
+  locations             Location[] // Een organisatie heeft meerdere locaties
+  Employee              Employee[]
+  Treatment             Treatment[]
+  updatedAt             DateTime       @updatedAt
+  createdAt             DateTime       @default(now())
+  User                  User[]
+  // New subscription fields
+  stripeCustomerId      String?        @unique
+  hasActiveSubscription Boolean        @default(false)
+  subscriptions         Subscription[]
+}
+
+// New Subscription model
+model Subscription {
+  id                   String       @id @default(cuid())
+  organizationId       String
+  organization         Organization @relation(fields: [organizationId], references: [id])
+  stripeSubscriptionId String       @unique
+  status               String // 'active', 'canceled', 'past_due', etc.
+  priceId              String
+  planName             String
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean      @default(false)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+// New model for storing subscription products/plans
+model SubscriptionPlan {
+  id            String   @id @default(cuid())
+  stripePriceId String   @unique
+  name          String
+  description   String
+  price         Float
+  interval      String // 'month', 'year'
+  active        Boolean  @default(true)
+  features      String // JSON string of features
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Location {
+  id             String        @id @default(cuid())
+  name           String
+  address        String
+  postalCode     String? // Made optional
+  country        String? // Made optional
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  facilities     Facility[] // Een locatie heeft meerdere faciliteiten
+  appointments   Appointment[] // Afspraken kunnen op locaties gemaakt worden
+  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime      @default(now())
+  Booking        Booking[]
+}
+
+model Facility {
+  id         String     @id @default(cuid())
+  name       String // Naam van de faciliteit (bijv. tennisbaan, basketballveld)
+  locationId String
+  location   Location   @relation(fields: [locationId], references: [id])
+  activity   Activity[] // Een faciliteit heeft meerdere activiteiten (tennis, basketball, etc.)
+  updatedAt  DateTime   @updatedAt
+  createdAt  DateTime   @default(now())
+  Booking    Booking[]
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  name        String // Naam van de activiteit (tennis, basketball, etc.)
+  description String
+  price       Float
+  facilityId  String
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Employee {
+  id             String        @id @default(cuid())
+  name           String
+  email          String
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  appointments   Appointment[] // Medewerkers hebben afspraken
+  treatment      Treatment[] // Medewerkers bieden behandelingen aan
+  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime      @default(now())
+  Booking        Booking[]
+}
+
+model Treatment {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  description    String
+  price          Float
+  employee       Employee?    @relation(fields: [employeeId], references: [id])
+  employeeId     String?
+  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime     @default(now())
+  Booking        Booking[]
+}
+
+model Appointment {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  startDateTime DateTime
+  endDateTime   DateTime
+  locationId    String
+  location      Location  @relation(fields: [locationId], references: [id])
+  bookingId     String
+  booking       Booking   @relation(fields: [bookingId], references: [id]) // Link naar Booking
+  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+  Employee      Employee? @relation(fields: [employeeId], references: [id])
+  employeeId    String?
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  type        String // Type of booking: "SERVICE" or "LOCATION"
+  serviceId   String? // Link naar behandeling, als het type 'service' is
+  locationId  String? // Link naar locatie, als het type 'location' is
+  facilityId  String? // Link naar faciliteit, als het type 'location' is
+  employeeId  String? // Link naar medewerker, als het type 'service' is
+  employee    Employee?     @relation(fields: [employeeId], references: [id])
+  treatment   Treatment?    @relation(fields: [serviceId], references: [id])
+  location    Location?     @relation(fields: [locationId], references: [id])
+  facility    Facility?     @relation(fields: [facilityId], references: [id]) // Link naar faciliteit
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Appointment Appointment[]
+}
+
+//REGION USER AUTHENTICATION en AUTHORIZATION
+
+model User {
+  id                          String          @id @default(cuid())
+  name                        String?
+  email                       String?         @unique
+  password                    String?
+  emailVerified               DateTime?
+  image                       String?
+  role                        String?         @default("CLIENT") // Made optional with default
+  accounts                    Account[]
+  sessions                    Session[]
+  Authenticator               Authenticator[]
+  // Subscription-related fields
+  lastActiveSubscriptionCheck DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
