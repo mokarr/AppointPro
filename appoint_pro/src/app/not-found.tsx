@@ -1,10 +1,22 @@
 // app/not-found.tsx
 
+'use client';
+
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function NotFound() {
+    const { t } = useLanguage();
+
+    // Helper function to safely convert TranslationValue to string
+    const getString = (key: string): string => {
+        const value = t(key);
+        return typeof value === 'string' ? value : '';
+    };
+
     return (
-        <div style={{ padding: "2rem", textAlign: "center" }}>
-            <h1>404 - Organisatie niet gevonden</h1>
-            <p>De organisatie die je zoekt, bestaat niet of is niet toegankelijk.</p>
+        <div className="p-8 text-center">
+            <h1 className="text-2xl font-bold mb-4">{getString('error.notFound.title')}</h1>
+            <p>{getString('error.notFound.description')}</p>
         </div>
     );
 }

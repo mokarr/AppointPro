@@ -1,0 +1,131 @@
+{
+    "common": {
+        "welcome": "Welcome",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "settings": "Settings",
+        "profile": "Profile",
+        "dashboard": "Dashboard",
+        "appointments": "Appointments",
+        "schedule": "Schedule",
+        "clients": "Clients",
+        "services": "Services",
+        "pricing": "Pricing",
+        "contact": "Contact",
+        "help": "Help",
+        "language": "Language",
+        "getStarted": "Get Started",
+        "learnMore": "Learn More",
+        "features": "Features",
+        "pricingPlans": "Pricing Plans",
+        "choosePlan": "Choose the perfect plan for your business",
+        "subscribe": "Subscribe",
+        "popular": "Popular",
+        "month": "per month",
+        "active": "Active",
+        "inactive": "Inactive",
+        "noActiveSubscription": "No active subscription",
+        "manageSubscription": "Manage Subscription",
+        "quickActions": "Quick Actions",
+        "commonActions": "Commonly used actions for your organization",
+        "scheduleAppointment": "Schedule Appointment",
+        "manageOrganizations": "Manage Organizations",
+        "upgradeSubscription": "Upgrade Subscription",
+        "viewOrganization": "View Organization",
+        "viewEmployees": "View Employees",
+        "viewLocations": "View Locations",
+        "totalEmployees": "Total Employees",
+        "totalLocations": "Total Locations",
+        "switchToDutch": "Switch to Dutch",
+        "switchToEnglish": "Switch to English",
+        "appName": "AppointPro",
+        "product": "Product",
+        "signUp": "Sign Up",
+        "organizations": "Organizations",
+        "customers": "Customers",
+        "analytics": "Analytics",
+        "subscription": "Subscription"
+    },
+    "auth": {
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "rememberMe": "Remember me",
+        "noAccount": "Don't have an account?",
+        "haveAccount": "Already have an account?"
+    },
+    "home": {
+        "heroTitle": "Efficient Appointment Scheduling",
+        "heroSubtitle": "For Every Professional",
+        "heroDescription": "Simplify your appointment management with our intuitive and professional scheduling tool. Save time and increase customer satisfaction.",
+        "featuresTitle": "Why Choose AppointPro?",
+        "feature1Title": "Easy Scheduling",
+        "feature1Description": "Schedule appointments effortlessly with our intuitive system.",
+        "feature2Title": "Customer Management",
+        "feature2Description": "Keep all your customer information organized in one place.",
+        "feature3Title": "Automatic Reminders",
+        "feature3Description": "Reduce no-shows with automatic reminders."
+    },
+    "pricing": {
+        "basic": {
+            "title": "Basic",
+            "price": "€19.99",
+            "features": [
+                "Up to 2 employees",
+                "Basic appointment scheduling",
+                "Email notifications"
+            ]
+        },
+        "pro": {
+            "title": "Pro",
+            "price": "€49.99",
+            "features": [
+                "Up to 10 employees",
+                "Advanced appointment scheduling",
+                "SMS notifications",
+                "Custom branding"
+            ]
+        },
+        "enterprise": {
+            "title": "Enterprise",
+            "price": "€99.99",
+            "features": [
+                "Unlimited employees",
+                "Advanced analytics",
+                "Priority support",
+                "Custom integrations"
+            ]
+        }
+    },
+    "error": {
+        "notFound": {
+            "title": "404 - Organization not found",
+            "description": "The organization you are looking for does not exist or is not accessible."
+        }
+    },
+    "footer": {
+        "description": "The ultimate solution for efficient appointment scheduling and customer management.",
+        "features": "Features",
+        "pricing": "Pricing"
+    },
+    "dashboard": {
+        "navigation": {
+            "dashboard": "Dashboard",
+            "organizations": "Organizations",
+            "customers": "Customers",
+            "appointments": "Appointments",
+            "analytics": "Analytics",
+            "subscription": "Subscription",
+            "settings": "Settings"
+        },
+        "welcome": "Welcome",
+        "description": "Manage your appointments and business from one place.",
+        "newAppointment": "New Appointment",
+        "manageCustomers": "Manage Customers",
+        "manageSettings": "Manage Settings",
+        "upcomingAppointments": "Upcoming Appointments",
+        "totalCustomers": "Total Customers",
+        "revenue": "Revenue"
+    }
+}

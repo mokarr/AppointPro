@@ -1,0 +1,137 @@
+{
+    "common": {
+        "welcome": "Welkom",
+        "login": "Inloggen",
+        "register": "Registreren",
+        "logout": "Uitloggen",
+        "settings": "Instellingen",
+        "profile": "Profiel",
+        "dashboard": "Dashboard",
+        "appointments": "Afspraken",
+        "schedule": "Agenda",
+        "clients": "Klanten",
+        "services": "Diensten",
+        "pricing": "Prijzen",
+        "contact": "Contact",
+        "help": "Help",
+        "language": "Taal",
+        "getStarted": "Aan de slag",
+        "learnMore": "Meer informatie",
+        "features": "Functies",
+        "pricingPlans": "Prijsplannen",
+        "choosePlan": "Kies het perfecte plan voor uw bedrijf",
+        "subscribe": "Abonneren",
+        "popular": "Populair",
+        "month": "per maand",
+        "active": "Actief",
+        "inactive": "Inactief",
+        "noActiveSubscription": "Geen actief abonnement",
+        "manageSubscription": "Abonnement beheren",
+        "quickActions": "Snelle acties",
+        "commonActions": "Veelgebruikte acties voor uw organisatie",
+        "scheduleAppointment": "Afspraak inplannen",
+        "manageOrganizations": "Organisaties beheren",
+        "upgradeSubscription": "Abonnement upgraden",
+        "viewOrganization": "Organisatie bekijken",
+        "viewEmployees": "Medewerkers bekijken",
+        "viewLocations": "Locaties bekijken",
+        "totalEmployees": "Totaal medewerkers",
+        "totalLocations": "Totaal locaties",
+        "user": "Gebruiker",
+        "loggedInAs": "U bent ingelogd als",
+        "organization": "Organisatie",
+        "employees": "Medewerkers",
+        "locations": "Locaties",
+        "subscription": "Abonnement",
+        "plan": "Plan",
+        "switchToDutch": "Schakel naar Nederlands",
+        "switchToEnglish": "Schakel naar Engels",
+        "appName": "AppointPro",
+        "product": "Product",
+        "signUp": "Registreren",
+        "organizations": "Organisaties",
+        "customers": "Klanten",
+        "analytics": "Analyses"
+    },
+    "auth": {
+        "email": "E-mail",
+        "password": "Wachtwoord",
+        "forgotPassword": "Wachtwoord vergeten?",
+        "rememberMe": "Onthoud mij",
+        "noAccount": "Nog geen account?",
+        "haveAccount": "Heb je al een account?"
+    },
+    "home": {
+        "heroTitle": "Efficiënte Afsprakenplanning",
+        "heroSubtitle": "Voor Elke Professional",
+        "heroDescription": "Vereenvoudig uw afsprakenbeheer met ons intuïtieve en professionele planningssysteem. Bespaar tijd en verhoog de klanttevredenheid.",
+        "featuresTitle": "Waarom AppointPro kiezen?",
+        "feature1Title": "Eenvoudig Inplannen",
+        "feature1Description": "Plan afspraken moeiteloos met ons intuïtieve systeem.",
+        "feature2Title": "Klantenbeheer",
+        "feature2Description": "Houd al uw klantinformatie georganiseerd op één plek.",
+        "feature3Title": "Automatische Herinneringen",
+        "feature3Description": "Verminder no-shows met automatische herinneringen."
+    },
+    "pricing": {
+        "basic": {
+            "title": "Basis",
+            "price": "€19.99",
+            "features": [
+                "Tot 2 medewerkers",
+                "Basis afsprakenplanning",
+                "E-mail notificaties"
+            ]
+        },
+        "pro": {
+            "title": "Pro",
+            "price": "€49.99",
+            "features": [
+                "Tot 10 medewerkers",
+                "Geavanceerde afsprakenplanning",
+                "SMS notificaties",
+                "Aangepaste huisstijl"
+            ]
+        },
+        "enterprise": {
+            "title": "Enterprise",
+            "price": "€99.99",
+            "features": [
+                "Onbeperkt aantal medewerkers",
+                "Geavanceerde analyses",
+                "Prioriteitsondersteuning",
+                "Aangepaste integraties"
+            ]
+        }
+    },
+    "error": {
+        "notFound": {
+            "title": "404 - Organisatie niet gevonden",
+            "description": "De organisatie die je zoekt, bestaat niet of is niet toegankelijk."
+        }
+    },
+    "footer": {
+        "description": "De ultieme oplossing voor efficiënte afsprakenplanning en klantenbeheer.",
+        "features": "Functies",
+        "pricing": "Prijzen"
+    },
+    "dashboard": {
+        "navigation": {
+            "dashboard": "Dashboard",
+            "organizations": "Organisaties",
+            "customers": "Klanten",
+            "appointments": "Afspraken",
+            "analytics": "Analyses",
+            "subscription": "Abonnement",
+            "settings": "Instellingen"
+        },
+        "welcome": "Welkom",
+        "description": "Beheer uw afspraken en bedrijf vanaf één plek.",
+        "newAppointment": "Nieuwe Afspraak",
+        "manageCustomers": "Klanten Beheren",
+        "manageSettings": "Instellingen Beheren",
+        "upcomingAppointments": "Aankomende Afspraken",
+        "totalCustomers": "Totaal Aantal Klanten",
+        "revenue": "Omzet"
+    }
+}

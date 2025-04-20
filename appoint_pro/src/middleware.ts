@@ -32,15 +32,45 @@ const isOrganizationPath = (path: string) => {
         !['dashboard', 'subscription', 'api'].includes(segments[0]);
 };
 
-export async function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname;
+const availableLanguages = ['nl', 'en'];
+const defaultLanguage = 'nl';
 
-    // Log the current path for debugging
-    console.log(`Middleware processing path: ${path}`);
+export async function middleware(request: NextRequest) {
+    const { pathname, searchParams } = request.nextUrl;
+
+    // Part 1: Handle language setting via query parameter
+    let shouldRedirect = false;
+    const url = request.nextUrl.clone();
+
+    // Check if URL already has lang parameter with valid value
+    const hasValidLangParam = searchParams.has('lang') &&
+        availableLanguages.includes(searchParams.get('lang') as string);
+
+    // Set language parameter if not present or invalid
+    if (!hasValidLangParam) {
+        // Get the preferred language from the Accept-Language header
+        const acceptLanguage = request.headers.get('accept-language');
+        let preferredLanguage = defaultLanguage;
+
+        if (acceptLanguage) {
+            const languages = acceptLanguage.split(',').map((lang) => lang.split(';')[0].toLowerCase());
+            preferredLanguage = languages.find((lang) => availableLanguages.includes(lang)) || defaultLanguage;
+        }
+
+        url.searchParams.set('lang', preferredLanguage);
+        shouldRedirect = true;
+    }
+
+    // If language was adjusted, redirect to the URL with the proper language param
+    if (shouldRedirect) {
+        return NextResponse.redirect(url);
+    }
+
+    // Part 2: Check authentication and organization access
+    const path = request.nextUrl.pathname;
 
     // Allow access to public paths without authentication check
     if (isPublicPath(path)) {
-        console.log(`Public path detected: ${path} - allowing access`);
         return NextResponse.next();
     }
 
@@ -48,7 +78,6 @@ export async function middleware(request: NextRequest) {
     const sessionToken = request.cookies.get('next-auth.session-token')?.value;
 
     if (!sessionToken) {
-        console.log('No session token found - redirecting to sign-in');
         return NextResponse.redirect(new URL('/sign-in', request.url));
     }
 
@@ -60,7 +89,6 @@ export async function middleware(request: NextRequest) {
         });
 
         if (!session) {
-            console.log('Session not found in database - redirecting to sign-in');
             return NextResponse.redirect(new URL('/sign-in', request.url));
         }
 
@@ -68,7 +96,6 @@ export async function middleware(request: NextRequest) {
 
         // Skip further checks if user or organization is missing
         if (!user || !user.organizationId) {
-            console.log('User or organizationId missing - redirecting to sign-in');
             return NextResponse.redirect(new URL('/sign-in', request.url));
         }
 
@@ -80,7 +107,6 @@ export async function middleware(request: NextRequest) {
             const userOrganization = user.organization?.name;
 
             if (!userOrganization || userOrganization.toLowerCase() !== organizationSlug.toLowerCase()) {
-                console.log(`User trying to access unauthorized organization: ${organizationSlug}`);
                 return NextResponse.redirect(new URL('/dashboard', request.url));
             }
         }
@@ -89,7 +115,6 @@ export async function middleware(request: NextRequest) {
 
         // If user has role CLIENT, they don't need a subscription
         if (user.role === 'CLIENT') {
-            console.log('User is CLIENT - allowing access without subscription check');
             return NextResponse.next();
         }
 
@@ -100,7 +125,6 @@ export async function middleware(request: NextRequest) {
 
             // If the organization doesn't have an active subscription, redirect to subscription plans
             if (!hasSubscription) {
-                console.log('No active subscription - redirecting to subscription plans');
                 return NextResponse.redirect(new URL('/subscription/plans', request.url));
             }
 
@@ -110,7 +134,6 @@ export async function middleware(request: NextRequest) {
                 data: { lastActiveSubscriptionCheck: new Date() },
             });
 
-            console.log('Subscription active - allowing access');
             return NextResponse.next();
         } catch (subscriptionError) {
             // If there's an error checking subscription, log it but allow access
@@ -130,11 +153,12 @@ export const config = {
     matcher: [
         /*
          * Match all request paths except for the ones starting with:
+         * - api (API routes)
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          * - public folder
          */
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
     ],
 }; 
