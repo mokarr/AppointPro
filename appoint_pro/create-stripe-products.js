@@ -9,7 +9,7 @@ async function createProductsAndPrices() {
     try {
         console.log('Creating Stripe products and prices...');
 
-        // Define the plans
+        // Define the plans in EUR
         const plans = [
             {
                 name: 'Basic Plan',
@@ -46,11 +46,11 @@ async function createProductsAndPrices() {
 
             console.log(`Created product: ${plan.name} with ID: ${product.id}`);
 
-            // Create price
+            // Create price in EUR
             const price = await stripe.prices.create({
                 product: product.id,
-                unit_amount: Math.round(plan.price * 100), // Convert dollars to cents
-                currency: 'usd',
+                unit_amount: Math.round(plan.price * 100), // Convert euros to cents
+                currency: 'eur',
                 recurring: {
                     interval: plan.interval,
                 },

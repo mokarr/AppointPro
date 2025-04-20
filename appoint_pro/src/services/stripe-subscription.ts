@@ -62,7 +62,7 @@ export const createSubscriptionCheckoutSession = async (
     // Create the checkout session
     const session = await stripe.checkout.sessions.create({
         customer: customerId,
-        payment_method_types: ['card'],
+        payment_method_types: ['card', 'ideal'],
         line_items: [
             {
                 price: plan.stripePriceId,
@@ -76,6 +76,7 @@ export const createSubscriptionCheckoutSession = async (
             organizationId,
             planId,
         },
+        locale: 'nl', // Set locale to Dutch for iDEAL
     });
 
     return session;
@@ -195,7 +196,7 @@ export const createSubscriptionPlans = async () => {
             description: 'Access to basic appointment scheduling features',
             price: 19.99,
             interval: 'month',
-            stripePriceId: "price_1RFvmWLSgAIRx4qaZJ43Kub3",
+            stripePriceId: "price_1RFwbXLSgAIRx4qagPSkw5fJ",
             features: JSON.stringify([
                 'Up to 2 employees',
                 'Basic appointment scheduling',
@@ -207,7 +208,7 @@ export const createSubscriptionPlans = async () => {
             description: 'Advanced features for growing businesses',
             price: 49.99,
             interval: 'month',
-            stripePriceId: "price_1RFvmXLSgAIRx4qaNWpm6KvN",
+            stripePriceId: "price_1RFwbXLSgAIRx4qaeFQWntkA",
             features: JSON.stringify([
                 'Up to 10 employees',
                 'Advanced appointment scheduling',
@@ -220,7 +221,7 @@ export const createSubscriptionPlans = async () => {
             description: 'Full-featured solution for larger organizations',
             price: 99.99,
             interval: 'month',
-            stripePriceId: "price_1RFvmXLSgAIRx4qalTpDINZa",
+            stripePriceId: "price_1RFwbYLSgAIRx4qa4k7Zb0Ln",
             features: JSON.stringify([
                 'Unlimited employees',
                 'Priority support',
@@ -231,8 +232,12 @@ export const createSubscriptionPlans = async () => {
         },
     ];
 
-    // Save plans to the database
+    // First, delete all existing plans
+    await db.subscriptionPlan.deleteMany({});
+
+    // Then create the new plans
     await db.subscriptionPlan.createMany({
         data: plans,
     });
 };
+

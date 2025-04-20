@@ -130,7 +130,7 @@ function Create-StripeProduct {
         [string]$description,
         [int]$amount,
         [string]$interval = "month",
-        [string]$currency = "usd"
+        [string]$currency = "eur"
     )
     
     Write-Host "Creating product: $name..." -ForegroundColor Yellow
@@ -167,9 +167,9 @@ function Create-StripeProduct {
 }
 
 # Create the products as defined in the README-STRIPE-SETUP.md
-$basicPlan = Create-StripeProduct -name "Basic Plan" -description "Access to basic appointment scheduling features" -amount 1999
-$proPlan = Create-StripeProduct -name "Pro Plan" -description "Advanced features for growing businesses" -amount 4999
-$enterprisePlan = Create-StripeProduct -name "Enterprise Plan" -description "Full-featured solution for larger organizations" -amount 9999
+$basicPlan = Create-StripeProduct -name "Basic Plan" -description "Access to basic appointment scheduling features" -amount 1999 -currency "eur"
+$proPlan = Create-StripeProduct -name "Pro Plan" -description "Advanced features for growing businesses" -amount 4999 -currency "eur"
+$enterprisePlan = Create-StripeProduct -name "Enterprise Plan" -description "Full-featured solution for larger organizations" -amount 9999 -currency "eur"
 
 # Create a temporary file to store the price IDs
 $priceIdsFile = "stripe-price-ids.txt"

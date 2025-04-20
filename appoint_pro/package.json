@@ -13,6 +13,9 @@
     "db:seed-plans": "ts-node -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts",
     "stripe:sync": "ts-node -r tsconfig-paths/register src/scripts/sync-subscriptions.ts"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "dependencies": {
     "@auth/prisma-adapter": "^2.0.12",
     "@prisma/client": "^5.10.2",
@@ -49,6 +52,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.2",
     "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.11.25",
     "@types/react": "18.2.64",
     "@types/react-dom": "18.2.21",

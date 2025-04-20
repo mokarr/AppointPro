@@ -15,7 +15,7 @@ async function main() {
                 description: 'Access to basic appointment scheduling features',
                 price: 19.99,
                 interval: 'month',
-                stripePriceId: 'price_1RFvmWLSgAIRx4qaZJ43Kub3',
+                stripePriceId: 'price_1RFwbXLSgAIRx4qagPSkw5fJ',
                 features: JSON.stringify([
                     'Up to 2 employees',
                     'Basic appointment scheduling',
@@ -28,7 +28,7 @@ async function main() {
                 description: 'Advanced features for growing businesses',
                 price: 49.99,
                 interval: 'month',
-                stripePriceId: 'price_1RFvmXLSgAIRx4qaNWpm6KvN',
+                stripePriceId: 'price_1RFwbXLSgAIRx4qaeFQWntkA',
                 features: JSON.stringify([
                     'Up to 10 employees',
                     'Advanced appointment scheduling',
@@ -42,7 +42,7 @@ async function main() {
                 description: 'Full-featured solution for larger organizations',
                 price: 99.99,
                 interval: 'month',
-                stripePriceId: 'price_1RFvmXLSgAIRx4qalTpDINZa',
+                stripePriceId: 'price_1RFwbYLSgAIRx4qa4k7Zb0Ln',
                 features: JSON.stringify([
                     'Unlimited employees',
                     'Priority support',
