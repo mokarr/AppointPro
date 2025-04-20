@@ -49,4 +49,5 @@ Desktop.ini
 *.temp
 .cache/
 migration.sql
+.vscode
 
