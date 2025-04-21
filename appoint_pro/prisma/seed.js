@@ -16,19 +16,33 @@ const featuresByCategory = {
     amenities: ['Changing room', 'Shower', 'Lighting', 'Parking', 'Wheelchair accessible']
 };
 
+// Generate a sanitized subdomain from organization name
+const generateSubdomainFromName = (name) => {
+    return name
+        .toLowerCase()
+        .replace(/[^a-z0-9-\s]/g, '')  // Remove special chars except spaces and hyphens
+        .replace(/\s+/g, '-')          // Replace spaces with hyphens
+        .replace(/-+/g, '-')           // Remove duplicate hyphens
+        .replace(/^-+|-+$/g, '');      // Remove leading/trailing hyphens
+};
+
 async function main() {
     try {
         console.log('Starting database seeding...');
 
         // Create a test organization
+        const organizationName = 'SportCenter Pro';
         const organization = await prisma.organization.upsert({
             where: { id: 'test-org' },
-            update: {},
+            update: {
+                subdomain: generateSubdomainFromName(organizationName)
+            },
             create: {
                 id: 'test-org',
-                name: 'SportCenter Pro',
+                name: organizationName,
                 branche: 'SPORTS',
                 description: 'A modern sports center with various facilities',
+                subdomain: generateSubdomainFromName(organizationName)
             },
         });
 

@@ -6,6 +6,16 @@ import { db } from "./server";  // Import from server-only module
 import { signUpSchema } from "./zod";
 import { signIn } from "./auth";  // Import auth en signIn
 
+// Generate a sanitized subdomain from organization name
+const generateSubdomainFromName = (name: string): string => {
+    return name
+        .toLowerCase()
+        .replace(/[^a-z0-9-\s]/g, '')  // Remove special chars except spaces and hyphens
+        .replace(/\s+/g, '-')          // Replace spaces with hyphens
+        .replace(/-+/g, '-')           // Remove duplicate hyphens
+        .replace(/^-+|-+$/g, '');      // Remove leading/trailing hyphens
+};
+
 const signUp = async (formData: FormData) => {
     return executeAction(
         {
@@ -33,11 +43,25 @@ const signUp = async (formData: FormData) => {
 
                     const pwHash = await saltAndHashPassword(validatedData.password);
 
+                    // Generate subdomain from organization name
+                    const subdomain = generateSubdomainFromName(validatedData.name);
+
+                    // Check if subdomain is already in use
+                    const existingOrg = await db.organization.findFirst({
+                        where: { subdomain }
+                    });
+
+                    // If subdomain is taken, add a random suffix
+                    const finalSubdomain = existingOrg
+                        ? `${subdomain}-${Math.floor(1000 + Math.random() * 9000)}`
+                        : subdomain;
+
                     const organization = await db.organization.create({
                         data: {
                             name: validatedData.name,
                             branche: validatedData.branche,
                             description: validatedData.branche,
+                            subdomain: finalSubdomain,
                             locations: {
                                 create: {
                                     name: locationName,
@@ -99,4 +123,4 @@ const signInAfterSignUp = async (formData: FormData) => {
     }
 }
 
-export { signUp, signInAfterSignUp };
+export { signUp, signInAfterSignUp, generateSubdomainFromName };

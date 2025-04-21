@@ -13,6 +13,7 @@ datasource db {
 model Organization {
   id                    String         @id @default(cuid())
   name                  String
+  subdomain             String?        @unique
   branche               String
   description           String
   locations             Location[]

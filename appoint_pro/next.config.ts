@@ -30,7 +30,7 @@ const config: NextConfig = {
         ],
         // Enable server actions with allowed origins
         serverActions: {
-            allowedOrigins: ['localhost:3000'],
+            allowedOrigins: ['localhost:3000', '.localhost:3000', '.appointpro.com'],
         },
     },
 
@@ -71,6 +71,39 @@ const config: NextConfig = {
     // Configure headers if needed
     async headers() {
         return [];
+    },
+
+    // Domain configuration
+    assetPrefix: process.env.NODE_ENV === 'production' ? 'https://appointpro.com' : undefined,
+
+    // Handle dynamic hostnames in development
+    async rewrites() {
+        return {
+            beforeFiles: [
+                // Handle subdomain access in development
+                {
+                    source: '/:path*',
+                    has: [
+                        {
+                            type: 'host',
+                            value: '(?<subdomain>[^.]+).localhost:3000',
+                        },
+                    ],
+                    destination: '/:subdomain/:path*',
+                },
+                // Handle subdomain access in production
+                {
+                    source: '/:path*',
+                    has: [
+                        {
+                            type: 'host',
+                            value: '(?<subdomain>[^.]+).appointpro.com',
+                        },
+                    ],
+                    destination: '/:subdomain/:path*',
+                },
+            ],
+        };
     },
 };
 

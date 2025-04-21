@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import stripe from '@/lib/stripe';
 import { db } from '@/lib/server';
 import { updateSubscriptionInDatabase } from '@/services/stripe-subscription';
+import { activateOrganizationSubdomain } from '@/services/organization';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -64,6 +65,17 @@ export async function POST(req: NextRequest) {
                                 currentPeriodEnd: new Date(endTimestamp * 1000),
                                 cancelAtPeriodEnd: subscription.cancel_at_period_end,
                             });
+
+                            // If subscription is active, ensure the organization has a subdomain
+                            if (subscription.status === 'active') {
+                                await activateOrganizationSubdomain(organizationId);
+
+                                // Set organization's hasActiveSubscription flag to true
+                                await db.organization.update({
+                                    where: { id: organizationId },
+                                    data: { hasActiveSubscription: true }
+                                });
+                            }
                         }
                     }
                 }
@@ -102,6 +114,27 @@ export async function POST(req: NextRequest) {
                             currentPeriodEnd: new Date(currentPeriodEnd * 1000),
                             cancelAtPeriodEnd: subscription.cancel_at_period_end,
                         });
+
+                        // If subscription status changed to active, ensure organization has a subdomain
+                        // and update hasActiveSubscription flag
+                        const subscriptionStatus = subscription.status as string;
+
+                        if (subscriptionStatus === 'active') {
+                            await activateOrganizationSubdomain(organization.id);
+
+                            if (!organization.hasActiveSubscription) {
+                                await db.organization.update({
+                                    where: { id: organization.id },
+                                    data: { hasActiveSubscription: true }
+                                });
+                            }
+                        } else if (subscriptionStatus !== 'active' && organization.hasActiveSubscription) {
+                            // If subscription is no longer active, update the flag
+                            await db.organization.update({
+                                where: { id: organization.id },
+                                data: { hasActiveSubscription: false }
+                            });
+                        }
                     }
                 }
                 break;
@@ -120,6 +153,12 @@ export async function POST(req: NextRequest) {
                     await updateSubscriptionInDatabase(subscription.id, {
                         status: 'canceled',
                         cancelAtPeriodEnd: true,
+                    });
+
+                    // Set organization's hasActiveSubscription flag to false
+                    await db.organization.update({
+                        where: { id: dbSubscription.organizationId },
+                        data: { hasActiveSubscription: false }
                     });
                 }
                 break;
