@@ -1,8 +1,8 @@
 'use client';
 
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Session } from 'next-auth';
 
 interface DashboardContentProps {
@@ -10,11 +10,11 @@ interface DashboardContentProps {
 }
 
 export default function DashboardContent({ session }: DashboardContentProps) {
-    const { t } = useLanguage();
+    const { getTranslation } = useLanguage();
 
     // Helper function to safely convert TranslationValue to string
     const getString = (key: string): string => {
-        const value = t(key);
+        const value = getTranslation(key);
         return typeof value === 'string' ? value : '';
     };
 
@@ -51,23 +51,23 @@ export default function DashboardContent({ session }: DashboardContentProps) {
 
                     {/* Stats Overview */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                            <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">
-                                {getString('dashboard.upcomingAppointments')}
+                        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+                                {getString('dashboard.stats.appointments')}
                             </h3>
-                            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">12</p>
+                            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</p>
                         </div>
-                        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                            <h3 className="text-lg font-semibold text-green-900 dark:text-green-100">
-                                {getString('dashboard.totalCustomers')}
+                        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold text-green-700 dark:text-green-300">
+                                {getString('dashboard.stats.customers')}
                             </h3>
-                            <p className="text-3xl font-bold text-green-600 dark:text-green-400">45</p>
+                            <p className="text-2xl font-bold text-green-600 dark:text-green-400">0</p>
                         </div>
-                        <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-                            <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100">
-                                {getString('dashboard.revenue')}
+                        <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-300">
+                                {getString('dashboard.stats.revenue')}
                             </h3>
-                            <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">€1,234</p>
+                            <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">€0</p>
                         </div>
                     </div>
                 </div>

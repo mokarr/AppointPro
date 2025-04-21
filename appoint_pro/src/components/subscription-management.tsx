@@ -7,6 +7,7 @@ import { CreditCard, Check, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/utils/date';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SubscriptionManagementProps {
     subscription?: Subscription | null;
@@ -21,6 +22,7 @@ export default function SubscriptionManagement({
 }: SubscriptionManagementProps) {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const { getTranslation } = useLanguage();
 
     const handleManageSubscription = async () => {
         try {
@@ -59,10 +61,10 @@ export default function SubscriptionManagement({
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <CreditCard className="h-5 w-5" />
-                        Subscription
+                        {getTranslation('subscription.manage.title')}
                     </CardTitle>
                     <CardDescription>
-                        No active subscription found for {organizationName}
+                        {getTranslation('subscription.manage.noActiveSubscription', { replacements: { organizationName } })}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -71,8 +73,7 @@ export default function SubscriptionManagement({
                             <AlertCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
                             <div>
                                 <p className="text-sm text-amber-800">
-                                    Your organization doesn't have an active subscription.
-                                    Subscribe to access all features.
+                                    {getTranslation('subscription.manage.noActiveSubscriptionMessage')}
                                 </p>
                             </div>
                         </div>
@@ -84,7 +85,7 @@ export default function SubscriptionManagement({
                         disabled={isLoading}
                         className="w-full"
                     >
-                        {isLoading ? 'Loading...' : 'View Subscription Plans'}
+                        {isLoading ? getTranslation('subscription.manage.loading') : getTranslation('subscription.manage.viewPlans')}
                     </Button>
                 </CardFooter>
             </Card>
@@ -96,10 +97,10 @@ export default function SubscriptionManagement({
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <CreditCard className="h-5 w-5" />
-                    Subscription
+                    {getTranslation('subscription.manage.title')}
                 </CardTitle>
                 <CardDescription>
-                    Current subscription for {organizationName}
+                    {getTranslation('subscription.manage.currentSubscription', { replacements: { organizationName } })}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -110,10 +111,10 @@ export default function SubscriptionManagement({
                                 <Check className="h-5 w-5 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
                                 <div>
                                     <p className="text-sm font-medium text-emerald-800">
-                                        Active Subscription
+                                        {getTranslation('subscription.manage.activeSubscription')}
                                     </p>
                                     <p className="text-sm text-emerald-700 mt-1">
-                                        Your {subscription.planName} subscription is active and will renew automatically.
+                                        {getTranslation('subscription.manage.activeSubscriptionMessage', { replacements: { planName: subscription.planName } })}
                                     </p>
                                 </div>
                             </div>
@@ -121,26 +122,30 @@ export default function SubscriptionManagement({
 
                         <div className="grid gap-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Plan</span>
+                                <span className="text-muted-foreground">{getTranslation('subscription.manage.plan')}</span>
                                 <span className="font-medium">{subscription.planName}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Status</span>
+                                <span className="text-muted-foreground">{getTranslation('subscription.manage.status')}</span>
                                 <span className="font-medium capitalize">{subscription.status}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Current period ends</span>
+                                <span className="text-muted-foreground">{getTranslation('subscription.manage.currentPeriodEnds')}</span>
                                 <span className="font-medium">{formatDate(subscription.currentPeriodEnd)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Cancel at period end</span>
-                                <span className="font-medium">{subscription.cancelAtPeriodEnd ? 'Yes' : 'No'}</span>
+                                <span className="text-muted-foreground">{getTranslation('subscription.manage.cancelAtPeriodEnd')}</span>
+                                <span className="font-medium">
+                                    {subscription.cancelAtPeriodEnd
+                                        ? getTranslation('subscription.manage.yes')
+                                        : getTranslation('subscription.manage.no')}
+                                </span>
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="text-center py-4 text-muted-foreground">
-                        <p>Subscription details unavailable</p>
+                        <p>{getTranslation('subscription.manage.detailsUnavailable')}</p>
                     </div>
                 )}
             </CardContent>
@@ -150,7 +155,7 @@ export default function SubscriptionManagement({
                     disabled={isLoading}
                     className="w-full"
                 >
-                    {isLoading ? 'Loading...' : 'Manage Subscription'}
+                    {isLoading ? getTranslation('subscription.manage.loading') : getTranslation('subscription.manage.manageButton')}
                 </Button>
             </CardFooter>
         </Card>

@@ -5,11 +5,11 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function NotFound() {
-    const { t } = useLanguage();
+    const { getTranslation } = useLanguage();
 
     // Helper function to safely convert TranslationValue to string
     const getString = (key: string): string => {
-        const value = t(key);
+        const value = getTranslation(key);
         return typeof value === 'string' ? value : '';
     };
 

@@ -4,13 +4,11 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 interface DashboardLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
-    header?: React.ReactNode
     sidebar?: React.ReactNode
     children: React.ReactNode
 }
 
 export function DashboardLayout({
-    header,
     sidebar,
     children,
     className,
@@ -18,7 +16,6 @@ export function DashboardLayout({
 }: DashboardLayoutProps) {
     return (
         <div className={cn("min-h-screen bg-background", className)} {...props}>
-            {header}
             <div className="flex flex-col md:flex-row">
                 {sidebar && (
                     <aside className="w-full md:w-64 border-r bg-card md:min-h-[calc(100vh-4rem)]">

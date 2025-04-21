@@ -2,9 +2,9 @@ import { auth } from "@/lib/auth";
 import { getOrganizationById } from "@/services/organization";
 import { notFound, redirect } from "next/navigation";
 
-import OrganizationsPageContent from "./organizations-page-content";
+import CustomersPageContent from "./customers-page-content";
 
-export default async function OrganizationsPage() {
+export default async function CustomersPage() {
     const session = await auth();
 
     if (!session) {
@@ -14,7 +14,7 @@ export default async function OrganizationsPage() {
     const organization = await getOrganizationById(session.user.organizationId);
 
     return (
-        <OrganizationsPageContent
+        <CustomersPageContent
             user={session.user}
             organization={organization}
         />

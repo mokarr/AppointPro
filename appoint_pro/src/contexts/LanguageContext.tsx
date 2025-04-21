@@ -11,6 +11,11 @@ type Translations = {
     [key: string]: TranslationValue;
 };
 
+interface GetTranslationOptions {
+    replacements?: Record<string, string>;
+    defaultValue?: string;
+}
+
 const translations: Record<Language, Translations> = {
     nl: require('@/locales/nl.json'),
     en: require('@/locales/en.json'),
@@ -21,7 +26,7 @@ const DEFAULT_LANGUAGE: Language = 'nl';
 interface LanguageContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
-    t: (key: string) => TranslationValue;
+    getTranslation: (key: string, options?: GetTranslationOptions) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -50,7 +55,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         router.push(`${pathname}?${params.toString()}`);
     };
 
-    const t = (key: string): TranslationValue => {
+    const getTranslation = (key: string, options: GetTranslationOptions = {}): string => {
+        const { replacements = {}, defaultValue = key } = options;
         const keys = key.split('.');
         let value: TranslationValue = translations[language];
 
@@ -58,15 +64,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
             if (typeof value === 'object' && value !== null) {
                 value = (value as { [key: string]: TranslationValue })[k];
             } else {
-                return key;
+                return defaultValue;
             }
         }
 
-        return value || key;
+        if (typeof value !== 'string') {
+            return defaultValue;
+        }
+
+        // Handle string replacements
+        let result = value;
+        Object.entries(replacements).forEach(([key, replacement]) => {
+            result = result.replace(`{${key}}`, replacement);
+        });
+
+        return result;
     };
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, getTranslation }}>
             {children}
         </LanguageContext.Provider>
     );

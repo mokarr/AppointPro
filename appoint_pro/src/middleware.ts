@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { hasActiveSubscription } from './services/stripe-subscription';
-import { db } from './lib/server';
 
 // Paths that don't require an active subscription
 const publicPaths = [
@@ -15,7 +14,8 @@ const publicPaths = [
     '/api/subscriptions',  // Add all subscription related API paths
     '/_next',             // Add Next.js internal paths
     '/favicon.ico',
-    '/'
+    '/landing/company',   // Allow access to company landing pages
+    '/landing/user',      // Allow access to user landing pages
 ];
 
 // Check if the path is public
@@ -29,7 +29,15 @@ const isOrganizationPath = (path: string) => {
     const segments = path.split('/').filter(Boolean);
     return segments.length > 0 &&
         !publicPaths.some(p => path.startsWith(p)) &&
-        !['dashboard', 'subscription', 'api'].includes(segments[0]);
+        !['dashboard', 'subscription', 'api', 'landing'].includes(segments[0]);
+};
+
+// Check if a path is a public organization page
+const isPublicOrganizationPage = (path: string) => {
+    if (!isOrganizationPath(path)) return false;
+    const segments = path.split('/').filter(Boolean);
+    // Allow access to organization landing page and booking page
+    return segments.length <= 2 && (segments[1] === undefined || segments[1] === 'landing' || segments[1] === 'book');
 };
 
 const availableLanguages = ['nl', 'en'];
@@ -37,6 +45,11 @@ const defaultLanguage = 'nl';
 
 export async function middleware(request: NextRequest) {
     const { pathname, searchParams } = request.nextUrl;
+
+    // Redirect root path to customer landing page
+    if (pathname === '/') {
+        return NextResponse.redirect(new URL('/landing/user', request.url));
+    }
 
     // Part 1: Handle language setting via query parameter
     let shouldRedirect = false;
@@ -69,83 +82,36 @@ export async function middleware(request: NextRequest) {
     // Part 2: Check authentication and organization access
     const path = request.nextUrl.pathname;
 
-    // Allow access to public paths without authentication check
+    // Allow access to public paths
     if (isPublicPath(path)) {
         return NextResponse.next();
     }
 
-    // Get the session token from cookies
-    const sessionToken = request.cookies.get('next-auth.session-token')?.value;
-
-    if (!sessionToken) {
-        return NextResponse.redirect(new URL('/sign-in', request.url));
+    // Allow access to public organization pages
+    if (isPublicOrganizationPage(path)) {
+        return NextResponse.next();
     }
 
-    try {
-        // Get the session from the database
-        const session = await db.session.findUnique({
-            where: { sessionToken },
-            include: { user: { include: { organization: true } } },
-        });
+    // For all other organization paths, check authentication and subscription
+    if (isOrganizationPath(path)) {
+        const session = request.cookies.get('session')?.value;
 
         if (!session) {
             return NextResponse.redirect(new URL('/sign-in', request.url));
         }
 
-        const { user } = session;
-
-        // Skip further checks if user or organization is missing
-        if (!user || !user.organizationId) {
-            return NextResponse.redirect(new URL('/sign-in', request.url));
-        }
-
-        // Check organization-specific paths
-        if (isOrganizationPath(path)) {
-            const organizationSlug = path.split('/')[1]; // Extract organization name from path
-
-            // Check if the user's organization matches the requested organization
-            const userOrganization = user.organization?.name;
-
-            if (!userOrganization || userOrganization.toLowerCase() !== organizationSlug.toLowerCase()) {
-                return NextResponse.redirect(new URL('/dashboard', request.url));
-            }
-        }
-
-        const organizationId = user.organizationId;
-
-        // If user has role CLIENT, they don't need a subscription
-        if (user.role === 'CLIENT') {
-            return NextResponse.next();
-        }
-
-        // Only check subscription for non-CLIENT roles
         try {
-            // Check if the user's organization has an active subscription
-            const hasSubscription = await hasActiveSubscription(organizationId);
-
-            // If the organization doesn't have an active subscription, redirect to subscription plans
+            const hasSubscription = await hasActiveSubscription(session);
             if (!hasSubscription) {
                 return NextResponse.redirect(new URL('/subscription/plans', request.url));
             }
-
-            // Update the last active subscription check timestamp
-            await db.user.update({
-                where: { id: user.id },
-                data: { lastActiveSubscriptionCheck: new Date() },
-            });
-
-            return NextResponse.next();
-        } catch (subscriptionError) {
-            // If there's an error checking subscription, log it but allow access
-            // This prevents a broken subscription check from blocking all user access
-            console.error('Error checking subscription status:', subscriptionError);
-            return NextResponse.next();
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+            return NextResponse.redirect(new URL('/sign-in', request.url));
         }
-    } catch (error) {
-        // Log the error but don't block access to avoid login loops
-        console.error('Error in middleware:', error);
-        return NextResponse.next();
     }
+
+    return NextResponse.next();
 }
 
 // Configure which paths the middleware runs on

@@ -1,7 +1,6 @@
 'use server';
 
 import { auth, signIn, signOut } from './auth';
-import { db } from './server';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 

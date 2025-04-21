@@ -1,6 +1,5 @@
 import { db } from '@/lib/server';
 import stripe from '@/lib/stripe';
-import { formatAmountForStripe } from '@/lib/stripe';
 
 /**
  * Create or retrieve a Stripe customer for an organization

@@ -45,7 +45,33 @@
         "organizations": "Organizations",
         "customers": "Customers",
         "analytics": "Analytics",
-        "subscription": "Subscription"
+        "subscription": "Subscription",
+        "banner": {
+            "business": "Are you a business owner?",
+            "businessLink": "Visit Business Page",
+            "user": "Are you a customer?",
+            "userLink": "Go to the customer page"
+        },
+        "user": "User",
+        "loggedInAs": "You are logged in as",
+        "organization": "Organization",
+        "employees": "Employees",
+        "locations": "Locations",
+        "header": {
+            "appointments": {
+                "incoming": "Incoming appointments",
+                "outgoing": "Outgoing appointments",
+                "history": "History",
+                "description": "View and manage your calendar and appointments"
+            },
+            "clients": {
+                "overview": "Client overview",
+                "new": "New client",
+                "groups": "Client groups",
+                "communication": "Communication",
+                "description": "View all your clients in one overview"
+            }
+        }
     },
     "auth": {
         "email": "Email",
@@ -107,7 +133,22 @@
     "footer": {
         "description": "The ultimate solution for efficient appointment scheduling and customer management.",
         "features": "Features",
-        "pricing": "Pricing"
+        "pricing": "Pricing",
+        "about": {
+            "title": "About Us",
+            "description": "The ultimate solution for efficient appointment scheduling and customer management."
+        },
+        "contact": {
+            "title": "Contact Us",
+            "email": "Email",
+            "phone": "Phone"
+        },
+        "social": {
+            "title": "Follow Us",
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "instagram": "Instagram"
+        }
     },
     "dashboard": {
         "navigation": {
@@ -127,5 +168,213 @@
         "upcomingAppointments": "Upcoming Appointments",
         "totalCustomers": "Total Customers",
         "revenue": "Revenue"
+    },
+    "business": {
+        "hero": {
+            "title": "Grow Your Sports Facility Business",
+            "subtitle": "The all-in-one booking platform for sports and activity venues",
+            "description": "Maximize your venue's potential with our smart booking system. Increase bookings, reduce admin work, and delight your customers.",
+            "cta": "Start Free Trial",
+            "secondaryCta": "Schedule Demo"
+        },
+        "features": {
+            "title": "Everything You Need to Succeed",
+            "subtitle": "Powerful tools to grow your business",
+            "feature1": {
+                "title": "Smart Scheduling",
+                "description": "Automated booking system that handles complex scheduling for multiple courts and facilities"
+            },
+            "feature2": {
+                "title": "Revenue Management",
+                "description": "Dynamic pricing and analytics to maximize your revenue during peak hours"
+            },
+            "feature3": {
+                "title": "Customer Management",
+                "description": "Built-in CRM to manage memberships, payments, and customer communications"
+            }
+        },
+        "benefits": {
+            "title": "Why Choose AppointPro",
+            "items": [
+                "Increase bookings by 40% with online scheduling",
+                "Reduce no-shows with automated reminders",
+                "Save 15+ hours per week on administrative tasks",
+                "Get insights with detailed analytics and reporting",
+                "Integrate with your existing systems",
+                "24/7 customer support"
+            ]
+        },
+        "testimonials": {
+            "title": "Trusted by Leading Sports Facilities",
+            "testimonial1": {
+                "quote": "AppointPro has transformed how we manage our tennis courts. Our bookings have increased significantly, and our staff saves hours each week.",
+                "author": "John Smith",
+                "position": "Owner, Tennis Club Amsterdam"
+            }
+        },
+        "pricing": {
+            "title": "Simple, Transparent Pricing",
+            "subtitle": "Start free, grow with us"
+        }
+    },
+    "customer": {
+        "hero": {
+            "title": "Book Sports Venues Instantly",
+            "subtitle": "Find and book your perfect sports venue",
+            "description": "Tennis courts, football fields, swimming pools, and more - all available at your fingertips.",
+            "cta": "Find Venues",
+            "secondaryCta": "How It Works"
+        },
+        "features": {
+            "title": "Why Book with AppointPro",
+            "subtitle": "Simple. Fast. Reliable.",
+            "feature1": {
+                "title": "Easy Booking",
+                "description": "Book your favorite sports venues in seconds, 24/7"
+            },
+            "feature2": {
+                "title": "Best Prices",
+                "description": "Find the best rates and special off-peak discounts"
+            },
+            "feature3": {
+                "title": "Instant Confirmation",
+                "description": "Get immediate confirmation and reminders for your bookings"
+            }
+        },
+        "sports": {
+            "title": "All Your Favorite Sports",
+            "subtitle": "Find the perfect venue for any sport",
+            "types": [
+                "Tennis",
+                "Football",
+                "Swimming",
+                "Basketball",
+                "Padel",
+                "Squash",
+                "Fitness",
+                "Golf"
+            ]
+        },
+        "howItWorks": {
+            "title": "How It Works",
+            "steps": [
+                {
+                    "title": "Find",
+                    "description": "Search for venues by sport, location, and time"
+                },
+                {
+                    "title": "Book",
+                    "description": "Select your preferred time slot and book instantly"
+                },
+                {
+                    "title": "Play",
+                    "description": "Show up and enjoy your activity"
+                }
+            ]
+        },
+        "app": {
+            "title": "Book On The Go",
+            "description": "Download our mobile app to book venues anywhere, anytime",
+            "android": "Get it on Google Play",
+            "ios": "Download on App Store"
+        }
+    },
+    "user": {
+        "hero": {
+            "title": "Book Your Perfect Sports Venue Today",
+            "subtitle": "Find and Book Sports Courts & Facilities Instantly",
+            "description": "Browse through hundreds of sports venues - tennis courts, football fields, swimming pools, and more. Book instantly and play your favorite sports.",
+            "cta": "Find Sports Venues",
+            "secondaryCta": "How It Works"
+        },
+        "features": {
+            "title": "Why Choose AppointPro",
+            "feature1": {
+                "title": "Easy Court Booking",
+                "description": "Find and book available courts with our smart search filters and real-time availability."
+            },
+            "feature2": {
+                "title": "Instant Confirmation",
+                "description": "Get immediate confirmation for your court bookings with digital access codes."
+            },
+            "feature3": {
+                "title": "Verified Venues",
+                "description": "All sports facilities are verified and rated by our sports community for quality assurance."
+            }
+        },
+        "benefits": {
+            "title": "Benefits for Sports Enthusiasts",
+            "items": [
+                "Book courts 24/7 without phone calls",
+                "Find venues near you with exact facilities you need",
+                "Compare court prices and peak hour rates easily",
+                "Manage all your sports bookings in one place",
+                "Get instant court access codes and directions",
+                "24/7 support for all your booking needs"
+            ]
+        },
+        "cta": {
+            "title": "Ready to Book Your Next Game?",
+            "subtitle": "Join thousands of sports enthusiasts booking courts through AppointPro"
+        }
+    },
+    "company": {
+        "hero": {
+            "title": "Grow Your Sports Facility Business",
+            "subtitle": "The All-in-One Booking Platform for Sports Venues",
+            "description": "Join hundreds of sports facilities that trust AppointPro to manage their courts, bookings, and customer relationships.",
+            "cta": "Start Free Trial",
+            "secondaryCta": "Schedule Demo"
+        },
+        "features": {
+            "title": "Powerful Tools for Sports Facilities",
+            "feature1": {
+                "title": "Smart Court Management",
+                "description": "Effortlessly manage multiple courts, time slots, and seasonal schedules from one dashboard."
+            },
+            "feature2": {
+                "title": "Dynamic Pricing",
+                "description": "Set peak and off-peak rates, special offers, and membership prices automatically."
+            },
+            "feature3": {
+                "title": "Facility Analytics",
+                "description": "Track court utilization, popular time slots, and revenue with detailed analytics."
+            }
+        },
+        "benefits": {
+            "title": "Benefits for Your Sports Facility",
+            "items": [
+                "Increase court bookings by 40% with online availability",
+                "Reduce no-shows with automated reminders",
+                "Save 15+ hours weekly on court management",
+                "Maximize revenue with smart pricing",
+                "Access real-time facility insights",
+                "Secure and reliable booking platform"
+            ]
+        },
+        "cta": {
+            "title": "Ready to Transform Your Sports Facility?",
+            "subtitle": "Join successful sports venues using AppointPro"
+        }
+    },
+    "subscription": {
+        "manage": {
+            "title": "Subscription",
+            "noActiveSubscription": "No active subscription found for {organizationName}",
+            "noActiveSubscriptionMessage": "Your organization doesn't have an active subscription. Subscribe to access all features.",
+            "loading": "Loading...",
+            "viewPlans": "View Subscription Plans",
+            "currentSubscription": "Current subscription for {organizationName}",
+            "activeSubscription": "Active Subscription",
+            "activeSubscriptionMessage": "Your {planName} subscription is active and will renew automatically.",
+            "plan": "Plan",
+            "status": "Status",
+            "currentPeriodEnds": "Current period ends",
+            "cancelAtPeriodEnd": "Cancel at period end",
+            "yes": "Yes",
+            "no": "No",
+            "detailsUnavailable": "Subscription details unavailable",
+            "manageButton": "Manage Subscription"
+        }
     }
 }

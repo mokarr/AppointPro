@@ -15,8 +15,8 @@
         "contact": "Contact",
         "help": "Help",
         "language": "Taal",
-        "getStarted": "Aan de slag",
-        "learnMore": "Meer informatie",
+        "getStarted": "Aan de Slag",
+        "learnMore": "Meer Informatie",
         "features": "Functies",
         "pricingPlans": "Prijsplannen",
         "choosePlan": "Kies het perfecte plan voor uw bedrijf",
@@ -26,17 +26,17 @@
         "active": "Actief",
         "inactive": "Inactief",
         "noActiveSubscription": "Geen actief abonnement",
-        "manageSubscription": "Abonnement beheren",
-        "quickActions": "Snelle acties",
+        "manageSubscription": "Abonnement Beheren",
+        "quickActions": "Snelle Acties",
         "commonActions": "Veelgebruikte acties voor uw organisatie",
-        "scheduleAppointment": "Afspraak inplannen",
-        "manageOrganizations": "Organisaties beheren",
-        "upgradeSubscription": "Abonnement upgraden",
-        "viewOrganization": "Organisatie bekijken",
-        "viewEmployees": "Medewerkers bekijken",
-        "viewLocations": "Locaties bekijken",
-        "totalEmployees": "Totaal medewerkers",
-        "totalLocations": "Totaal locaties",
+        "scheduleAppointment": "Afspraak Inplannen",
+        "manageOrganizations": "Organisaties Beheren",
+        "upgradeSubscription": "Abonnement Upgraden",
+        "viewOrganization": "Organisatie Bekijken",
+        "viewEmployees": "Medewerkers Bekijken",
+        "viewLocations": "Locaties Bekijken",
+        "totalEmployees": "Totaal Medewerkers",
+        "totalLocations": "Totaal Locaties",
         "user": "Gebruiker",
         "loggedInAs": "U bent ingelogd als",
         "organization": "Organisatie",
@@ -48,10 +48,31 @@
         "switchToEnglish": "Schakel naar Engels",
         "appName": "AppointPro",
         "product": "Product",
-        "signUp": "Registreren",
+        "signUp": "Aanmelden",
         "organizations": "Organisaties",
         "customers": "Klanten",
-        "analytics": "Analyses"
+        "analytics": "Analyses",
+        "banner": {
+            "business": "Bent u een bedrijfseigenaar?",
+            "businessLink": "Bezoek Bedrijfspagina",
+            "user": "Bent u een klant?",
+            "userLink": "Ga naar de klantenpagina"
+        },
+        "header": {
+            "appointments": {
+                "incoming": "Inkomende afspraken",
+                "outgoing": "Uitgaande afspraken",
+                "history": "Geschiedenis",
+                "description": "Bekijk en beheer uw agenda en afspraken"
+            },
+            "clients": {
+                "overview": "Klantenoverzicht",
+                "new": "Nieuwe klant",
+                "groups": "Klantgroepen",
+                "communication": "Communicatie",
+                "description": "Bekijk al uw klanten in één overzicht"
+            }
+        }
     },
     "auth": {
         "email": "E-mail",
@@ -59,14 +80,14 @@
         "forgotPassword": "Wachtwoord vergeten?",
         "rememberMe": "Onthoud mij",
         "noAccount": "Nog geen account?",
-        "haveAccount": "Heb je al een account?"
+        "haveAccount": "Al een account?"
     },
     "home": {
-        "heroTitle": "Efficiënte Afsprakenplanning",
+        "heroTitle": "Efficiënt Afspraken Plannen",
         "heroSubtitle": "Voor Elke Professional",
-        "heroDescription": "Vereenvoudig uw afsprakenbeheer met ons intuïtieve en professionele planningssysteem. Bespaar tijd en verhoog de klanttevredenheid.",
-        "featuresTitle": "Waarom AppointPro kiezen?",
-        "feature1Title": "Eenvoudig Inplannen",
+        "heroDescription": "Vereenvoudig uw afsprakenbeheer met ons intuïtieve en professionele planningssysteem. Bespaar tijd en verhoog klanttevredenheid.",
+        "featuresTitle": "Waarom Kiezen voor AppointPro?",
+        "feature1Title": "Eenvoudig Plannen",
         "feature1Description": "Plan afspraken moeiteloos met ons intuïtieve systeem.",
         "feature2Title": "Klantenbeheer",
         "feature2Description": "Houd al uw klantinformatie georganiseerd op één plek.",
@@ -76,30 +97,30 @@
     "pricing": {
         "basic": {
             "title": "Basis",
-            "price": "€19.99",
+            "price": "€19,99",
             "features": [
                 "Tot 2 medewerkers",
                 "Basis afsprakenplanning",
-                "E-mail notificaties"
+                "E-mailnotificaties"
             ]
         },
         "pro": {
             "title": "Pro",
-            "price": "€49.99",
+            "price": "€49,99",
             "features": [
                 "Tot 10 medewerkers",
                 "Geavanceerde afsprakenplanning",
-                "SMS notificaties",
-                "Aangepaste huisstijl"
+                "SMS-notificaties",
+                "Aangepaste branding"
             ]
         },
         "enterprise": {
             "title": "Enterprise",
-            "price": "€99.99",
+            "price": "€99,99",
             "features": [
-                "Onbeperkt aantal medewerkers",
+                "Onbeperkt medewerkers",
                 "Geavanceerde analyses",
-                "Prioriteitsondersteuning",
+                "Prioriteit support",
                 "Aangepaste integraties"
             ]
         }
@@ -107,13 +128,28 @@
     "error": {
         "notFound": {
             "title": "404 - Organisatie niet gevonden",
-            "description": "De organisatie die je zoekt, bestaat niet of is niet toegankelijk."
+            "description": "De organisatie die u zoekt bestaat niet of is niet toegankelijk."
         }
     },
     "footer": {
-        "description": "De ultieme oplossing voor efficiënte afsprakenplanning en klantenbeheer.",
+        "description": "De ultieme oplossing voor efficiënt afsprakenbeheer en klantmanagement.",
         "features": "Functies",
-        "pricing": "Prijzen"
+        "pricing": "Prijzen",
+        "about": {
+            "title": "Over Ons",
+            "description": "De ultieme oplossing voor efficiënt afsprakenbeheer en klantmanagement."
+        },
+        "contact": {
+            "title": "Contacteer Ons",
+            "email": "E-mail",
+            "phone": "Telefoon"
+        },
+        "social": {
+            "title": "Volg Ons",
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "instagram": "Instagram"
+        }
     },
     "dashboard": {
         "navigation": {
@@ -131,7 +167,218 @@
         "manageCustomers": "Klanten Beheren",
         "manageSettings": "Instellingen Beheren",
         "upcomingAppointments": "Aankomende Afspraken",
-        "totalCustomers": "Totaal Aantal Klanten",
+        "totalCustomers": "Totaal Klanten",
         "revenue": "Omzet"
+    },
+    "business": {
+        "hero": {
+            "title": "Laat Uw Sportfaciliteit Groeien",
+            "subtitle": "Het alles-in-één boekingsplatform voor sport- en activiteitenlocaties",
+            "description": "Maximaliseer het potentieel van uw locatie met ons slimme boekingssysteem. Verhoog boekingen, verminder administratief werk en maak uw klanten blij.",
+            "cta": "Start Gratis Proefperiode",
+            "secondaryCta": "Plan Demo"
+        },
+        "features": {
+            "title": "Alles Wat U Nodig Heeft om te Slagen",
+            "subtitle": "Krachtige tools om uw bedrijf te laten groeien",
+            "feature1": {
+                "title": "Slim Plannen",
+                "description": "Geautomatiseerd boekingssysteem dat complexe planning voor meerdere banen en faciliteiten afhandelt"
+            },
+            "feature2": {
+                "title": "Omzetbeheer",
+                "description": "Dynamische prijzen en analyses om uw omzet tijdens piekuren te maximaliseren"
+            },
+            "feature3": {
+                "title": "Klantenbeheer",
+                "description": "Ingebouwde CRM voor het beheren van lidmaatschappen, betalingen en klantcommunicatie"
+            }
+        },
+        "benefits": {
+            "title": "Waarom Kiezen voor AppointPro",
+            "items": [
+                "Verhoog boekingen met 40% door online planning",
+                "Verminder no-shows met automatische herinneringen",
+                "Bespaar 15+ uur per week op administratieve taken",
+                "Krijg inzichten met gedetailleerde analyses en rapportages",
+                "Integreer met uw bestaande systemen",
+                "24/7 klantenondersteuning"
+            ]
+        },
+        "testimonials": {
+            "title": "Vertrouwd door Toonaangevende Sportfaciliteiten",
+            "testimonial1": {
+                "quote": "AppointPro heeft de manier waarop we onze tennisbanen beheren getransformeerd. Onze boekingen zijn aanzienlijk toegenomen en ons personeel bespaart wekelijks uren.",
+                "author": "Jan Smit",
+                "position": "Eigenaar, Tennisclub Amsterdam"
+            }
+        },
+        "pricing": {
+            "title": "Eenvoudige, Transparante Prijzen",
+            "subtitle": "Begin gratis, groei met ons mee"
+        }
+    },
+    "customer": {
+        "hero": {
+            "title": "Boek Direct Sportlocaties",
+            "subtitle": "Vind en boek uw perfecte sportlocatie",
+            "description": "Tennisbanen, voetbalvelden, zwembaden en meer - allemaal binnen handbereik.",
+            "cta": "Vind Locaties",
+            "secondaryCta": "Hoe Het Werkt"
+        },
+        "features": {
+            "title": "Waarom Boeken met AppointPro",
+            "subtitle": "Eenvoudig. Snel. Betrouwbaar.",
+            "feature1": {
+                "title": "Eenvoudig Boeken",
+                "description": "Boek uw favoriete sportlocaties binnen seconden, 24/7"
+            },
+            "feature2": {
+                "title": "Beste Prijzen",
+                "description": "Vind de beste tarieven en speciale daluren-kortingen"
+            },
+            "feature3": {
+                "title": "Directe Bevestiging",
+                "description": "Ontvang direct bevestiging en herinneringen voor uw boekingen"
+            }
+        },
+        "sports": {
+            "title": "Al Uw Favoriete Sporten",
+            "subtitle": "Vind de perfecte locatie voor elke sport",
+            "types": [
+                "Tennis",
+                "Voetbal",
+                "Zwemmen",
+                "Basketbal",
+                "Padel",
+                "Squash",
+                "Fitness",
+                "Golf"
+            ]
+        },
+        "howItWorks": {
+            "title": "Hoe Het Werkt",
+            "steps": [
+                {
+                    "title": "Vind",
+                    "description": "Zoek locaties op sport, locatie en tijd"
+                },
+                {
+                    "title": "Boek",
+                    "description": "Selecteer uw gewenste tijdslot en boek direct"
+                },
+                {
+                    "title": "Sport",
+                    "description": "Kom langs en geniet van uw activiteit"
+                }
+            ]
+        },
+        "app": {
+            "title": "Boek Onderweg",
+            "description": "Download onze mobiele app om overal en altijd locaties te boeken",
+            "android": "Download via Google Play",
+            "ios": "Download in de App Store"
+        },
+        "benefits": {
+            "title": "Voordelen van AppointPro",
+            "items": [
+                "Direct online boeken, 24/7 beschikbaar",
+                "Geen reserveringskosten",
+                "Automatische bevestiging en herinneringen",
+                "Eenvoudig beheer van uw boekingen",
+                "Loyaliteitsprogramma voor vaste klanten",
+                "Uitstekende klantenservice"
+            ]
+        },
+        "testimonials": {
+            "title": "Wat Onze Klanten Zeggen",
+            "testimonial1": {
+                "quote": "AppointPro maakt het zo eenvoudig om een tennisbaan te boeken. Geen gedoe meer met bellen of wachten op bevestiging. Geweldig systeem!",
+                "author": "Lisa de Vries",
+                "position": "Regelmatige Sporter"
+            }
+        },
+        "cta": {
+            "title": "Klaar om te Beginnen?",
+            "subtitle": "Vind en boek nu uw perfecte sportlocatie"
+        }
+    },
+    "user": {
+        "hero": {
+            "title": "Boek Vandaag Nog Uw Perfecte Sportlocatie",
+            "subtitle": "Vind en Boek Direct Sportfaciliteiten",
+            "description": "Blader door honderden sportlocaties - tennisbanen, voetbalvelden, zwembaden en meer. Boek direct en beoefen uw favoriete sport.",
+            "cta": "Vind Sportlocaties",
+            "secondaryCta": "Hoe Het Werkt"
+        },
+        "features": {
+            "title": "Waarom Kiezen voor AppointPro",
+            "feature1": {
+                "title": "Eenvoudig Banen Boeken",
+                "description": "Vind en boek beschikbare banen met onze slimme zoekfilters en real-time beschikbaarheid."
+            },
+            "feature2": {
+                "title": "Directe Bevestiging",
+                "description": "Ontvang direct bevestiging voor uw baanreserveringen met digitale toegangscodes."
+            },
+            "feature3": {
+                "title": "Geverifieerde Locaties",
+                "description": "Alle sportfaciliteiten zijn geverifieerd en beoordeeld door onze sportgemeenschap voor kwaliteitsgarantie."
+            }
+        },
+        "benefits": {
+            "title": "Voordelen voor Sporters",
+            "items": [
+                "Boek banen 24/7 zonder te bellen",
+                "Vind locaties bij u in de buurt met de juiste faciliteiten",
+                "Vergelijk baantarieven en piektijden eenvoudig",
+                "Beheer al uw sportboekingen op één plek",
+                "Ontvang direct toegangscodes en routebeschrijving",
+                "24/7 ondersteuning voor al uw boekingen"
+            ]
+        },
+        "cta": {
+            "title": "Klaar om Uw Volgende Wedstrijd te Boeken?",
+            "subtitle": "Sluit u aan bij duizenden sporters die via AppointPro boeken"
+        }
+    },
+    "company": {
+        "hero": {
+            "title": "Laat Uw Sportaccommodatie Groeien",
+            "subtitle": "Het Alles-in-één Boekingsplatform voor Sportlocaties",
+            "description": "Sluit u aan bij honderden sportfaciliteiten die AppointPro vertrouwen voor het beheer van hun banen, boekingen en klantrelaties.",
+            "cta": "Start Gratis Proefperiode",
+            "secondaryCta": "Plan Demo"
+        },
+        "features": {
+            "title": "Krachtige Tools voor Sportfaciliteiten",
+            "feature1": {
+                "title": "Slim Baanbeheer",
+                "description": "Beheer moeiteloos meerdere banen, tijdsloten en seizoensschema's vanaf één dashboard."
+            },
+            "feature2": {
+                "title": "Dynamische Prijzen",
+                "description": "Stel automatisch piek- en daltarieven, speciale aanbiedingen en ledenprijzen in."
+            },
+            "feature3": {
+                "title": "Faciliteit Analyses",
+                "description": "Volg baanbezetting, populaire tijdsloten en omzet met gedetailleerde analyses."
+            }
+        },
+        "benefits": {
+            "title": "Voordelen voor Uw Sportfaciliteit",
+            "items": [
+                "Verhoog baanboekingen met 40% door online beschikbaarheid",
+                "Verminder no-shows met automatische herinneringen",
+                "Bespaar 15+ uur per week op baanbeheer",
+                "Maximaliseer inkomsten met slimme prijzen",
+                "Toegang tot real-time faciliteit inzichten",
+                "Veilig en betrouwbaar boekingsplatform"
+            ]
+        },
+        "cta": {
+            "title": "Klaar om Uw Sportfaciliteit te Transformeren?",
+            "subtitle": "Sluit u aan bij succesvolle sportlocaties die AppointPro gebruiken"
+        }
     }
 }

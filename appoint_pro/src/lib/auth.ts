@@ -6,6 +6,7 @@ import { db } from "./server"
 import { v4 as uuid } from "uuid";
 import { encode as defaultEncode } from "next-auth/jwt";
 import { Adapter, AdapterUser } from "next-auth/adapters";
+import type { User, Session } from '@prisma/client'
 
 // Define your custom user type that includes organization
 type CustomUser = AdapterUser & {

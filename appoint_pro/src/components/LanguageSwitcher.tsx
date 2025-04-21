@@ -3,11 +3,11 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const LanguageSwitcher = () => {
-    const { language, setLanguage, t } = useLanguage();
+    const { language, setLanguage, getTranslation } = useLanguage();
 
     // Helper function to safely convert TranslationValue to string
     const getString = (key: string): string => {
-        const value = t(key);
+        const value = getTranslation(key);
         return typeof value === 'string' ? value : '';
     };
 

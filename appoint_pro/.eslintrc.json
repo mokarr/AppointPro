@@ -1,11 +1,13 @@
 {
     "root": true,
     "extends": [
-        "next/core-web-vitals"
+        "next/core-web-vitals",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "translations"
     ],
     "parserOptions": {
         "ecmaVersion": 2021,
@@ -14,9 +16,16 @@
             "jsx": true
         }
     },
+    "rules": {
+        "translations/require-translation-key": "error",
+        "translations/valid-translation-key": "error"
+    },
     "settings": {
         "react": {
             "version": "detect"
+        },
+        "translations": {
+            "localesPath": "./src/locales"
         }
     }
 }

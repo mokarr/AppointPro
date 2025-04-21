@@ -13,13 +13,7 @@ import {
 } from 'lucide-react';
 
 export default function DashboardSidebar() {
-    const { t } = useLanguage();
-
-    // Helper function to safely convert TranslationValue to string
-    const getString = (key: string): string => {
-        const value = t(key);
-        return typeof value === 'string' ? value : '';
-    };
+    const { getTranslation } = useLanguage();
 
     const navItems = [
         {
@@ -72,7 +66,7 @@ export default function DashboardSidebar() {
                         >
                             <Icon className="h-4 w-4" />
                             <span className="text-sm font-medium">
-                                {getString(item.label)}
+                                {getTranslation(item.label)}
                             </span>
                         </Link>
                     );

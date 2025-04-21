@@ -1,6 +1,4 @@
-import { db } from '@/lib/server';
 import { createSubscriptionPlans } from '@/services/stripe-subscription';
-import stripe from '@/lib/stripe';
 
 /**
  * Script to seed the database with subscription plans

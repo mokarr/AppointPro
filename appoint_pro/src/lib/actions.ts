@@ -4,7 +4,7 @@ import { saltAndHashPassword } from "@/utils/password";
 import { executeAction } from "./executeAction"
 import { db } from "./server";  // Import from server-only module
 import { signUpSchema } from "./zod";
-import { auth, signIn } from "./auth";  // Import auth en signIn
+import { signIn } from "./auth";  // Import auth en signIn
 
 const signUp = async (formData: FormData) => {
     return executeAction(

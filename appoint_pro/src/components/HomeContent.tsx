@@ -3,18 +3,13 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Session } from 'next-auth';
 
-interface HomeContentProps {
-    session: Session | null;
-}
-
-export default function HomeContent({ session }: HomeContentProps) {
-    const { t } = useLanguage();
+export default function HomeContent() {
+    const { getTranslation } = useLanguage();
 
     // Helper function to safely convert TranslationValue to string
     const getString = (key: string): string => {
-        const value = t(key);
+        const value = getTranslation(key);
         return typeof value === 'string' ? value : '';
     };
 
@@ -42,9 +37,12 @@ export default function HomeContent({ session }: HomeContentProps) {
                                 </Button>
                             </div>
                         </div>
-                        <div className="relative h-[400px] rounded-lg overflow-hidden shadow-xl">
-                            <div className="absolute inset-0 bg-blue-100 flex items-center justify-center">
-                                <div className="text-blue-500 text-xl">Calendar Image</div>
+                        <div className="hidden md:block">
+                            <div className="relative aspect-square">
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-20" />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-64 h-64 bg-blue-100 dark:bg-blue-900 rounded-full" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -52,7 +50,7 @@ export default function HomeContent({ session }: HomeContentProps) {
             </section>
 
             {/* Features Section */}
-            <section id="features" className="py-16 bg-white dark:bg-gray-900">
+            <section className="py-20 bg-gray-50 dark:bg-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
                         {getString('home.featuresTitle')}
@@ -87,7 +85,7 @@ export default function HomeContent({ session }: HomeContentProps) {
                         <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4">
                                 <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                 </svg>
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -122,19 +120,30 @@ export default function HomeContent({ session }: HomeContentProps) {
                             </div>
                             <div className="p-6">
                                 <ul className="space-y-4">
-                                    {Array.isArray(t('pricing.basic.features')) &&
-                                        (t('pricing.basic.features') as string[]).map((feature, index) => (
-                                            <li key={index} className="flex items-start">
-                                                <svg className="h-5 w-5 text-green-500 shrink-0 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                                </svg>
-                                                <span className="text-gray-700 dark:text-gray-300">{feature}</span>
-                                            </li>
-                                        ))}
+                                    <li className="flex items-center">
+                                        <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{getString('pricing.basic.feature1')}</span>
+                                    </li>
+                                    <li className="flex items-center">
+                                        <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{getString('pricing.basic.feature2')}</span>
+                                    </li>
+                                    <li className="flex items-center">
+                                        <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{getString('pricing.basic.feature3')}</span>
+                                    </li>
                                 </ul>
-                                <Button className="w-full mt-6" asChild>
-                                    <Link href="/subscription/plans">{getString('common.subscribe')}</Link>
-                                </Button>
+                                <div className="mt-8">
+                                    <Button asChild className="w-full">
+                                        <Link href="/sign-up">{getString('common.getStarted')}</Link>
+                                    </Button>
+                                </div>
                             </div>
                         </div>
 
@@ -149,8 +158,8 @@ export default function HomeContent({ session }: HomeContentProps) {
                             </div>
                             <div className="p-6">
                                 <ul className="space-y-4">
-                                    {Array.isArray(t('pricing.pro.features')) &&
-                                        (t('pricing.pro.features') as string[]).map((feature, index) => (
+                                    {Array.isArray(getTranslation('pricing.pro.features')) &&
+                                        (getTranslation('pricing.pro.features') as string[]).map((feature, index) => (
                                             <li key={index} className="flex items-start">
                                                 <svg className="h-5 w-5 text-green-500 shrink-0 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -175,8 +184,8 @@ export default function HomeContent({ session }: HomeContentProps) {
                             </div>
                             <div className="p-6">
                                 <ul className="space-y-4">
-                                    {Array.isArray(t('pricing.enterprise.features')) &&
-                                        (t('pricing.enterprise.features') as string[]).map((feature, index) => (
+                                    {Array.isArray(getTranslation('pricing.enterprise.features')) &&
+                                        (getTranslation('pricing.enterprise.features') as string[]).map((feature, index) => (
                                             <li key={index} className="flex items-start">
                                                 <svg className="h-5 w-5 text-green-500 shrink-0 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
