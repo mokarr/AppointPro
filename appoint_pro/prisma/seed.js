@@ -3,22 +3,194 @@ const { hash } = require('bcryptjs');
 const Stripe = require('stripe');
 
 const prisma = new PrismaClient();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
+
+// Categories for features
+const featureCategories = ['sport', 'surface', 'indoor', 'amenities'];
+
+// List of all features by category
+const featuresByCategory = {
+    sport: ['Tennis', 'Basketball', 'Volleyball', 'Football', 'Badminton', 'Squash', 'Swimming'],
+    surface: ['Clay', 'Hard court', 'Grass', 'Artificial grass', 'Carpet', 'Wood'],
+    indoor: ['Indoor', 'Outdoor', 'Covered'],
+    amenities: ['Changing room', 'Shower', 'Lighting', 'Parking', 'Wheelchair accessible']
+};
 
 async function main() {
     try {
         console.log('Starting database seeding...');
 
-        // Create a test organization first
+        // Create a test organization
         const organization = await prisma.organization.upsert({
             where: { id: 'test-org' },
             update: {},
             create: {
                 id: 'test-org',
-                name: 'Test Organization',
-                description: 'A test organization for development',
-                branche: 'TEST',
+                name: 'SportCenter Pro',
+                branche: 'SPORTS',
+                description: 'A modern sports center with various facilities',
             },
+        });
+
+        // Create features
+        console.log('Creating features...');
+        const createdFeatures = {};
+
+        for (const category of featureCategories) {
+            for (const featureName of featuresByCategory[category]) {
+                const featureId = `${category}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
+
+                const feature = await prisma.feature.upsert({
+                    where: { id: featureId },
+                    update: {},
+                    create: {
+                        id: featureId,
+                        name: featureName,
+                        category
+                    }
+                });
+
+                // Save the ID for later reference
+                createdFeatures[featureId] = feature.id;
+            }
+        }
+
+        // Create locations with facilities
+        console.log('Creating locations and facilities...');
+
+        // Amsterdam location
+        const amsterdamLocation = await prisma.location.create({
+            data: {
+                name: 'SportCenter Pro - Amsterdam',
+                address: 'Sportlaan 123',
+                postalCode: '1234 AB',
+                country: 'Netherlands',
+                organization: {
+                    connect: {
+                        id: organization.id
+                    }
+                },
+                facilities: {
+                    create: [
+                        {
+                            name: 'Tennis Court 1',
+                            description: 'Professional indoor tennis court',
+                            price: 30.00,
+                            features: {
+                                connect: [
+                                    { id: createdFeatures['sport-tennis'] },
+                                    { id: createdFeatures['surface-clay'] },
+                                    { id: createdFeatures['indoor-indoor'] },
+                                    { id: createdFeatures['amenities-lighting'] }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'Tennis Court 2',
+                            description: 'Professional outdoor tennis court',
+                            price: 25.00,
+                            features: {
+                                connect: [
+                                    { id: createdFeatures['sport-tennis'] },
+                                    { id: createdFeatures['surface-hard-court'] },
+                                    { id: createdFeatures['indoor-outdoor'] },
+                                    { id: createdFeatures['amenities-lighting'] }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'Basketball Court',
+                            description: 'Full-size basketball court',
+                            price: 40.00,
+                            features: {
+                                connect: [
+                                    { id: createdFeatures['sport-basketball'] },
+                                    { id: createdFeatures['surface-wood'] },
+                                    { id: createdFeatures['indoor-indoor'] },
+                                    { id: createdFeatures['amenities-changing-room'] },
+                                    { id: createdFeatures['amenities-shower'] }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'Swimming Pool',
+                            description: 'Olympic-size swimming pool',
+                            price: 15.00,
+                            features: {
+                                connect: [
+                                    { id: createdFeatures['sport-swimming'] },
+                                    { id: createdFeatures['indoor-indoor'] },
+                                    { id: createdFeatures['amenities-changing-room'] },
+                                    { id: createdFeatures['amenities-shower'] }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+
+        // Utrecht location
+        const utrechtLocation = await prisma.location.create({
+            data: {
+                name: 'SportCenter Pro - Utrecht',
+                address: 'Olympialaan 45',
+                postalCode: '3543 CC',
+                country: 'Netherlands',
+                organization: {
+                    connect: {
+                        id: organization.id
+                    }
+                },
+                facilities: {
+                    create: [
+                        {
+                            name: 'Tennis Court 1',
+                            description: 'Indoor tennis court',
+                            price: 28.00,
+                            features: {
+                                connect: [
+                                    { id: createdFeatures['sport-tennis'] },
+                                    { id: createdFeatures['surface-hard-court'] },
+                                    { id: createdFeatures['indoor-indoor'] },
+                                    { id: createdFeatures['amenities-lighting'] }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'Basketball Court',
+                            description: 'Full-size basketball court',
+                            price: 35.00,
+                            features: {
+                                connect: [
+                                    { id: createdFeatures['sport-basketball'] },
+                                    { id: createdFeatures['surface-wood'] },
+                                    { id: createdFeatures['indoor-indoor'] },
+                                    { id: createdFeatures['amenities-lighting'] },
+                                    { id: createdFeatures['amenities-changing-room'] }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'Multifunctional Sports Hall',
+                            description: 'Large hall suitable for various sports',
+                            price: 50.00,
+                            features: {
+                                connect: [
+                                    { id: createdFeatures['sport-basketball'] },
+                                    { id: createdFeatures['sport-volleyball'] },
+                                    { id: createdFeatures['sport-badminton'] },
+                                    { id: createdFeatures['surface-wood'] },
+                                    { id: createdFeatures['indoor-indoor'] },
+                                    { id: createdFeatures['amenities-lighting'] },
+                                    { id: createdFeatures['amenities-changing-room'] },
+                                    { id: createdFeatures['amenities-shower'] }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
         });
 
         // Create a test user
@@ -44,12 +216,12 @@ async function main() {
             {
                 id: 'basic-plan',
                 name: 'Basic Plan',
-                description: 'Access to basic appointment scheduling features',
-                price: 19.99,
+                description: 'Perfect for small sports facilities',
+                price: 49.99,
                 interval: 'month',
                 features: JSON.stringify([
-                    'Up to 2 employees',
-                    'Basic appointment scheduling',
+                    'Up to 3 facilities',
+                    'Basic booking system',
                     'Email notifications',
                 ]),
                 active: true,
@@ -57,25 +229,25 @@ async function main() {
             {
                 id: 'pro-plan',
                 name: 'Pro Plan',
-                description: 'Advanced features for growing businesses',
-                price: 49.99,
+                description: 'Ideal for medium-sized sports centers',
+                price: 99.99,
                 interval: 'month',
                 features: JSON.stringify([
-                    'Up to 10 employees',
-                    'Advanced appointment scheduling',
+                    'Up to 10 facilities',
+                    'Advanced booking system',
                     'SMS notifications',
-                    'Custom branding',
+                    'Analytics dashboard',
                 ]),
                 active: true,
             },
             {
                 id: 'enterprise-plan',
                 name: 'Enterprise Plan',
-                description: 'Full-featured solution for larger organizations',
-                price: 99.99,
+                description: 'For large sports complexes',
+                price: 199.99,
                 interval: 'month',
                 features: JSON.stringify([
-                    'Unlimited employees',
+                    'Unlimited facilities',
                     'Priority support',
                     'Advanced analytics',
                     'API access',
@@ -85,55 +257,65 @@ async function main() {
             },
         ];
 
-        // Check for existing products and prices in Stripe
-        const existingProducts = await stripe.products.list({ limit: 100 });
-        const existingPrices = await stripe.prices.list({ limit: 100 });
+        // Setup Stripe if available
+        if (stripe) {
+            console.log('Setting up Stripe products and prices...');
 
+            // Check for existing products and prices in Stripe
+            const existingProducts = await stripe.products.list({ limit: 100 });
+            const existingPrices = await stripe.prices.list({ limit: 100 });
+
+            for (const plan of plans) {
+                // Check if product already exists
+                let existingProduct = existingProducts.data.find(p => p.name === plan.name);
+
+                if (!existingProduct) {
+                    console.log(`Creating Stripe product: ${plan.name}`);
+                    existingProduct = await stripe.products.create({
+                        name: plan.name,
+                        description: plan.description,
+                    });
+                }
+
+                // Check if price already exists for this product
+                let existingPrice = existingPrices.data.find(
+                    p => p.product === existingProduct.id &&
+                        p.unit_amount === Math.round(plan.price * 100) &&
+                        p.currency === 'eur' &&
+                        p.recurring?.interval === plan.interval
+                );
+
+                if (!existingPrice) {
+                    console.log(`Creating Stripe price for: ${plan.name}`);
+                    existingPrice = await stripe.prices.create({
+                        product: existingProduct.id,
+                        unit_amount: Math.round(plan.price * 100),
+                        currency: 'eur',
+                        recurring: {
+                            interval: plan.interval,
+                        },
+                    });
+                }
+
+                // Update plan with Stripe IDs
+                plan.stripePriceId = existingPrice.id;
+            }
+        } else {
+            console.log('Stripe integration skipped: STRIPE_SECRET_KEY not found');
+
+            // Use mock Stripe IDs for local development
+            plans[0].stripePriceId = 'price_mock_basic';
+            plans[1].stripePriceId = 'price_mock_pro';
+            plans[2].stripePriceId = 'price_mock_enterprise';
+        }
+
+        // Create subscription plans in database
         for (const plan of plans) {
-            // Check if product already exists
-            let existingProduct = existingProducts.data.find(p => p.name === plan.name);
-
-            if (!existingProduct) {
-                console.log(`Creating Stripe product: ${plan.name}`);
-                existingProduct = await stripe.products.create({
-                    name: plan.name,
-                    description: plan.description,
-                });
-            }
-
-            // Check if price already exists for this product
-            let existingPrice = existingPrices.data.find(
-                p => p.product === existingProduct.id &&
-                    p.unit_amount === Math.round(plan.price * 100) &&
-                    p.currency === 'eur' &&
-                    p.recurring?.interval === plan.interval
-            );
-
-            if (!existingPrice) {
-                console.log(`Creating Stripe price for: ${plan.name}`);
-                existingPrice = await stripe.prices.create({
-                    product: existingProduct.id,
-                    unit_amount: Math.round(plan.price * 100),
-                    currency: 'eur',
-                    recurring: {
-                        interval: plan.interval,
-                    },
-                });
-            }
-
-            // Update plan with Stripe IDs
-            const planWithStripeIds = {
-                ...plan,
-                stripePriceId: existingPrice.id
-            };
-
-            // Upsert the plan in our database
             await prisma.subscriptionPlan.upsert({
                 where: { id: plan.id },
-                update: planWithStripeIds,
-                create: planWithStripeIds,
+                update: plan,
+                create: plan,
             });
-
             console.log(`Processed plan: ${plan.name}`);
         }
 

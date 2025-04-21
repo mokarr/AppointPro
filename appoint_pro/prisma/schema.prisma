@@ -15,19 +15,17 @@ model Organization {
   name                  String
   branche               String
   description           String
-  locations             Location[] // Een organisatie heeft meerdere locaties
-  Employee              Employee[]
-  Treatment             Treatment[]
+  locations             Location[]
   updatedAt             DateTime       @updatedAt
   createdAt             DateTime       @default(now())
   User                  User[]
-  // New subscription fields
+  // Subscription fields
   stripeCustomerId      String?        @unique
   hasActiveSubscription Boolean        @default(false)
   subscriptions         Subscription[]
 }
 
-// New Subscription model
+// Subscription model
 model Subscription {
   id                   String       @id @default(cuid())
   organizationId       String
@@ -43,7 +41,7 @@ model Subscription {
   updatedAt            DateTime     @updatedAt
 }
 
-// New model for storing subscription products/plans
+// Model for storing subscription products/plans
 model SubscriptionPlan {
   id            String   @id @default(cuid())
   stripePriceId String   @unique
@@ -58,102 +56,57 @@ model SubscriptionPlan {
 }
 
 model Location {
-  id             String        @id @default(cuid())
+  id             String       @id @default(cuid())
   name           String
   address        String
-  postalCode     String? // Made optional
-  country        String? // Made optional
+  postalCode     String?
+  country        String?
   organizationId String
-  organization   Organization  @relation(fields: [organizationId], references: [id])
-  facilities     Facility[] // Een locatie heeft meerdere faciliteiten
-  appointments   Appointment[] // Afspraken kunnen op locaties gemaakt worden
-  updatedAt      DateTime      @updatedAt
-  createdAt      DateTime      @default(now())
-  Booking        Booking[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  facilities     Facility[]
+  bookings       Booking[]
+  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime     @default(now())
 }
 
 model Facility {
-  id         String     @id @default(cuid())
-  name       String // Naam van de faciliteit (bijv. tennisbaan, basketballveld)
-  locationId String
-  location   Location   @relation(fields: [locationId], references: [id])
-  activity   Activity[] // Een faciliteit heeft meerdere activiteiten (tennis, basketball, etc.)
-  updatedAt  DateTime   @updatedAt
-  createdAt  DateTime   @default(now())
-  Booking    Booking[]
-}
-
-model Activity {
-  id          String   @id @default(cuid())
-  name        String // Naam van de activiteit (tennis, basketball, etc.)
+  id          String    @id @default(cuid())
+  name        String
   description String
   price       Float
-  facilityId  String
-  facility    Facility @relation(fields: [facilityId], references: [id])
-  updatedAt   DateTime @updatedAt
-  createdAt   DateTime @default(now())
+  locationId  String
+  location    Location  @relation(fields: [locationId], references: [id])
+  bookings    Booking[]
+  features    Feature[]
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
 }
 
-model Employee {
-  id             String        @id @default(cuid())
-  name           String
-  email          String
-  organizationId String
-  organization   Organization  @relation(fields: [organizationId], references: [id])
-  appointments   Appointment[] // Medewerkers hebben afspraken
-  treatment      Treatment[] // Medewerkers bieden behandelingen aan
-  updatedAt      DateTime      @updatedAt
-  createdAt      DateTime      @default(now())
-  Booking        Booking[]
-}
-
-model Treatment {
-  id             String       @id @default(cuid())
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  name           String
-  description    String
-  price          Float
-  employee       Employee?    @relation(fields: [employeeId], references: [id])
-  employeeId     String?
-  updatedAt      DateTime     @updatedAt
-  createdAt      DateTime     @default(now())
-  Booking        Booking[]
-}
-
-model Appointment {
-  id            String    @id @default(cuid())
-  title         String
-  description   String
-  startDateTime DateTime
-  endDateTime   DateTime
-  locationId    String
-  location      Location  @relation(fields: [locationId], references: [id])
-  bookingId     String
-  booking       Booking   @relation(fields: [bookingId], references: [id]) // Link naar Booking
-  updatedAt     DateTime  @updatedAt
-  createdAt     DateTime  @default(now())
-  Employee      Employee? @relation(fields: [employeeId], references: [id])
-  employeeId    String?
+model Feature {
+  id         String     @id @default(cuid())
+  name       String // Naam van het kenmerk (bijv. "Tennis", "Indoor")
+  category   String // Categorie van het kenmerk (sport, surface, indoor, amenities)
+  facilities Facility[] // Faciliteiten die dit kenmerk hebben
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 model Booking {
-  id          String        @id @default(cuid())
-  type        String // Type of booking: "SERVICE" or "LOCATION"
-  serviceId   String? // Link naar behandeling, als het type 'service' is
-  locationId  String? // Link naar locatie, als het type 'location' is
-  facilityId  String? // Link naar faciliteit, als het type 'location' is
-  employeeId  String? // Link naar medewerker, als het type 'service' is
-  employee    Employee?     @relation(fields: [employeeId], references: [id])
-  treatment   Treatment?    @relation(fields: [serviceId], references: [id])
-  location    Location?     @relation(fields: [locationId], references: [id])
-  facility    Facility?     @relation(fields: [facilityId], references: [id]) // Link naar faciliteit
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Appointment Appointment[]
+  id         String   @id @default(cuid())
+  startTime  DateTime
+  endTime    DateTime
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id])
+  status     String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
-//REGION USER AUTHENTICATION en AUTHORIZATION
+//REGION USER AUTHENTICATION and AUTHORIZATION
 
 model User {
   id                          String          @id @default(cuid())
@@ -162,22 +115,21 @@ model User {
   password                    String?
   emailVerified               DateTime?
   image                       String?
-  role                        String?         @default("CLIENT") // Made optional with default
+  role                        String?         @default("CLIENT")
   accounts                    Account[]
   sessions                    Session[]
-  Authenticator               Authenticator[]
+  authenticators              Authenticator[]
+  bookings                    Booking[]
   // Subscription-related fields
   lastActiveSubscriptionCheck DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt                   DateTime        @default(now())
+  updatedAt                   DateTime        @updatedAt
+  organizationId              String?
+  organization                Organization?   @relation(fields: [organizationId], references: [id])
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -189,11 +141,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -204,9 +154,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -217,7 +166,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
   userId               String
@@ -227,8 +175,7 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
 }

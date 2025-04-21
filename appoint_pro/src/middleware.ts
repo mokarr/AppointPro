@@ -29,7 +29,7 @@ const isOrganizationPath = (path: string) => {
     const segments = path.split('/').filter(Boolean);
     return segments.length > 0 &&
         !publicPaths.some(p => path.startsWith(p)) &&
-        !['dashboard', 'subscription', 'api', 'landing'].includes(segments[0]);
+        !['dashboard', 'subscription', 'api', 'landing', 'search'].includes(segments[0]);
 };
 
 // Check if a path is a public organization page

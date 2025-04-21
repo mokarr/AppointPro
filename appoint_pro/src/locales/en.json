@@ -154,6 +154,7 @@
         "navigation": {
             "dashboard": "Dashboard",
             "organizations": "Organizations",
+            "locations": "Locations",
             "customers": "Customers",
             "appointments": "Appointments",
             "analytics": "Analytics",

@@ -73,7 +73,7 @@ export default function UserLandingPage() {
                         </p>
                         <div className="flex gap-4">
                             <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
-                                <Link href="/search">
+                                <Link href="/search/activities">
                                     {getString(getTranslation('user.hero.cta'))}
                                 </Link>
                             </Button>
@@ -140,7 +140,7 @@ export default function UserLandingPage() {
                         {getString(getTranslation('user.cta.subtitle'))}
                     </p>
                     <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700" asChild>
-                        <Link href="/search" className="flex items-center">
+                        <Link href="/search/activities" className="flex items-center">
                             {getString(getTranslation('user.hero.cta'))}
                             <ChevronRight className="ml-2 w-4 h-4" />
                         </Link>

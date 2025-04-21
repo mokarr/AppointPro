@@ -38,7 +38,8 @@ interface UserLandingProps {
 export const UserLanding = ({ organization }: UserLandingProps = {}) => {
     const { getTranslation } = useLanguage();
 
-    const benefits = getTranslation('user.benefits.items') as string[];
+    const benefitsData = getTranslation('user.benefits.items');
+    const benefits = Array.isArray(benefitsData) ? benefitsData : [];
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -75,7 +76,7 @@ export const UserLanding = ({ organization }: UserLandingProps = {}) => {
                         </p>
                         <div className="flex gap-4">
                             <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
-                                <Link href={organization ? `/landing/user/${organization.name}/book` : '#'}>
+                                <Link href="/search/activities">
                                     {getString(getTranslation('user.hero.cta'))}
                                 </Link>
                             </Button>
@@ -190,7 +191,7 @@ export const UserLanding = ({ organization }: UserLandingProps = {}) => {
                         {getString(getTranslation('user.cta.subtitle'))}
                     </p>
                     <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
-                        <Link href={organization ? `/landing/user/${organization.name}/book` : '#'}>
+                        <Link href="/search/activities">
                             {getString(getTranslation('user.hero.cta'))}
                             <ChevronRight className="ml-2 w-4 h-4" />
                         </Link>

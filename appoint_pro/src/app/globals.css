@@ -134,7 +134,29 @@
 }
 
 @layer components {
-  /* Add any component styles here */
+
+  /* Maak popups en dropdowns ondoorzichtig */
+  /* Dialog component */
+  [data-slot="dialog-content"] {
+    background-color: white;
+  }
+
+  /* Sheet component */
+  [data-slot="sheet-content"] {
+    background-color: white;
+  }
+
+  /* Select component */
+  [data-slot="select-content"] {
+    background-color: white;
+  }
+
+  /* Dark mode versies */
+  .dark [data-slot="dialog-content"],
+  .dark [data-slot="sheet-content"],
+  .dark [data-slot="select-content"] {
+    background-color: oklch(0.145 0 0);
+  }
 }
 
 @layer utilities {

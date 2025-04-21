@@ -9,7 +9,8 @@ import {
     Calendar,
     Settings,
     BarChart,
-    CreditCard
+    CreditCard,
+    MapPin
 } from 'lucide-react';
 
 export default function DashboardSidebar() {
@@ -25,6 +26,11 @@ export default function DashboardSidebar() {
             href: '/dashboard/organizations',
             icon: Building,
             label: 'dashboard.navigation.organizations'
+        },
+        {
+            href: '/dashboard/locations',
+            icon: MapPin,
+            label: 'dashboard.navigation.locations'
         },
         {
             href: '/dashboard/customers',

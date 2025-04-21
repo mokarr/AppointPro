@@ -1,0 +1,33 @@
+import { NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+
+export async function GET(
+    request: Request,
+    { params }: { params: { locationId: string } }
+) {
+    // In Next.js 14+, we need to await params before accessing its properties
+    const resolvedParams = await Promise.resolve(params);
+    const locationId = resolvedParams.locationId;
+
+    try {
+        // Check if the location exists
+        const location = await prisma.location.findUnique({
+            where: { id: locationId },
+        })
+
+        if (!location) {
+            return NextResponse.json(
+                { error: "Locatie niet gevonden" },
+                { status: 404 }
+            )
+        }
+
+        return NextResponse.json(location)
+    } catch (error) {
+        console.error("Error fetching location:", error)
+        return NextResponse.json(
+            { error: "Er is een fout opgetreden bij het ophalen van de locatie" },
+            { status: 500 }
+        )
+    }
+} 

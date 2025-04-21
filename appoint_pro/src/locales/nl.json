@@ -155,6 +155,7 @@
         "navigation": {
             "dashboard": "Dashboard",
             "organizations": "Organisaties",
+            "locations": "Locaties",
             "customers": "Klanten",
             "appointments": "Afspraken",
             "analytics": "Analyses",
