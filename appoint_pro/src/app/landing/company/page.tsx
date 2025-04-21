@@ -6,7 +6,6 @@ import { Card } from '@/components/ui/card';
 import { ChevronRight, Building2, Wallet, BarChart, Check } from 'lucide-react';
 import Link from 'next/link';
 
-
 export default function CompanyLandingPage() {
     const { getTranslation } = useLanguage();
 

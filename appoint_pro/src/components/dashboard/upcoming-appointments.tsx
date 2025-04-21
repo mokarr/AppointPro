@@ -10,13 +10,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
+type Location = {
+    id: string
+    name: string
+    [key: string]: string
+}
+
 type Appointment = {
     id: string
     title: string
     description?: string
     startDateTime: Date
     endDateTime: Date
-    location?: string | { id: string; name: string;[key: string]: any }
+    location?: string | Location
     client?: {
         name: string
         email?: string
@@ -27,6 +33,8 @@ type Appointment = {
     }
     status: "confirmed" | "pending" | "cancelled"
 }
+
+type BadgeVariant = "default" | "secondary" | "destructive" | "outline" | "success" | "warning";
 
 interface UpcomingAppointmentsProps extends React.HTMLAttributes<HTMLDivElement> {
     appointments: Appointment[]
@@ -49,7 +57,7 @@ export function UpcomingAppointments({
         return format(date, "HH:mm")
     }
 
-    const statusColors = {
+    const statusColors: Record<Appointment['status'], BadgeVariant> = {
         confirmed: "success",
         pending: "warning",
         cancelled: "destructive",
@@ -99,7 +107,7 @@ export function UpcomingAppointments({
                                 >
                                     <div className="flex items-center justify-between">
                                         <h3 className="font-semibold">{appointment.title}</h3>
-                                        <Badge variant={statusColors[appointment.status] as any}>
+                                        <Badge variant={statusColors[appointment.status]}>
                                             {statusLabels[appointment.status]}
                                         </Badge>
                                     </div>

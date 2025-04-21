@@ -3,11 +3,9 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(
     request: Request,
-    { params }: { params: { locationId: string } }
+    { params }: { params: Promise<{ locationId: string }> }
 ) {
-    // In Next.js 14+, we need to await params before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
-    const locationId = resolvedParams.locationId;
+    const { locationId } = await params;
 
     try {
         // Check if the location exists
@@ -22,9 +20,7 @@ export async function GET(
             )
         }
 
-        // TypeScript doesn't properly recognize the Prisma schema relationships
-        // Using 'as any' to bypass type checking
-        const facilities = await (prisma.facility.findMany as any)({
+        const facilities = await prisma.facility.findMany({
             where: { locationId },
             include: {
                 features: true
@@ -44,11 +40,9 @@ export async function GET(
 
 export async function POST(
     request: Request,
-    { params }: { params: { locationId: string } }
+    { params }: { params: Promise<{ locationId: string }> }
 ) {
-    // In Next.js 14+, we need to await params before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
-    const locationId = resolvedParams.locationId;
+    const { locationId } = await params;
 
     try {
         // Get the request body
@@ -66,9 +60,7 @@ export async function POST(
             )
         }
 
-        // TypeScript doesn't properly recognize the Prisma schema relationships
-        // Using 'as any' to bypass type checking
-        const facility = await (prisma.facility.create as any)({
+        const facility = await prisma.facility.create({
             data: {
                 name,
                 description,

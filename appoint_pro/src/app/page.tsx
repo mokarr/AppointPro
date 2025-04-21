@@ -1,13 +1,6 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
-// Pages that are allowed to be accessed via subdomain
-const allowedSubdomainPages = [
-    '/', // Root path of the subdomain
-    '/landing', // Organization landing page
-    '/book', // Booking page
-];
-
 // Function to extract subdomain from host
 function getSubdomain(host: string): string | null {
     // Local development handling

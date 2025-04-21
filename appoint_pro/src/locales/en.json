@@ -50,7 +50,9 @@
             "business": "Are you a business owner?",
             "businessLink": "Visit Business Page",
             "user": "Are you a customer?",
-            "userLink": "Go to the customer page"
+            "userLink": "Go to the customer page",
+            "customer": "Are you a customer?",
+            "customerLink": "Visit Customer Page"
         },
         "user": "User",
         "loggedInAs": "You are logged in as",
@@ -70,7 +72,21 @@
                 "groups": "Client groups",
                 "communication": "Communication",
                 "description": "View all your clients in one overview"
+            },
+            "organizations": {
+                "description": "Manage your organizations and their settings",
+                "new": "New Organization",
+                "myOrganization": "My Organization",
+                "current": "Current",
+                "employees": "employees",
+                "locations": "locations",
+                "created": "Created",
+                "viewOrganization": "View Organization"
             }
+        },
+        "language": {
+            "dutch": "NL",
+            "english": "EN"
         }
     },
     "auth": {
@@ -168,7 +184,46 @@
         "manageSettings": "Manage Settings",
         "upcomingAppointments": "Upcoming Appointments",
         "totalCustomers": "Total Customers",
-        "revenue": "Revenue"
+        "revenue": "Revenue",
+        "locations": {
+            "title": "Location Management",
+            "description": "Manage all your sports locations and facilities in one place",
+            "addLocation": "Add Location",
+            "editLocation": "Edit Location",
+            "deleteLocation": "Delete Location",
+            "locationName": "Location Name",
+            "address": "Address",
+            "city": "City",
+            "postalCode": "Postal Code",
+            "country": "Country",
+            "phone": "Phone",
+            "email": "Email",
+            "facilities": "Facilities",
+            "openingHours": "Opening Hours",
+            "noLocations": "No locations found",
+            "createFirstLocation": "Create your first location",
+            "searchLocations": "Search locations...",
+            "filterBy": "Filter by",
+            "allLocations": "All Locations",
+            "activeLocations": "Active Locations",
+            "inactiveLocations": "Inactive Locations",
+            "yourLocations": "Your Locations",
+            "addNewLocation": "Add a new location",
+            "addNewLocationDescription": "Fill in the details of the new sports location",
+            "locationNamePlaceholder": "e.g. SportCenter Amsterdam",
+            "addressPlaceholder": "Street and number",
+            "postalCodePlaceholder": "1234 AB",
+            "countryPlaceholder": "Netherlands",
+            "cancel": "Cancel",
+            "loading": "Loading locations...",
+            "error": {
+                "fetch": "An error occurred while fetching locations",
+                "add": "An error occurred while adding the location"
+            },
+            "success": {
+                "add": "Location added successfully"
+            }
+        }
     },
     "business": {
         "hero": {
@@ -281,42 +336,52 @@
         }
     },
     "user": {
+        "welcome": "Welcome to",
         "hero": {
-            "title": "Book Your Perfect Sports Venue Today",
-            "subtitle": "Find and Book Sports Courts & Facilities Instantly",
-            "description": "Browse through hundreds of sports venues - tennis courts, football fields, swimming pools, and more. Book instantly and play your favorite sports.",
-            "cta": "Find Sports Venues",
-            "secondaryCta": "How It Works"
+            "title": "Book Sports Venues With Ease",
+            "subtitle": "Find and book sports facilities near you",
+            "description": "Discover and book courts, fields, and sports venues instantly.",
+            "cta": "Find Activities",
+            "secondaryCta": "Learn More"
         },
         "features": {
-            "title": "Why Choose AppointPro",
+            "title": "Why Choose Us",
+            "subtitle": "Simple booking for all your sports activities",
             "feature1": {
-                "title": "Easy Court Booking",
-                "description": "Find and book available courts with our smart search filters and real-time availability."
+                "title": "Easy Scheduling",
+                "description": "Book courts and sports facilities in seconds"
             },
             "feature2": {
-                "title": "Instant Confirmation",
-                "description": "Get immediate confirmation for your court bookings with digital access codes."
+                "title": "Location Finder",
+                "description": "Find sports venues near you with our smart location search"
             },
             "feature3": {
-                "title": "Verified Venues",
-                "description": "All sports facilities are verified and rated by our sports community for quality assurance."
+                "title": "Expert Recommendations",
+                "description": "Discover top-rated venues recommended by sports enthusiasts"
             }
         },
         "benefits": {
-            "title": "Benefits for Sports Enthusiasts",
+            "title": "Benefits for You",
             "items": [
-                "Book courts 24/7 without phone calls",
-                "Find venues near you with exact facilities you need",
-                "Compare court prices and peak hour rates easily",
-                "Manage all your sports bookings in one place",
-                "Get instant court access codes and directions",
-                "24/7 support for all your booking needs"
+                "Book sports venues anytime, anywhere",
+                "Find the perfect court for your game",
+                "Compare prices across different venues",
+                "Manage all your bookings in one place",
+                "Receive instant confirmations and reminders",
+                "Get directions and venue access information"
             ]
+        },
+        "testimonials": {
+            "title": "What Our Users Say",
+            "testimonial1": {
+                "quote": "AppointPro has completely transformed how I book tennis courts. No more phone calls or waiting for confirmation!",
+                "author": "Michael Johnson",
+                "position": "Tennis Enthusiast"
+            }
         },
         "cta": {
             "title": "Ready to Book Your Next Game?",
-            "subtitle": "Join thousands of sports enthusiasts booking courts through AppointPro"
+            "subtitle": "Join thousands of sports enthusiasts using AppointPro"
         }
     },
     "company": {
@@ -376,6 +441,43 @@
             "no": "No",
             "detailsUnavailable": "Subscription details unavailable",
             "manageButton": "Manage Subscription"
+        }
+    },
+    "search": {
+        "activities": {
+            "filters": {
+                "button": "Filters",
+                "title": "Filters",
+                "description": "Filter sports activities by features",
+                "price": {
+                    "label": "Price",
+                    "placeholder": "Price range",
+                    "all": "All prices",
+                    "low": "€0 - €25",
+                    "medium": "€26 - €50",
+                    "high": "€51+"
+                },
+                "categories": {
+                    "sport": "Sport",
+                    "indoorOutdoor": "Indoor/Outdoor",
+                    "surface": "Surface",
+                    "amenities": "Amenities"
+                },
+                "actions": {
+                    "clear": "Clear filters",
+                    "apply": "Apply"
+                }
+            },
+            "card": {
+                "location": "Location",
+                "date": "Date",
+                "time": "Time",
+                "price": "€{price} per hour",
+                "spots": "{spots} available spots",
+                "features": "Features",
+                "reserve": "Reserve now"
+            },
+            "noResults": "No activities found that match your search criteria."
         }
     }
 }

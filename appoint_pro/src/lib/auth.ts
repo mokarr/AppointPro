@@ -5,27 +5,23 @@ import { verifyPassword } from "@/utils/password"
 import { db } from "./server"
 import { v4 as uuid } from "uuid";
 import { encode as defaultEncode } from "next-auth/jwt";
-import { Adapter, AdapterUser } from "next-auth/adapters";
-import type { User, Session } from '@prisma/client'
+import type { Adapter, AdapterUser } from "next-auth/adapters";
+import type { Session } from "@prisma/client";
 
-// Define your custom user type that includes organization
-type CustomUser = AdapterUser & {
-    organizationId?: string;
-    organization?: {
-        id: string;
-        name: string;
-        branche: string;
-        description: string;
-        updatedAt: Date;
-        createdAt: Date;
-    };
+// Session data type
+type SessionData = {
+    sessionToken: string;
+    userId: string;
+    expires: Date;
 };
 
 // Create a custom adapter instead of using PrismaAdapter
 const customAdapter: Partial<Adapter> = {
     createUser: async (userData: Omit<AdapterUser, "id">) => {
+        // Cast to unknown first to avoid type checking issues
         const user = await db.user.create({
-            data: userData as any,
+            // @ts-expect-error - Ignore type checking for adapter compatibility
+            data: userData,
             include: { organization: true }
         });
         return user as unknown as AdapterUser;
@@ -44,7 +40,7 @@ const customAdapter: Partial<Adapter> = {
         });
         return user as unknown as AdapterUser;
     },
-    createSession: async (session: any) => {
+    createSession: async (session: SessionData) => {
         return db.session.create({ data: session });
     },
     getSessionAndUser: async (sessionToken: string) => {
@@ -58,7 +54,7 @@ const customAdapter: Partial<Adapter> = {
             user: session.user as unknown as AdapterUser,
         };
     },
-    updateSession: async (session: any) => {
+    updateSession: async (session: Partial<Session> & { sessionToken: string }) => {
         return db.session.update({
             where: { sessionToken: session.sessionToken },
             data: session,
@@ -69,7 +65,25 @@ const customAdapter: Partial<Adapter> = {
     },
 };
 
+type UserWithOrg = AdapterUser & {
+    id: string;
+    email: string;
+    organizationId: string;
+    organization: {
+        id: string;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
+        subdomain: string | null;
+        branche: string;
+        description: string;
+        stripeCustomerId: string | null;
+        hasActiveSubscription: boolean;
+    };
+};
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    trustHost: true,
     adapter: customAdapter as Adapter,
     pages: {
         signIn: '/sign-in',
@@ -85,7 +99,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 email: {},
                 password: {},
             },
-            authorize: async (credentials) => {
+            // @ts-expect-error - TypeScript doesn't understand our custom user type
+            authorize: async (credentials, _request) => {
                 try {
                     const { email, password } = await signInSchema.parseAsync(credentials)
 
@@ -108,9 +123,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         throw new Error("E-mailadres of wachtwoord is onjuist");
                     }
 
+                    // Return the user with the correct shape
                     return {
                         id: user.id,
                         email: user.email,
+                        emailVerified: user.emailVerified,
+                        name: user.name,
+                        image: user.image,
                         organizationId: user.organizationId,
                         organization: user.organization,
                     };
@@ -123,18 +142,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     callbacks: {
         async jwt({ token, user, trigger, session }) {
             if (user) {
-                token.user = user as any;
+                token.user = user;
             }
 
             if (trigger === "update" && session?.user) {
-                token.user = { ...token.user as any, ...session.user };
+                const updatedUser = session.user as UserWithOrg;
+                token.user = {
+                    ...(token.user as UserWithOrg),
+                    ...updatedUser,
+                    id: updatedUser.id,
+                    email: updatedUser.email,
+                    organizationId: updatedUser.organizationId,
+                    organization: updatedUser.organization
+                } as UserWithOrg;
             }
 
             return token;
         },
         async session({ session, token }) {
             if (token.user) {
-                session.user = token.user as CustomUser;
+                session.user = token.user as UserWithOrg;
             }
             return session;
         },

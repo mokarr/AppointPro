@@ -31,6 +31,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 // Dezelfde feature definities als in FacilitiesList.tsx
 type FeatureCategory = 'sport' | 'surface' | 'indoor' | 'amenities'
@@ -89,6 +90,13 @@ export function SearchActivities() {
     const [searchQuery, setSearchQuery] = useState("")
     const [priceRange, setPriceRange] = useState<string>("all")
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+    const { getTranslation } = useLanguage()
+
+    // Helper function to safely convert TranslationValue to string
+    const getString = (key: string): string => {
+        const value = getTranslation(key);
+        return typeof value === 'string' ? value : '';
+    };
 
     // This would be replaced with actual data from your API
     const mockActivities: Activity[] = [
@@ -221,7 +229,7 @@ export function SearchActivities() {
                     <SheetTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
                             <Filter className="h-4 w-4" />
-                            <span>Filters</span>
+                            <span>{getString('search.activities.filters.button')}</span>
                             {selectedFeatures.length > 0 && (
                                 <Badge className="ml-1">{selectedFeatures.length}</Badge>
                             )}
@@ -229,25 +237,25 @@ export function SearchActivities() {
                     </SheetTrigger>
                     <SheetContent className="overflow-y-auto">
                         <SheetHeader>
-                            <SheetTitle>Filters</SheetTitle>
+                            <SheetTitle>{getString('search.activities.filters.title')}</SheetTitle>
                             <SheetDescription>
-                                Filter sportactiviteiten op kenmerken
+                                {getString('search.activities.filters.description')}
                             </SheetDescription>
                         </SheetHeader>
 
                         <div className="py-6 space-y-6">
                             {/* Prijs filter */}
                             <div className="space-y-2">
-                                <Label>Prijs</Label>
+                                <Label>{getString('search.activities.filters.price.label')}</Label>
                                 <Select value={priceRange} onValueChange={setPriceRange}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Prijsklasse" />
+                                        <SelectValue placeholder={getString('search.activities.filters.price.placeholder')} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">Alle prijzen</SelectItem>
-                                        <SelectItem value="0-25">€0 - €25</SelectItem>
-                                        <SelectItem value="26-50">€26 - €50</SelectItem>
-                                        <SelectItem value="51+">€51+</SelectItem>
+                                        <SelectItem value="all">{getString('search.activities.filters.price.all')}</SelectItem>
+                                        <SelectItem value="0-25">{getString('search.activities.filters.price.low')}</SelectItem>
+                                        <SelectItem value="26-50">{getString('search.activities.filters.price.medium')}</SelectItem>
+                                        <SelectItem value="51+">{getString('search.activities.filters.price.high')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -255,7 +263,7 @@ export function SearchActivities() {
                             {/* Kenmerken filters */}
                             <Accordion type="multiple" defaultValue={['sport']}>
                                 <AccordionItem value="sport">
-                                    <AccordionTrigger>Sport</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.activities.filters.categories.sport')}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('sport').map(feature => (
@@ -278,7 +286,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="indoor">
-                                    <AccordionTrigger>Indoor/Outdoor</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.activities.filters.categories.indoorOutdoor')}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('indoor').map(feature => (
@@ -301,7 +309,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="surface">
-                                    <AccordionTrigger>Ondergrond</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.activities.filters.categories.surface')}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('surface').map(feature => (
@@ -324,7 +332,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="amenities">
-                                    <AccordionTrigger>Voorzieningen</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.activities.filters.categories.amenities')}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('amenities').map(feature => (
@@ -350,10 +358,10 @@ export function SearchActivities() {
 
                         <SheetFooter>
                             <SheetClose asChild>
-                                <Button variant="outline" onClick={clearFilters}>Filters wissen</Button>
+                                <Button variant="outline" onClick={clearFilters}>{getString('search.activities.filters.actions.clear')}</Button>
                             </SheetClose>
                             <SheetClose asChild>
-                                <Button>Toepassen</Button>
+                                <Button>{getString('search.activities.filters.actions.apply')}</Button>
                             </SheetClose>
                         </SheetFooter>
                     </SheetContent>
@@ -384,18 +392,18 @@ export function SearchActivities() {
                                 </div>
                                 <div className="flex items-start gap-2">
                                     <Euro className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                    <span>€{activity.price} per uur</span>
+                                    <span>{getString('search.activities.card.price').replace('{price}', String(activity.price))}</span>
                                 </div>
                                 <div className="flex items-start gap-2">
                                     <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                    <span>{activity.spots} beschikbare plekken</span>
+                                    <span>{getString('search.activities.card.spots').replace('{spots}', String(activity.spots))}</span>
                                 </div>
 
                                 {/* Kenmerken weergeven */}
                                 <div className="pt-2">
                                     <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
                                         <Tag className="h-4 w-4" />
-                                        <span>Kenmerken</span>
+                                        <span>{getString('search.activities.card.features')}</span>
                                     </div>
                                     <div className="flex flex-wrap gap-1">
                                         {activity.features.map(featureId => (
@@ -408,7 +416,7 @@ export function SearchActivities() {
                             </div>
                         </div>
                         <div className="p-4 border-t mt-auto">
-                            <Button className="w-full">Reserveer nu</Button>
+                            <Button className="w-full">{getString('search.activities.card.reserve')}</Button>
                         </div>
                     </Card>
                 ))}
@@ -416,8 +424,7 @@ export function SearchActivities() {
 
             {filteredActivities.length === 0 && (
                 <div className="text-center py-10">
-                    <p className="text-lg text-muted-foreground">Geen activiteiten gevonden die voldoen aan je zoekcriteria.</p>
-                    <Button onClick={clearFilters} variant="link" className="mt-2">Wis alle filters</Button>
+                    <p className="text-lg text-muted-foreground">{getString('search.activities.noResults')}</p>
                 </div>
             )}
         </div>

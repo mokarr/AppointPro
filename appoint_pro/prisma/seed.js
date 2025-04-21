@@ -1,6 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
-const { hash } = require('bcryptjs');
-const Stripe = require('stripe');
+import { PrismaClient } from '@prisma/client';
+import { hash } from 'bcryptjs';
+import Stripe from 'stripe';
 
 const prisma = new PrismaClient();
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
@@ -73,7 +73,7 @@ async function main() {
         console.log('Creating locations and facilities...');
 
         // Amsterdam location
-        const amsterdamLocation = await prisma.location.create({
+        await prisma.location.create({
             data: {
                 name: 'SportCenter Pro - Amsterdam',
                 address: 'Sportlaan 123',
@@ -145,7 +145,7 @@ async function main() {
         });
 
         // Utrecht location
-        const utrechtLocation = await prisma.location.create({
+        await prisma.location.create({
             data: {
                 name: 'SportCenter Pro - Utrecht',
                 address: 'Olympialaan 45',
@@ -209,7 +209,7 @@ async function main() {
 
         // Create a test user
         const hashedPassword = await hash('password123', 12);
-        const user = await prisma.user.upsert({
+        await prisma.user.upsert({
             where: { email: 'test@example.com' },
             update: {},
             create: {

@@ -11,12 +11,37 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Shield, Building, Users, MapPin } from "lucide-react";
 import Link from "next/link";
 
-interface OrganizationsPageContentProps {
-    user: any;
-    organization: any;
+interface Organization {
+    id: string;
+    name: string;
+    branche?: string;
+    description?: string;
+    createdAt: Date;
+    Employee?: { id: string }[];
+    locations?: { id: string }[];
 }
 
-export default function OrganizationsPageContent({ user, organization }: OrganizationsPageContentProps) {
+interface OrganizationsPageContentProps {
+    user: {
+        id: string;
+        email: string;
+        organizationId: string;
+        organization: {
+            id: string;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            subdomain: string | null;
+            branche: string;
+            stripeCustomerId: string | null;
+            hasActiveSubscription: boolean;
+        };
+    };
+    organization: Organization;
+}
+
+export default function OrganizationsPageContent({ organization }: OrganizationsPageContentProps) {
     const { getTranslation } = useLanguage();
 
     return (
@@ -46,11 +71,13 @@ export default function OrganizationsPageContent({ user, organization }: Organiz
 }
 
 interface OrganizationCardProps {
-    organization: any;
+    organization: Organization;
     isCurrentOrg: boolean;
 }
 
 function OrganizationCard({ organization, isCurrentOrg }: OrganizationCardProps) {
+    const { getTranslation } = useLanguage();
+
     return (
         <Card className={isCurrentOrg ? "border-primary" : ""}>
             <CardHeader>
@@ -62,7 +89,7 @@ function OrganizationCard({ organization, isCurrentOrg }: OrganizationCardProps)
                     {isCurrentOrg && (
                         <div className="flex items-center text-primary text-sm font-medium">
                             <Shield className="h-4 w-4 mr-1" />
-                            <span>Current</span>
+                            <span>{getTranslation('common.header.organizations.current')}</span>
                         </div>
                     )}
                 </div>
@@ -73,24 +100,24 @@ function OrganizationCard({ organization, isCurrentOrg }: OrganizationCardProps)
 
                     <div className="flex items-center mt-4 text-sm text-muted-foreground">
                         <Users className="h-4 w-4 mr-1" />
-                        <span>{organization.Employee?.length || 0} employees</span>
+                        <span>{organization.Employee?.length || 0} {getTranslation('common.header.organizations.employees')}</span>
                     </div>
 
                     <div className="flex items-center mt-2 text-sm text-muted-foreground">
                         <MapPin className="h-4 w-4 mr-1" />
-                        <span>{organization.locations?.length || 0} locations</span>
+                        <span>{organization.locations?.length || 0} {getTranslation('common.header.organizations.locations')}</span>
                     </div>
 
                     <div className="flex items-center mt-2 text-sm text-muted-foreground">
                         <Building className="h-4 w-4 mr-1" />
-                        <span>Created {new Date(organization.createdAt).toLocaleDateString()}</span>
+                        <span>{getTranslation('common.header.organizations.created')} {new Date(organization.createdAt).toLocaleDateString()}</span>
                     </div>
                 </div>
             </CardContent>
             <CardFooter>
                 <Button asChild className="w-full">
                     <Link href={`/${organization.name}`}>
-                        View Organization
+                        {getTranslation('common.header.organizations.viewOrganization')}
                     </Link>
                 </Button>
             </CardFooter>

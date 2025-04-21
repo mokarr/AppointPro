@@ -12,7 +12,7 @@ export default function SubscriptionCancelPage() {
             </div>
             <h1 className="text-2xl font-bold mb-4">Subscription Cancelled</h1>
             <p className="text-muted-foreground mb-8">
-                You've cancelled the subscription process. No charges have been made. You can subscribe anytime when you're ready.
+                You&apos;ve cancelled the subscription process. No charges have been made. You can subscribe anytime when you&apos;re ready.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
                 <Button asChild>

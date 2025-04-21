@@ -3,7 +3,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Session } from 'next-auth';
+import type { Session } from 'next-auth';
 
 interface DashboardContentProps {
     session: Session;

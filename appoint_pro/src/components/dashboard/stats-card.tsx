@@ -1,10 +1,9 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { LucideIcon } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 const statsCardVariants = cva(
     "transition-all duration-200 hover:shadow-md",
@@ -48,7 +47,6 @@ export function StatsCard({
     title,
     value,
     icon: Icon,
-    previousValue,
     trendDirection,
     trendValue,
     trendLabel,

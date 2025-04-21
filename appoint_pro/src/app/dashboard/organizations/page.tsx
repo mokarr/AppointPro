@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { getOrganizationById } from "@/services/organization";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import OrganizationsPageContent from "./organizations-page-content";
 

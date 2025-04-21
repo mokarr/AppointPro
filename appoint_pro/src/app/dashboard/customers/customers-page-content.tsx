@@ -8,12 +8,32 @@ import {
 } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
 
-interface CustomersPageContentProps {
-    user: any;
-    organization: any;
+interface Organization {
+    id: string;
+    name: string;
 }
 
-export default function CustomersPageContent({ user, organization }: CustomersPageContentProps) {
+interface CustomersPageContentProps {
+    _user: {
+        id: string;
+        email: string;
+        organizationId: string;
+        organization: {
+            id: string;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            subdomain: string | null;
+            branche: string;
+            stripeCustomerId: string | null;
+            hasActiveSubscription: boolean;
+        };
+    };
+    _organization: Organization;
+}
+
+export default function CustomersPageContent({ _user, _organization }: CustomersPageContentProps) {
     const { getTranslation } = useLanguage();
 
     return (

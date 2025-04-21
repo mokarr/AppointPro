@@ -31,24 +31,24 @@ export async function getOrganizationName(organizationId: string): Promise<strin
  */
 export async function getUpcomingAppointments(organizationId: string, limit = 5) {
     try {
-        const appointments = await prisma.appointment.findMany({
+        const appointments = await prisma.booking.findMany({
             where: {
-                booking: {
-                    treatment: {
+                facility: {
+                    location: {
                         organizationId
                     }
                 },
-                startDateTime: {
+                startTime: {
                     gte: new Date()
                 }
             },
             orderBy: {
-                startDateTime: 'asc'
+                startTime: 'asc'
             },
             take: limit,
             include: {
                 location: true,
-                Employee: {
+                user: {
                     select: {
                         name: true,
                         email: true
@@ -67,7 +67,7 @@ export async function getUpcomingAppointments(organizationId: string, limit = 5)
 /**
  * Get statistics for organization dashboard
  */
-export async function getDashboardStats(organizationId: string) {
+export async function getDashboardStats() {
     const today = new Date();
     const weekStart = new Date();
     weekStart.setDate(today.getDate() - today.getDay());

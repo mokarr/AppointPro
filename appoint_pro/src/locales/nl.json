@@ -15,6 +15,10 @@
         "contact": "Contact",
         "help": "Help",
         "language": "Taal",
+        "language": {
+            "dutch": "NL",
+            "english": "EN"
+        },
         "getStarted": "Aan de Slag",
         "learnMore": "Meer Informatie",
         "features": "Functies",
@@ -56,7 +60,9 @@
             "business": "Bent u een bedrijfseigenaar?",
             "businessLink": "Bezoek Bedrijfspagina",
             "user": "Bent u een klant?",
-            "userLink": "Ga naar de klantenpagina"
+            "userLink": "Ga naar de klantenpagina",
+            "customer": "Bent u een klant?",
+            "customerLink": "Bezoek Klantenpagina"
         },
         "header": {
             "appointments": {
@@ -71,6 +77,16 @@
                 "groups": "Klantgroepen",
                 "communication": "Communicatie",
                 "description": "Bekijk al uw klanten in één overzicht"
+            },
+            "organizations": {
+                "description": "Beheer uw organisaties en hun instellingen",
+                "new": "Nieuwe Organisatie",
+                "myOrganization": "Mijn Organisatie",
+                "current": "Huidige",
+                "employees": "medewerkers",
+                "locations": "locaties",
+                "created": "Aangemaakt op",
+                "viewOrganization": "Bekijk Organisatie"
             }
         }
     },
@@ -169,7 +185,46 @@
         "manageSettings": "Instellingen Beheren",
         "upcomingAppointments": "Aankomende Afspraken",
         "totalCustomers": "Totaal Klanten",
-        "revenue": "Omzet"
+        "revenue": "Omzet",
+        "locations": {
+            "title": "Locatiebeheer",
+            "description": "Beheer al uw sportlocaties en faciliteiten op één plek",
+            "addLocation": "Locatie Toevoegen",
+            "editLocation": "Locatie Bewerken",
+            "deleteLocation": "Locatie Verwijderen",
+            "locationName": "Locatienaam",
+            "address": "Adres",
+            "city": "Stad",
+            "postalCode": "Postcode",
+            "country": "Land",
+            "phone": "Telefoon",
+            "email": "E-mail",
+            "facilities": "Faciliteiten",
+            "openingHours": "Openingstijden",
+            "noLocations": "Geen locaties gevonden",
+            "createFirstLocation": "Maak uw eerste locatie aan",
+            "searchLocations": "Zoek locaties...",
+            "filterBy": "Filteren op",
+            "allLocations": "Alle Locaties",
+            "activeLocations": "Actieve Locaties",
+            "inactiveLocations": "Inactieve Locaties",
+            "yourLocations": "Uw Locaties",
+            "addNewLocation": "Voeg een nieuwe locatie toe",
+            "addNewLocationDescription": "Vul de details in van de nieuwe sportlocatie",
+            "locationNamePlaceholder": "Bijv. SportCenter Amsterdam",
+            "addressPlaceholder": "Straat en huisnummer",
+            "postalCodePlaceholder": "1234 AB",
+            "countryPlaceholder": "Nederland",
+            "cancel": "Annuleren",
+            "loading": "Locaties laden...",
+            "error": {
+                "fetch": "Er is een fout opgetreden bij het ophalen van de locaties",
+                "add": "Er is een fout opgetreden bij het toevoegen van de locatie"
+            },
+            "success": {
+                "add": "Locatie succesvol toegevoegd"
+            }
+        }
     },
     "business": {
         "hero": {
@@ -305,42 +360,89 @@
         }
     },
     "user": {
+        "welcome": "Welkom bij",
         "hero": {
-            "title": "Boek Vandaag Nog Uw Perfecte Sportlocatie",
-            "subtitle": "Vind en Boek Direct Sportfaciliteiten",
-            "description": "Blader door honderden sportlocaties - tennisbanen, voetbalvelden, zwembaden en meer. Boek direct en beoefen uw favoriete sport.",
-            "cta": "Vind Sportlocaties",
-            "secondaryCta": "Hoe Het Werkt"
+            "title": "Boek Sportlocaties Met Gemak",
+            "subtitle": "Vind en boek sportfaciliteiten bij jou in de buurt",
+            "description": "Ontdek en boek banen, velden en sportlocaties direct.",
+            "cta": "Vind Activiteiten",
+            "secondaryCta": "Meer Informatie"
         },
         "features": {
-            "title": "Waarom Kiezen voor AppointPro",
+            "title": "Waarom Voor Ons Kiezen",
+            "subtitle": "Eenvoudig boeken voor al je sportactiviteiten",
             "feature1": {
-                "title": "Eenvoudig Banen Boeken",
-                "description": "Vind en boek beschikbare banen met onze slimme zoekfilters en real-time beschikbaarheid."
+                "title": "Eenvoudig Plannen",
+                "description": "Boek banen en sportfaciliteiten binnen enkele seconden"
             },
             "feature2": {
-                "title": "Directe Bevestiging",
-                "description": "Ontvang direct bevestiging voor uw baanreserveringen met digitale toegangscodes."
+                "title": "Locatiezoeker",
+                "description": "Vind sportlocaties bij jou in de buurt met onze slimme locatiezoeker"
             },
             "feature3": {
-                "title": "Geverifieerde Locaties",
-                "description": "Alle sportfaciliteiten zijn geverifieerd en beoordeeld door onze sportgemeenschap voor kwaliteitsgarantie."
+                "title": "Expert Aanbevelingen",
+                "description": "Ontdek top-beoordeelde locaties aanbevolen door sportliefhebbers"
             }
         },
         "benefits": {
-            "title": "Voordelen voor Sporters",
+            "title": "Voordelen Voor Jou",
             "items": [
-                "Boek banen 24/7 zonder te bellen",
-                "Vind locaties bij u in de buurt met de juiste faciliteiten",
-                "Vergelijk baantarieven en piektijden eenvoudig",
-                "Beheer al uw sportboekingen op één plek",
-                "Ontvang direct toegangscodes en routebeschrijving",
-                "24/7 ondersteuning voor al uw boekingen"
+                "Boek sportlocaties wanneer en waar je maar wilt",
+                "Vind de perfecte baan voor jouw spel",
+                "Vergelijk prijzen van verschillende locaties",
+                "Beheer al je boekingen op één plek",
+                "Ontvang direct bevestigingen en herinneringen",
+                "Krijg routebeschrijvingen en toegangsinformatie"
             ]
         },
+        "testimonials": {
+            "title": "Wat Onze Gebruikers Zeggen",
+            "testimonial1": {
+                "quote": "AppointPro heeft compleet veranderd hoe ik tennisbanen boek. Geen telefoontjes meer of wachten op bevestiging!",
+                "author": "Michael Johnson",
+                "position": "Tennisliefhebber"
+            }
+        },
         "cta": {
-            "title": "Klaar om Uw Volgende Wedstrijd te Boeken?",
-            "subtitle": "Sluit u aan bij duizenden sporters die via AppointPro boeken"
+            "title": "Klaar Om Je Volgende Wedstrijd Te Boeken?",
+            "subtitle": "Sluit je aan bij duizenden sportliefhebbers die AppointPro gebruiken"
+        },
+        "search": {
+            "activities": {
+                "filters": {
+                    "button": "Filters",
+                    "title": "Filters",
+                    "description": "Filter sportactiviteiten op kenmerken",
+                    "price": {
+                        "label": "Prijs",
+                        "placeholder": "Prijsklasse",
+                        "all": "Alle prijzen",
+                        "low": "€0 - €25",
+                        "medium": "€26 - €50",
+                        "high": "€51+"
+                    },
+                    "categories": {
+                        "sport": "Sport",
+                        "indoorOutdoor": "Indoor/Outdoor",
+                        "surface": "Ondergrond",
+                        "amenities": "Voorzieningen"
+                    },
+                    "actions": {
+                        "clear": "Filters wissen",
+                        "apply": "Toepassen"
+                    }
+                },
+                "card": {
+                    "location": "Locatie",
+                    "date": "Datum",
+                    "time": "Tijd",
+                    "price": "€{price} per uur",
+                    "spots": "{spots} beschikbare plekken",
+                    "features": "Kenmerken",
+                    "reserve": "Reserveer nu"
+                },
+                "noResults": "Geen activiteiten gevonden die voldoen aan je zoekcriteria."
+            }
         }
     },
     "company": {

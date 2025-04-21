@@ -7,9 +7,9 @@ import { PlusCircle, MapPin, Building, Edit, Trash, Plus, Loader2 } from "lucide
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { toast } from "sonner"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 type Location = {
     id: string
@@ -20,7 +20,19 @@ type Location = {
     facilitiesCount: number
 }
 
+type ApiLocation = {
+    id: string
+    name: string
+    address: string
+    postalCode?: string
+    country?: string
+    _count?: {
+        facilities: number
+    }
+}
+
 export function LocationsList() {
+    const { getTranslation } = useLanguage();
     const [locations, setLocations] = useState<Location[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [isAddLocationOpen, setIsAddLocationOpen] = useState(false)
@@ -39,10 +51,10 @@ export function LocationsList() {
                 const response = await fetch('/api/locations')
                 if (!response.ok) throw new Error('Failed to fetch locations')
 
-                let locationsData = await response.json()
+                const locationsData: ApiLocation[] = await response.json()
 
                 // Format the data to match our component's expected format
-                locationsData = locationsData.map((location: any) => ({
+                const formattedLocations = locationsData.map((location) => ({
                     id: location.id,
                     name: location.name,
                     address: location.address,
@@ -51,10 +63,10 @@ export function LocationsList() {
                     facilitiesCount: location._count?.facilities || 0
                 }))
 
-                setLocations(locationsData)
+                setLocations(formattedLocations)
             } catch (error) {
                 console.error('Error fetching locations:', error)
-                toast.error('Er is een fout opgetreden bij het ophalen van de locaties')
+                toast.error(getTranslation('dashboard.locations.error.fetch'))
                 // Set mock data for demo purposes if API fails
                 setMockData()
             } finally {
@@ -63,7 +75,7 @@ export function LocationsList() {
         }
 
         fetchLocations()
-    }, [])
+    }, [getTranslation])
 
     // Mock data fallback for demo purposes
     const setMockData = () => {
@@ -110,10 +122,10 @@ export function LocationsList() {
             setNewLocation({ name: "", address: "", postalCode: "", country: "" })
             setIsAddLocationOpen(false)
 
-            toast.success('Locatie succesvol toegevoegd')
+            toast.success(getTranslation('dashboard.locations.success.add'))
         } catch (error) {
             console.error('Error adding location:', error)
-            toast.error('Er is een fout opgetreden bij het toevoegen van de locatie')
+            toast.error(getTranslation('dashboard.locations.error.add'))
 
             // For demo fallback if API fails
             const newLocationWithId: Location = {
@@ -131,7 +143,7 @@ export function LocationsList() {
         return (
             <div className="flex justify-center items-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                <span className="ml-2 text-muted-foreground">Locaties laden...</span>
+                <span className="ml-2 text-muted-foreground">{getTranslation('dashboard.locations.loading')}</span>
             </div>
         )
     }
@@ -139,64 +151,68 @@ export function LocationsList() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold">Uw locaties</h2>
+                <h2 className="text-2xl font-semibold">{getTranslation('dashboard.locations.yourLocations')}</h2>
                 <Dialog open={isAddLocationOpen} onOpenChange={setIsAddLocationOpen}>
                     <DialogTrigger asChild>
                         <Button className="flex items-center gap-2">
                             <PlusCircle className="h-4 w-4" />
-                            Nieuwe locatie
+                            {getTranslation('dashboard.locations.addLocation')}
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[550px]">
                         <DialogHeader>
-                            <DialogTitle>Voeg een nieuwe locatie toe</DialogTitle>
+                            <DialogTitle>{getTranslation('dashboard.locations.addNewLocation')}</DialogTitle>
                             <DialogDescription>
-                                Vul de details in van de nieuwe sportlocatie
+                                {getTranslation('dashboard.locations.addNewLocationDescription')}
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Naam locatie</Label>
+                                <Label htmlFor="name">{getTranslation('dashboard.locations.locationName')}</Label>
                                 <Input
                                     id="name"
                                     value={newLocation.name}
                                     onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
-                                    placeholder="Bijv. SportCenter Amsterdam"
+                                    placeholder={getTranslation('dashboard.locations.locationNamePlaceholder')}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="address">Adres</Label>
+                                <Label htmlFor="address">{getTranslation('dashboard.locations.address')}</Label>
                                 <Input
                                     id="address"
                                     value={newLocation.address}
                                     onChange={e => setNewLocation({ ...newLocation, address: e.target.value })}
-                                    placeholder="Straat en huisnummer"
+                                    placeholder={getTranslation('dashboard.locations.addressPlaceholder')}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="postalCode">Postcode</Label>
+                                    <Label htmlFor="postalCode">{getTranslation('dashboard.locations.postalCode')}</Label>
                                     <Input
                                         id="postalCode"
                                         value={newLocation.postalCode}
                                         onChange={e => setNewLocation({ ...newLocation, postalCode: e.target.value })}
-                                        placeholder="1234 AB"
+                                        placeholder={getTranslation('dashboard.locations.postalCodePlaceholder')}
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="country">Land</Label>
+                                    <Label htmlFor="country">{getTranslation('dashboard.locations.country')}</Label>
                                     <Input
                                         id="country"
                                         value={newLocation.country}
                                         onChange={e => setNewLocation({ ...newLocation, country: e.target.value })}
-                                        placeholder="Nederland"
+                                        placeholder={getTranslation('dashboard.locations.countryPlaceholder')}
                                     />
                                 </div>
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsAddLocationOpen(false)}>Annuleren</Button>
-                            <Button onClick={handleAddLocation}>Locatie toevoegen</Button>
+                            <Button variant="outline" onClick={() => setIsAddLocationOpen(false)}>
+                                {getTranslation('dashboard.locations.cancel')}
+                            </Button>
+                            <Button onClick={handleAddLocation}>
+                                {getTranslation('dashboard.locations.addLocation')}
+                            </Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -204,9 +220,9 @@ export function LocationsList() {
 
             {locations.length === 0 ? (
                 <div className="text-center py-10">
-                    <p className="text-lg text-muted-foreground">Er zijn nog geen locaties toegevoegd.</p>
+                    <p className="text-lg text-muted-foreground">{getTranslation('dashboard.locations.noLocations')}</p>
                     <Button onClick={() => setIsAddLocationOpen(true)} variant="link" className="mt-2">
-                        Voeg je eerste locatie toe
+                        {getTranslation('dashboard.locations.createFirstLocation')}
                     </Button>
                 </div>
             ) : (
@@ -223,14 +239,14 @@ export function LocationsList() {
                             <CardContent>
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <Building className="h-4 w-4" />
-                                    <span>{location.facilitiesCount} faciliteiten</span>
+                                    <span>{location.facilitiesCount} {getTranslation('dashboard.locations.facilities')}</span>
                                 </div>
                             </CardContent>
                             <CardFooter className="flex justify-between mt-auto">
                                 <Button variant="outline" className="flex items-center gap-1" asChild>
                                     <Link href={`/dashboard/locations/${location.id}/facilities`}>
                                         <Plus className="h-4 w-4" />
-                                        Faciliteiten
+                                        {getTranslation('dashboard.locations.facilities')}
                                     </Link>
                                 </Button>
                                 <div className="flex gap-2">

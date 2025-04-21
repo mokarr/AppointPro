@@ -3,11 +3,9 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(
     request: Request,
-    { params }: { params: { locationId: string } }
+    { params }: { params: Promise<{ locationId: string }> }
 ) {
-    // In Next.js 14+, we need to await params before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
-    const locationId = resolvedParams.locationId;
+    const { locationId } = await params;
 
     try {
         // Check if the location exists

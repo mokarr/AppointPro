@@ -2,7 +2,7 @@
 
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
-type ActionResponse<T = any> = {
+type ActionResponse<T = unknown> = {
     success: boolean;
     message: string;
     data?: T;

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { SubscriptionPlan } from '@prisma/client';
+import type { SubscriptionPlan } from '@prisma/client';
 import { CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';

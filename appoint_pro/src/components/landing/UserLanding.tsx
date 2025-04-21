@@ -4,10 +4,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ChevronRight, Calendar, MapPin, Users, Check } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 
-const getString = (value: any): string => {
+const getString = (value: unknown): string => {
     if (typeof value === 'string') return value;
     return '';
 };

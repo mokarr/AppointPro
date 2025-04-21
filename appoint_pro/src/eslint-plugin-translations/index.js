@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Load translations
 const loadTranslations = () => {
@@ -17,7 +17,7 @@ const getTranslationFromPath = (obj, path) => {
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 };
 
-module.exports = {
+const translationsPlugin = {
     rules: {
         'require-translation-key': {
             meta: {
@@ -30,8 +30,6 @@ module.exports = {
                 schema: [],
             },
             create(context) {
-                const translations = loadTranslations();
-
                 return {
                     // Check JSX text content
                     JSXText(node) {
@@ -112,6 +110,8 @@ module.exports = {
                     }
                 };
             },
-        },
-    },
-}; 
+        }
+    }
+};
+
+export default translationsPlugin; 

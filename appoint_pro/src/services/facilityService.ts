@@ -15,6 +15,8 @@ const createFacility = async (locationId: string, name: string) => {
         data: {
             name: name,
             locationId: location.id,
+            description: "New facility", // Default description
+            price: 0.0 // Default price
         },
     });
 

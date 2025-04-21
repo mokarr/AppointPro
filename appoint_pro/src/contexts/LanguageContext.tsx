@@ -1,13 +1,14 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type Language = 'nl' | 'en';
 
-type TranslationKey = string;
-type TranslationValue = string | string[] | { [key: string]: TranslationValue };
-type Translations = {
+// Define a more specific type for translations
+export type TranslationValue = string | string[] | { [key: string]: TranslationValue } | { title: string; description: string }[];
+type TranslationFile = {
     [key: string]: TranslationValue;
 };
 
@@ -16,9 +17,10 @@ interface GetTranslationOptions {
     defaultValue?: string;
 }
 
-const translations: Record<Language, Translations> = {
-    nl: require('@/locales/nl.json'),
-    en: require('@/locales/en.json'),
+// Initialize translations as an empty object that will be populated
+const translations: Record<Language, TranslationFile> = {
+    nl: {},
+    en: {},
 };
 
 const DEFAULT_LANGUAGE: Language = 'nl';
@@ -27,15 +29,46 @@ interface LanguageContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
     getTranslation: (key: string, options?: GetTranslationOptions) => string;
+    isLoading: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LanguageProviderContent>{children}</LanguageProviderContent>
+        </Suspense>
+    );
+}
+
+function LanguageProviderContent({ children }: { children: ReactNode }) {
     const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+
+    // Load translations when the component mounts
+    useEffect(() => {
+        const loadTranslations = async () => {
+            try {
+                setIsLoading(true);
+                const [nlTranslations, enTranslations] = await Promise.all([
+                    import('@/locales/nl.json'),
+                    import('@/locales/en.json'),
+                ]);
+                translations.nl = nlTranslations.default;
+                translations.en = enTranslations.default;
+            } catch (error) {
+                console.error('Error loading translations:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadTranslations();
+    }, []);
 
     useEffect(() => {
         const langParam = searchParams.get('lang') as Language | null;
@@ -61,7 +94,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         let value: TranslationValue = translations[language];
 
         for (const k of keys) {
-            if (typeof value === 'object' && value !== null) {
+            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
                 value = (value as { [key: string]: TranslationValue })[k];
             } else {
                 return defaultValue;
@@ -82,7 +115,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, getTranslation }}>
+        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, getTranslation, isLoading }}>
             {children}
         </LanguageContext.Provider>
     );

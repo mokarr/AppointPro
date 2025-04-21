@@ -1,5 +1,23 @@
 import { db } from '@/lib/server';
 import stripe from '@/lib/stripe';
+import type { Stripe } from 'stripe';
+import type { Subscription } from '@prisma/client';
+
+// type SubscriptionUpdateData = {
+//     status?: string;
+//     currentPeriodEnd?: Date;
+//     cancelAtPeriodEnd?: boolean;
+//     priceId?: string;
+//     planName?: string;
+//     currentPeriodStart?: Date;
+//     organizationId?: string;
+//     [key: string]: unknown;
+// };
+
+interface StripeSubscriptionWithPeriod extends Stripe.Subscription {
+    current_period_start: number;
+    current_period_end: number;
+}
 
 /**
  * Create or retrieve a Stripe customer for an organization
@@ -138,7 +156,7 @@ export const hasActiveSubscription = async (organizationId: string): Promise<boo
 /**
  * Update a subscription in the database
  */
-export const updateSubscriptionInDatabase = async (stripeSubscriptionId: string, data: any) => {
+export const updateSubscriptionInDatabase = async (stripeSubscriptionId: string, data: Partial<Subscription>) => {
     const subscription = await db.subscription.findUnique({
         where: { stripeSubscriptionId },
     });
@@ -155,12 +173,14 @@ export const updateSubscriptionInDatabase = async (stripeSubscriptionId: string,
             data: {
                 ...data,
                 stripeSubscriptionId,
-            },
+            } as Subscription,
         });
     }
 
     // Update organization subscription status
-    await updateOrganizationSubscriptionStatus(data.organizationId);
+    if (data.organizationId) {
+        await updateOrganizationSubscriptionStatus(data.organizationId);
+    }
 };
 
 /**
@@ -238,5 +258,61 @@ export const createSubscriptionPlans = async () => {
     await db.subscriptionPlan.createMany({
         data: plans,
     });
+};
+
+/**
+ * Sync active subscriptions with Stripe
+ */
+export const syncActiveSubscriptions = async () => {
+    try {
+        // Get all active subscriptions from the database
+        const activeSubscriptions = await db.subscription.findMany({
+            where: {
+                status: 'active',
+                currentPeriodEnd: {
+                    gt: new Date(),
+                },
+            },
+            include: {
+                organization: true,
+            },
+        });
+
+        // Sync each subscription with Stripe
+        for (const subscription of activeSubscriptions) {
+            try {
+                const stripeSubscription = await stripe.subscriptions.retrieve(subscription.stripeSubscriptionId) as unknown as StripeSubscriptionWithPeriod;
+
+                // Update subscription in database if needed
+                await updateSubscriptionInDatabase(subscription.stripeSubscriptionId, {
+                    status: stripeSubscription.status,
+                    currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+                    cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+                    organizationId: subscription.organizationId,
+                    priceId: subscription.priceId,
+                    planName: subscription.planName,
+                    currentPeriodStart: subscription.currentPeriodStart,
+                });
+            } catch (error) {
+                console.error(`Error syncing subscription ${subscription.stripeSubscriptionId}:`, error);
+                // If the subscription doesn't exist in Stripe, mark it as cancelled
+                if (error instanceof Error && 'code' in error && error.code === 'resource_missing') {
+                    await updateSubscriptionInDatabase(subscription.stripeSubscriptionId, {
+                        status: 'cancelled',
+                        organizationId: subscription.organizationId,
+                        priceId: subscription.priceId,
+                        planName: subscription.planName,
+                        currentPeriodStart: subscription.currentPeriodStart,
+                        currentPeriodEnd: subscription.currentPeriodEnd,
+                    });
+                }
+            }
+        }
+
+        return { success: true, message: 'Subscriptions synced successfully' };
+    } catch (error) {
+        console.error('Error syncing subscriptions:', error);
+        return { success: false, error: 'Failed to sync subscriptions' };
+    }
 };
 

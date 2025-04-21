@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { authenticate } from '@/lib/auth-actions';
-import { signIn as clientSignIn } from '@/lib/auth-client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 

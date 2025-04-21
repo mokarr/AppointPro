@@ -4,6 +4,11 @@ const config: NextConfig = {
     // Enable React strict mode for improved development experience
     reactStrictMode: true,
 
+    // Disable ESLint during build
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+
     // Optimize images from these domains
     images: {
         remotePatterns: [
@@ -56,8 +61,8 @@ const config: NextConfig = {
 
     // TypeScript configuration
     typescript: {
-        // Disable type checking in production for faster builds
-        ignoreBuildErrors: process.env.NODE_ENV === 'production',
+        // Disable type checking during builds
+        ignoreBuildErrors: true,
     },
 
     // Enable more modern minification

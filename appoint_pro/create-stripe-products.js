@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import Stripe from 'stripe';
-import dotenv from 'dotenv';
-const fs = require('fs');
+import fs from 'fs';
 
 // Initialize Stripe with the secret key from environment variables
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { PlusCircle, Edit, Trash, Euro, Tag, Check } from "lucide-react"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { PlusCircle, Edit, Trash, Euro, Tag } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 // Typen voor kenmerken
 type FeatureCategory = 'sport' | 'surface' | 'indoor' | 'amenities'
@@ -51,6 +52,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
     })
     const [availableFeatures, setAvailableFeatures] = useState<Feature[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const { getTranslation } = useLanguage();
 
     // Fetch data from an API
     useEffect(() => {
@@ -59,32 +61,32 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
             try {
                 // Fetch location data
                 const locationResponse = await fetch(`/api/locations/${locationId}`)
-                if (!locationResponse.ok) throw new Error('Failed to fetch location')
+                if (!locationResponse.ok) throw new Error(getTranslation('errors.fetchLocationFailed'))
                 const locationData = await locationResponse.json()
                 setLocation(locationData)
 
                 // Fetch facilities for this location
                 const facilitiesResponse = await fetch(`/api/locations/${locationId}/facilities`)
-                if (!facilitiesResponse.ok) throw new Error('Failed to fetch facilities')
+                if (!facilitiesResponse.ok) throw new Error(getTranslation('errors.fetchFacilitiesFailed'))
                 const facilitiesData = await facilitiesResponse.json()
                 setFacilities(facilitiesData)
 
                 // Fetch all available features
                 const featuresResponse = await fetch('/api/features')
-                if (!featuresResponse.ok) throw new Error('Failed to fetch features')
+                if (!featuresResponse.ok) throw new Error(getTranslation('errors.fetchFeaturesFailed'))
                 const featuresData = await featuresResponse.json()
                 setAvailableFeatures(featuresData)
 
             } catch (error) {
                 console.error('Error fetching data:', error)
-                toast.error("Er is een fout opgetreden bij het ophalen van de gegevens")
+                toast.error(getTranslation('errors.fetchDataFailed'))
             } finally {
                 setIsLoading(false)
             }
         }
 
         fetchData()
-    }, [locationId])
+    }, [locationId, getTranslation])
 
     const handleAddFacility = async () => {
         try {
@@ -108,10 +110,10 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
             setNewFacility({ name: "", description: "", price: 0, features: [] })
             setIsAddFacilityOpen(false)
 
-            toast.success("Faciliteit succesvol toegevoegd")
+            toast.success(getTranslation('facilities.addSuccess'))
         } catch (error) {
             console.error('Error adding facility:', error)
-            toast.error("Er is een fout opgetreden bij het toevoegen van de faciliteit")
+            toast.error(getTranslation('errors.addFacilityFailed'))
         }
     }
 
@@ -138,11 +140,11 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
     }
 
     if (isLoading) {
-        return <div className="flex justify-center py-8">Gegevens laden...</div>
+        return <div className="flex justify-center py-8">{getTranslation('common.loading')}</div>
     }
 
     if (!location) {
-        return <div className="py-8">Locatie niet gevonden</div>
+        return <div className="py-8">{getTranslation('errors.locationNotFound')}</div>
     }
 
     return (
@@ -156,38 +158,38 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                     <DialogTrigger asChild>
                         <Button className="flex items-center gap-2">
                             <PlusCircle className="h-4 w-4" />
-                            Nieuwe faciliteit
+                            {getTranslation('facilities.addNew')}
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[650px]">
                         <DialogHeader>
-                            <DialogTitle>Voeg een nieuwe faciliteit toe</DialogTitle>
+                            <DialogTitle>{getTranslation('facilities.addNewTitle')}</DialogTitle>
                             <DialogDescription>
-                                Vul de details in van de nieuwe sportfaciliteit
+                                {getTranslation('facilities.addNewDescription')}
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Naam faciliteit</Label>
+                                <Label htmlFor="name">{getTranslation('facilities.name')}</Label>
                                 <Input
                                     id="name"
                                     value={newFacility.name}
                                     onChange={e => setNewFacility({ ...newFacility, name: e.target.value })}
-                                    placeholder="Bijv. Tennisbaan 1"
+                                    placeholder={getTranslation('facilities.namePlaceholder')}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="description">Beschrijving</Label>
+                                <Label htmlFor="description">{getTranslation('facilities.description')}</Label>
                                 <Textarea
                                     id="description"
                                     value={newFacility.description}
                                     onChange={e => setNewFacility({ ...newFacility, description: e.target.value })}
-                                    placeholder="Beschrijf de faciliteit"
+                                    placeholder={getTranslation('facilities.descriptionPlaceholder')}
                                     rows={3}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="price">Prijs per uur (€)</Label>
+                                <Label htmlFor="price">{getTranslation('facilities.price')}</Label>
                                 <Input
                                     id="price"
                                     type="number"
@@ -198,11 +200,11 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label className="text-base">Kenmerken</Label>
+                                <Label className="text-base">{getTranslation('facilities.features')}</Label>
                                 <div className="grid gap-6 sm:grid-cols-2">
                                     {/* Sport Types */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">Sport Types</Label>
+                                        <Label className="text-sm font-medium">{getTranslation('facilities.sportTypes')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('sport').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -224,7 +226,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                     {/* Indoor/Outdoor */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">Indoor/Outdoor</Label>
+                                        <Label className="text-sm font-medium">{getTranslation('facilities.indoorOutdoor')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('indoor').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -246,7 +248,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                     {/* Surface Type */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">Ondergrond</Label>
+                                        <Label className="text-sm font-medium">{getTranslation('facilities.surfaceType')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('surface').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -268,7 +270,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                     {/* Amenities */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">Voorzieningen</Label>
+                                        <Label className="text-sm font-medium">{getTranslation('facilities.amenities')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('amenities').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -291,8 +293,12 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsAddFacilityOpen(false)}>Annuleren</Button>
-                            <Button onClick={handleAddFacility}>Faciliteit toevoegen</Button>
+                            <Button variant="outline" onClick={() => setIsAddFacilityOpen(false)}>
+                                {getTranslation('common.cancel')}
+                            </Button>
+                            <Button onClick={handleAddFacility}>
+                                {getTranslation('facilities.addFacility')}
+                            </Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -309,14 +315,14 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                             <div className="flex items-center gap-1 text-sm font-medium">
                                 <Euro className="h-4 w-4" />
-                                <span>{facility.price.toFixed(2)} per uur</span>
+                                <span>{facility.price.toFixed(2)} {getTranslation('facilities.perHour')}</span>
                             </div>
 
                             {/* Kenmerken weergeven */}
                             <div className="space-y-2">
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <Tag className="h-4 w-4" />
-                                    <span>Kenmerken</span>
+                                    <span>{getTranslation('facilities.features')}</span>
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                     {facility.features.map(feature => (
@@ -341,9 +347,9 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
             {facilities.length === 0 && (
                 <div className="text-center py-10">
-                    <p className="text-lg text-muted-foreground">Er zijn nog geen faciliteiten toegevoegd aan deze locatie.</p>
+                    <p className="text-lg text-muted-foreground">{getTranslation('facilities.noFacilities')}</p>
                     <Button onClick={() => setIsAddFacilityOpen(true)} variant="link" className="mt-2">
-                        Voeg je eerste faciliteit toe
+                        {getTranslation('facilities.addFirstFacility')}
                     </Button>
                 </div>
             )}

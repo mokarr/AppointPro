@@ -21,7 +21,7 @@ const LanguageSwitcher = () => {
                     }`}
                 aria-label={getString('common.switchToDutch')}
             >
-                NL
+                {getString('common.language.dutch')}
             </button>
             <button
                 onClick={() => setLanguage('en')}
@@ -31,7 +31,7 @@ const LanguageSwitcher = () => {
                     }`}
                 aria-label={getString('common.switchToEnglish')}
             >
-                EN
+                {getString('common.language.english')}
             </button>
         </div>
     );

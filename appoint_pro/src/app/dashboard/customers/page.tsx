@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { getOrganizationById } from "@/services/organization";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import CustomersPageContent from "./customers-page-content";
 
@@ -15,8 +15,8 @@ export default async function CustomersPage() {
 
     return (
         <CustomersPageContent
-            user={session.user}
-            organization={organization}
+            _user={session.user}
+            _organization={organization}
         />
     );
 } 

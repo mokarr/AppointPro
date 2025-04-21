@@ -4,18 +4,28 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ChevronRight, BarChart, Calendar, Users, Check } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 
-const getString = (value: any): string => {
+type TranslationValue = string | string[] | { [key: string]: TranslationValue } | { title: string; description: string }[];
+
+const getString = (value: TranslationValue): string => {
     if (typeof value === 'string') return value;
+    if (Array.isArray(value)) {
+        if (value.length > 0 && typeof value[0] === 'object' && 'title' in value[0]) {
+            return value.map(item => (item as { title: string; description: string }).title).join(', ');
+        }
+        return (value as unknown as string[]).join(', ');
+    }
+    if (typeof value === 'object' && value !== null) {
+        return Object.values(value).map(v => getString(v as TranslationValue)).join(', ');
+    }
     return '';
 };
 
 export const BusinessLanding = () => {
     const { getTranslation } = useLanguage();
 
-    const benefits = getTranslation('business.benefits.items') as string[];
+    const benefits = (getTranslation('business.benefits.items') as unknown) as string[];
 
     return (
         <div className="flex flex-col min-h-screen">

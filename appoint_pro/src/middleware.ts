@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { hasActiveSubscription } from './services/stripe-subscription';
 
 // Paths that don't require an active subscription
 const publicPaths = [

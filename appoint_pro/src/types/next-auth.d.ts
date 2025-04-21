@@ -1,5 +1,5 @@
-import { DefaultSession } from "next-auth";
-import { Organization } from "@prisma/client";
+import type { DefaultSession } from "next-auth";
+import type { Organization } from "@prisma/client";
 
 declare module "next-auth" {
     /**

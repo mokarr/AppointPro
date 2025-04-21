@@ -3,11 +3,13 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ChevronRight, Search, Clock, Star, Shield, MapPin, Check } from 'lucide-react';
+import { ChevronRight, Search, Clock, Star, Check } from 'lucide-react';
 import Link from 'next/link';
 
+type TranslationValue = string | string[] | { [key: string]: TranslationValue } | { title: string; description: string }[];
+
 // Helper function to safely convert TranslationValue to string
-const getString = (value: any): string => {
+const getString = (value: TranslationValue): string => {
     if (typeof value === 'string') return value;
     if (Array.isArray(value)) return value.join(', ');
     if (typeof value === 'object' && value !== null) {

@@ -5,10 +5,8 @@ export const metadata = {
     description: "Beheer de faciliteiten van uw sportlocaties",
 }
 
-export default async function FacilitiesPage({ params }: { params: { locationId: string } }) {
-    // In Next.js 14+, we need to await params before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
-    const locationId = resolvedParams.locationId;
+export default async function FacilitiesPage({ params }: { params: Promise<{ locationId: string }> }) {
+    const { locationId } = await params;
 
     return (
         <div className="container mx-auto py-8 px-4">
