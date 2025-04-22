@@ -46,4 +46,7 @@ declare global {
             login(email: string, password: string): Chainable<void>
         }
     }
-} 
+}
+
+// Add other custom commands as needed
+export { }; 

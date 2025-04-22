@@ -42,6 +42,10 @@ export function LocationsList() {
         postalCode: "",
         country: "",
     })
+    const [errors, setErrors] = useState<{
+        name?: string;
+        address?: string;
+    }>({})
 
     // Fetch locations from the API
     useEffect(() => {
@@ -99,7 +103,29 @@ export function LocationsList() {
         ])
     }
 
+    const validateForm = () => {
+        const newErrors: { name?: string; address?: string } = {};
+        let isValid = true;
+
+        if (!newLocation.name.trim()) {
+            newErrors.name = getTranslation('dashboard.locations.error.nameRequired') || 'Name is required';
+            isValid = false;
+        }
+
+        if (!newLocation.address.trim()) {
+            newErrors.address = getTranslation('dashboard.locations.error.addressRequired') || 'Address is required';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    }
+
     const handleAddLocation = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
         try {
             // In a real app, make API call to add location
             const response = await fetch('/api/locations', {
@@ -121,6 +147,7 @@ export function LocationsList() {
             // Reset form and close dialog
             setNewLocation({ name: "", address: "", postalCode: "", country: "" })
             setIsAddLocationOpen(false)
+            setErrors({})
 
             toast.success(getTranslation('dashboard.locations.success.add'))
         } catch (error) {
@@ -136,8 +163,16 @@ export function LocationsList() {
             setLocations([...locations, newLocationWithId])
             setNewLocation({ name: "", address: "", postalCode: "", country: "" })
             setIsAddLocationOpen(false)
+            setErrors({})
         }
     }
+
+    // Reset errors when dialog is closed
+    useEffect(() => {
+        if (!isAddLocationOpen) {
+            setErrors({});
+        }
+    }, [isAddLocationOpen]);
 
     if (isLoading) {
         return (
@@ -168,28 +203,51 @@ export function LocationsList() {
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">{getTranslation('dashboard.locations.locationName')}</Label>
+                                <Label htmlFor="name" className="flex">
+                                    {getTranslation('dashboard.locations.locationName')}
+                                    <span className="text-red-500 ml-1">*</span>
+                                </Label>
                                 <Input
                                     id="name"
+                                    name="name"
                                     value={newLocation.name}
                                     onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
                                     placeholder={getTranslation('dashboard.locations.locationNamePlaceholder')}
+                                    required
+                                    aria-required="true"
+                                    aria-invalid={!!errors.name}
+                                    className={errors.name ? "border-red-500" : ""}
                                 />
+                                {errors.name && (
+                                    <p className="text-sm text-red-500" role="alert">{errors.name}</p>
+                                )}
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="address">{getTranslation('dashboard.locations.address')}</Label>
+                                <Label htmlFor="address" className="flex">
+                                    {getTranslation('dashboard.locations.address')}
+                                    <span className="text-red-500 ml-1">*</span>
+                                </Label>
                                 <Input
                                     id="address"
+                                    name="address"
                                     value={newLocation.address}
                                     onChange={e => setNewLocation({ ...newLocation, address: e.target.value })}
                                     placeholder={getTranslation('dashboard.locations.addressPlaceholder')}
+                                    required
+                                    aria-required="true"
+                                    aria-invalid={!!errors.address}
+                                    className={errors.address ? "border-red-500" : ""}
                                 />
+                                {errors.address && (
+                                    <p className="text-sm text-red-500" role="alert">{errors.address}</p>
+                                )}
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="postalCode">{getTranslation('dashboard.locations.postalCode')}</Label>
                                     <Input
                                         id="postalCode"
+                                        name="postalCode"
                                         value={newLocation.postalCode}
                                         onChange={e => setNewLocation({ ...newLocation, postalCode: e.target.value })}
                                         placeholder={getTranslation('dashboard.locations.postalCodePlaceholder')}
@@ -199,6 +257,7 @@ export function LocationsList() {
                                     <Label htmlFor="country">{getTranslation('dashboard.locations.country')}</Label>
                                     <Input
                                         id="country"
+                                        name="country"
                                         value={newLocation.country}
                                         onChange={e => setNewLocation({ ...newLocation, country: e.target.value })}
                                         placeholder={getTranslation('dashboard.locations.countryPlaceholder')}

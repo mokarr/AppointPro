@@ -110,7 +110,7 @@ const signInAfterSignUp = async (formData: FormData) => {
             email: formData.get("email") as string,
             password: formData.get("password") as string,
             redirect: true,
-            redirectTo: `/portal/${formData.get("organizationName")}`,
+            redirectTo: `/dashboard`,
         });
 
         return { success: true };

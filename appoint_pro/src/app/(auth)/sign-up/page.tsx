@@ -32,7 +32,7 @@ const SignUpPage = () => {
                 await signInAfterSignUp(signInFormData);
 
                 // Redirect naar portal
-                router.push(`/portal/${res.data.organizationName}`);
+                router.push(`/dashboard`);
             } else {
                 setError(res.message || "Er is een fout opgetreden. Organisatienaam ontbreekt.");
             }

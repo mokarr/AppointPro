@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Subscription } from '@prisma/client';
-import { CreditCard, Check, AlertCircle } from 'lucide-react';
+import { CreditCard, Check, AlertCircle, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/utils/date';
@@ -21,6 +21,8 @@ export default function SubscriptionManagement({
     organizationName,
 }: SubscriptionManagementProps) {
     const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const router = useRouter();
     const { getTranslation } = useLanguage();
 
@@ -54,6 +56,35 @@ export default function SubscriptionManagement({
         router.push('/subscription/plans');
     };
 
+    const handleRefreshStatus = async () => {
+        try {
+            setIsRefreshing(true);
+            setStatusMessage(null);
+
+            const response = await fetch('/api/subscriptions/check-status?forceRefresh=true', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setStatusMessage(data.message);
+                // Refresh the page to get the updated subscription status
+                router.refresh();
+            } else {
+                throw new Error(data.error || 'Failed to refresh subscription status');
+            }
+        } catch (error) {
+            console.error('Error refreshing subscription status:', error);
+            setStatusMessage('Failed to refresh subscription status');
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
     // If there's no active subscription
     if (!hasActiveSubscription) {
         return (
@@ -78,8 +109,32 @@ export default function SubscriptionManagement({
                             </div>
                         </div>
                     </div>
+
+                    {statusMessage && (
+                        <div className="text-sm text-center mt-4 mb-2 text-muted-foreground">
+                            {statusMessage}
+                        </div>
+                    )}
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                        onClick={handleRefreshStatus}
+                        disabled={isRefreshing}
+                        variant="outline"
+                        className="w-full"
+                    >
+                        {isRefreshing ? (
+                            <>
+                                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                                {getTranslation('subscription.manage.loading')}
+                            </>
+                        ) : (
+                            <>
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Refresh Status
+                            </>
+                        )}
+                    </Button>
                     <Button
                         onClick={handleSubscribe}
                         disabled={isLoading}
@@ -142,6 +197,12 @@ export default function SubscriptionManagement({
                                 </span>
                             </div>
                         </div>
+
+                        {statusMessage && (
+                            <div className="text-sm text-center mt-4 mb-2 text-muted-foreground">
+                                {statusMessage}
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="text-center py-4 text-muted-foreground">
@@ -149,7 +210,25 @@ export default function SubscriptionManagement({
                     </div>
                 )}
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-col gap-3 sm:flex-row">
+                <Button
+                    onClick={handleRefreshStatus}
+                    disabled={isRefreshing}
+                    variant="outline"
+                    className="w-full"
+                >
+                    {isRefreshing ? (
+                        <>
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            {getTranslation('subscription.manage.loading')}
+                        </>
+                    ) : (
+                        <>
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Refresh Status
+                        </>
+                    )}
+                </Button>
                 <Button
                     onClick={handleManageSubscription}
                     disabled={isLoading}

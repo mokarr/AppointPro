@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,7 +14,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { Euro, MapPin, Calendar, Clock, User, Filter, Tag } from "lucide-react"
+import { Euro, MapPin, Calendar, Clock, User, Filter, Tag, Loader2 } from "lucide-react"
 import {
     Sheet,
     SheetContent,
@@ -32,8 +32,10 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { toast } from "@/components/ui/use-toast"
+import { useDebounce } from "@/hooks/useDebounce"
 
-// Dezelfde feature definities als in FacilitiesList.tsx
+// Feature definitions
 type FeatureCategory = 'sport' | 'surface' | 'indoor' | 'amenities'
 
 type Feature = {
@@ -42,7 +44,22 @@ type Feature = {
     category: FeatureCategory
 }
 
-// Beschikbare kenmerken
+type Facility = {
+    id: string
+    title: string
+    organization: string
+    location: string
+    address?: string
+    price: number
+    availableSpots?: number
+    features: string[]
+    openingHours?: {
+        open: string
+        close: string
+    }
+}
+
+// Available features
 const availableFeatures: Feature[] = [
     // Sport types
     { id: 'tennis', name: 'Tennis', category: 'sport' },
@@ -53,7 +70,7 @@ const availableFeatures: Feature[] = [
     { id: 'squash', name: 'Squash', category: 'sport' },
     { id: 'swimming', name: 'Swimming', category: 'sport' },
 
-    // Ondergrond types
+    // Surface types
     { id: 'clay', name: 'Clay', category: 'surface' },
     { id: 'hard', name: 'Hard court', category: 'surface' },
     { id: 'grass', name: 'Grass', category: 'surface' },
@@ -66,7 +83,7 @@ const availableFeatures: Feature[] = [
     { id: 'outdoor', name: 'Outdoor', category: 'indoor' },
     { id: 'covered', name: 'Covered', category: 'indoor' },
 
-    // Voorzieningen
+    // Amenities
     { id: 'changing-room', name: 'Changing room', category: 'amenities' },
     { id: 'shower', name: 'Shower', category: 'amenities' },
     { id: 'lighting', name: 'Lighting', category: 'amenities' },
@@ -74,23 +91,23 @@ const availableFeatures: Feature[] = [
     { id: 'wheelchair-accessible', name: 'Wheelchair accessible', category: 'amenities' },
 ]
 
-type Activity = {
-    id: string
-    title: string
-    organization: string
-    location: string
-    date: string
-    time: string
-    price: number
-    spots: number
-    features: string[]
-}
-
 export function SearchActivities() {
     const [searchQuery, setSearchQuery] = useState("")
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("")
     const [priceRange, setPriceRange] = useState<string>("all")
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+    const [facilities, setFacilities] = useState<Facility[]>([])
+    const [filteredFacilities, setFilteredFacilities] = useState<Facility[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const { getTranslation } = useLanguage()
+
+    // Debounce search query to prevent excessive API calls
+    const debouncedSearch = useDebounce(searchQuery, 500)
+
+    useEffect(() => {
+        setDebouncedSearchQuery(debouncedSearch)
+    }, [debouncedSearch])
 
     // Helper function to safely convert TranslationValue to string
     const getString = (key: string): string => {
@@ -98,75 +115,100 @@ export function SearchActivities() {
         return typeof value === 'string' ? value : '';
     };
 
-    // This would be replaced with actual data from your API
-    const mockActivities: Activity[] = [
-        {
-            id: "1",
-            title: "Tennis Court 1",
-            organization: "SportCenter Pro Amsterdam",
-            location: "Amsterdam",
-            date: "2024-03-20",
-            time: "14:00",
-            price: 30,
-            spots: 8,
-            features: ['tennis', 'clay', 'indoor', 'lighting'],
-        },
-        {
-            id: "2",
-            title: "Tennis Court 2",
-            organization: "SportCenter Pro Amsterdam",
-            location: "Amsterdam",
-            date: "2024-03-20",
-            time: "15:00",
-            price: 25,
-            spots: 4,
-            features: ['tennis', 'hard', 'outdoor', 'lighting'],
-        },
-        {
-            id: "3",
-            title: "Basketball Court",
-            organization: "SportCenter Pro Amsterdam",
-            location: "Amsterdam",
-            date: "2024-03-21",
-            time: "10:00",
-            price: 40,
-            spots: 10,
-            features: ['basketball', 'wood', 'indoor', 'changing-room', 'shower'],
-        },
-        {
-            id: "4",
-            title: "Swimming Pool",
-            organization: "SportCenter Pro Amsterdam",
-            location: "Amsterdam",
-            date: "2024-03-21",
-            time: "11:00",
-            price: 15,
-            spots: 20,
-            features: ['swimming', 'indoor', 'changing-room', 'shower'],
-        },
-        {
-            id: "5",
-            title: "Tennis Court 1",
-            organization: "SportCenter Pro Utrecht",
-            location: "Utrecht",
-            date: "2024-03-22",
-            time: "09:00",
-            price: 28,
-            spots: 6,
-            features: ['tennis', 'hard', 'indoor', 'lighting'],
-        },
-        {
-            id: "6",
-            title: "Multifunctional Sports Hall",
-            organization: "SportCenter Pro Utrecht",
-            location: "Utrecht",
-            date: "2024-03-22",
-            time: "14:00",
-            price: 50,
-            spots: 30,
-            features: ['basketball', 'volleyball', 'badminton', 'wood', 'indoor', 'lighting', 'changing-room', 'shower'],
-        },
-    ]
+    // Fetch facilities from API
+    const fetchFacilities = async () => {
+        setIsLoading(true)
+        setError(null)
+
+        try {
+            // Build query parameters
+            const queryParams = new URLSearchParams()
+
+            if (debouncedSearchQuery) {
+                queryParams.append('search', debouncedSearchQuery)
+            }
+
+            if (priceRange !== 'all') {
+                // Parse price range for API
+                if (priceRange === '0-25') {
+                    queryParams.append('minPrice', '0')
+                    queryParams.append('maxPrice', '25')
+                } else if (priceRange === '26-50') {
+                    queryParams.append('minPrice', '26')
+                    queryParams.append('maxPrice', '50')
+                } else if (priceRange === '51+') {
+                    queryParams.append('minPrice', '51')
+                }
+            }
+
+            if (selectedFeatures.length > 0) {
+                selectedFeatures.forEach(feature => {
+                    queryParams.append('features', feature)
+                })
+            }
+
+            // Make the API call
+            const response = await fetch(`/api/facilities?${queryParams.toString()}`)
+
+            if (!response.ok) {
+                throw new Error(`Error fetching facilities: ${response.status}`)
+            }
+
+            const data = await response.json()
+            setFacilities(data)
+            setFilteredFacilities(data)
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An unknown error occurred')
+            toast({
+                title: getString('search.facilities.error.title') || 'Error',
+                description: getString('search.facilities.error.description') || 'Failed to load facilities',
+                variant: "destructive",
+            })
+
+            // Fallback to empty array
+            setFacilities([])
+            setFilteredFacilities([])
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    // Filter facilities client-side (as a backup or for additional filtering)
+    const filterFacilities = () => {
+        const filtered = facilities.filter((facility) => {
+            // Filter on search term if not already handled by API
+            const matchesSearch = !debouncedSearchQuery ||
+                facility.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+                facility.organization.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+                facility.location.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+                (facility.address && facility.address.toLowerCase().includes(debouncedSearchQuery.toLowerCase()))
+
+            // Filter on price range if not already handled by API
+            const matchesPriceRange = priceRange === "all" || (
+                priceRange === "0-25" ? facility.price <= 25 :
+                    priceRange === "26-50" ? facility.price > 25 && facility.price <= 50 :
+                        priceRange === "51+" ? facility.price > 50 : true
+            )
+
+            // Filter on selected features if not already handled by API
+            const matchesFeatures = selectedFeatures.length === 0 ||
+                selectedFeatures.every(feature => facility.features.includes(feature))
+
+            return matchesSearch && matchesPriceRange && matchesFeatures
+        })
+
+        setFilteredFacilities(filtered)
+    }
+
+    // Fetch facilities when filters change (including initial fetch)
+    useEffect(() => {
+        fetchFacilities()
+    }, [debouncedSearchQuery, priceRange, selectedFeatures]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Client-side filtering as backup
+    useEffect(() => {
+        filterFacilities()
+    }, [facilities]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const toggleFeature = (featureId: string) => {
         setSelectedFeatures(prev => {
@@ -187,27 +229,6 @@ export function SearchActivities() {
         return feature ? feature.name : featureId
     }
 
-    const filteredActivities = mockActivities.filter((activity) => {
-        // Filter op zoekterm
-        const matchesSearch =
-            activity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            activity.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            activity.location.toLowerCase().includes(searchQuery.toLowerCase())
-
-        // Filter op prijsklasse
-        const matchesPriceRange = priceRange === "all" || (
-            priceRange === "0-25" ? activity.price <= 25 :
-                priceRange === "26-50" ? activity.price > 25 && activity.price <= 50 :
-                    priceRange === "51+" ? activity.price > 50 : true
-        )
-
-        // Filter op geselecteerde kenmerken
-        const matchesFeatures = selectedFeatures.length === 0 ||
-            selectedFeatures.every(feature => activity.features.includes(feature))
-
-        return matchesSearch && matchesPriceRange && matchesFeatures
-    })
-
     const clearFilters = () => {
         setSelectedFeatures([])
         setPriceRange("all")
@@ -218,10 +239,11 @@ export function SearchActivities() {
             <div className="flex gap-4 items-center">
                 <div className="flex-1">
                     <Input
-                        placeholder="Zoek activiteiten, locaties, organisaties..."
+                        placeholder="Search facilities, locations, organizations..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full"
+                        aria-label="Search facilities"
                     />
                 </div>
 
@@ -229,7 +251,7 @@ export function SearchActivities() {
                     <SheetTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
                             <Filter className="h-4 w-4" />
-                            <span>{getString('search.activities.filters.button')}</span>
+                            <span>{getString('search.facilities.filters.button') || 'Filters'}</span>
                             {selectedFeatures.length > 0 && (
                                 <Badge className="ml-1">{selectedFeatures.length}</Badge>
                             )}
@@ -237,33 +259,33 @@ export function SearchActivities() {
                     </SheetTrigger>
                     <SheetContent className="overflow-y-auto">
                         <SheetHeader>
-                            <SheetTitle>{getString('search.activities.filters.title')}</SheetTitle>
+                            <SheetTitle>{getString('search.facilities.filters.title') || 'Filters'}</SheetTitle>
                             <SheetDescription>
-                                {getString('search.activities.filters.description')}
+                                {getString('search.facilities.filters.description') || 'Filter facilities by criteria'}
                             </SheetDescription>
                         </SheetHeader>
 
                         <div className="py-6 space-y-6">
-                            {/* Prijs filter */}
+                            {/* Price filter */}
                             <div className="space-y-2">
-                                <Label>{getString('search.activities.filters.price.label')}</Label>
+                                <Label>{getString('search.facilities.filters.price.label') || 'Price'}</Label>
                                 <Select value={priceRange} onValueChange={setPriceRange}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder={getString('search.activities.filters.price.placeholder')} />
+                                        <SelectValue placeholder={getString('search.facilities.filters.price.placeholder') || 'Select price range'} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">{getString('search.activities.filters.price.all')}</SelectItem>
-                                        <SelectItem value="0-25">{getString('search.activities.filters.price.low')}</SelectItem>
-                                        <SelectItem value="26-50">{getString('search.activities.filters.price.medium')}</SelectItem>
-                                        <SelectItem value="51+">{getString('search.activities.filters.price.high')}</SelectItem>
+                                        <SelectItem value="all">{getString('search.facilities.filters.price.all') || 'All prices'}</SelectItem>
+                                        <SelectItem value="0-25">{getString('search.facilities.filters.price.low') || '€0 - €25'}</SelectItem>
+                                        <SelectItem value="26-50">{getString('search.facilities.filters.price.medium') || '€26 - €50'}</SelectItem>
+                                        <SelectItem value="51+">{getString('search.facilities.filters.price.high') || '€51+'}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
 
-                            {/* Kenmerken filters */}
+                            {/* Feature filters */}
                             <Accordion type="multiple" defaultValue={['sport']}>
                                 <AccordionItem value="sport">
-                                    <AccordionTrigger>{getString('search.activities.filters.categories.sport')}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.facilities.filters.categories.sport') || 'Sport'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('sport').map(feature => (
@@ -286,7 +308,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="indoor">
-                                    <AccordionTrigger>{getString('search.activities.filters.categories.indoorOutdoor')}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.facilities.filters.categories.indoorOutdoor') || 'Indoor/Outdoor'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('indoor').map(feature => (
@@ -309,7 +331,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="surface">
-                                    <AccordionTrigger>{getString('search.activities.filters.categories.surface')}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.facilities.filters.categories.surface') || 'Surface'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('surface').map(feature => (
@@ -332,7 +354,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="amenities">
-                                    <AccordionTrigger>{getString('search.activities.filters.categories.amenities')}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('search.facilities.filters.categories.amenities') || 'Amenities'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('amenities').map(feature => (
@@ -358,74 +380,93 @@ export function SearchActivities() {
 
                         <SheetFooter>
                             <SheetClose asChild>
-                                <Button variant="outline" onClick={clearFilters}>{getString('search.activities.filters.actions.clear')}</Button>
+                                <Button variant="outline" onClick={clearFilters}>{getString('search.facilities.filters.actions.clear') || 'Clear'}</Button>
                             </SheetClose>
                             <SheetClose asChild>
-                                <Button>{getString('search.activities.filters.actions.apply')}</Button>
+                                <Button>{getString('search.facilities.filters.actions.apply') || 'Apply'}</Button>
                             </SheetClose>
                         </SheetFooter>
                     </SheetContent>
                 </Sheet>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {filteredActivities.map((activity) => (
-                    <Card key={activity.id} className="flex flex-col overflow-hidden">
-                        <div className="p-6 space-y-3">
-                            <div className="space-y-1">
-                                <h3 className="font-semibold">{activity.title}</h3>
-                                <p className="text-sm text-muted-foreground">{activity.organization}</p>
-                            </div>
-
-                            <div className="space-y-2 text-sm">
-                                <div className="flex items-start gap-2">
-                                    <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                    <span>{activity.location}</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <Calendar className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                    <span>{activity.date}</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                    <span>{activity.time}</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <Euro className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                    <span>{getString('search.activities.card.price').replace('{price}', String(activity.price))}</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                    <span>{getString('search.activities.card.spots').replace('{spots}', String(activity.spots))}</span>
-                                </div>
-
-                                {/* Kenmerken weergeven */}
-                                <div className="pt-2">
-                                    <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
-                                        <Tag className="h-4 w-4" />
-                                        <span>{getString('search.activities.card.features')}</span>
-                                    </div>
-                                    <div className="flex flex-wrap gap-1">
-                                        {activity.features.map(featureId => (
-                                            <Badge key={featureId} variant="secondary" className="text-xs">
-                                                {getFeatureName(featureId)}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="p-4 border-t mt-auto">
-                            <Button className="w-full">{getString('search.activities.card.reserve')}</Button>
-                        </div>
-                    </Card>
-                ))}
-            </div>
-
-            {filteredActivities.length === 0 && (
-                <div className="text-center py-10">
-                    <p className="text-lg text-muted-foreground">{getString('search.activities.noResults')}</p>
+            {isLoading ? (
+                <div className="flex justify-center items-center py-20">
+                    <Loader2 className="h-10 w-10 animate-spin text-primary" />
                 </div>
+            ) : error ? (
+                <div className="text-center py-10">
+                    <p className="text-lg text-destructive">{getString('search.facilities.error.message') || 'Failed to load facilities'}</p>
+                    <Button
+                        onClick={fetchFacilities}
+                        variant="outline"
+                        className="mt-4"
+                    >
+                        {getString('search.facilities.error.retry') || 'Retry'}
+                    </Button>
+                </div>
+            ) : (
+                <>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {filteredFacilities.map((facility) => (
+                            <Card key={facility.id} className="flex flex-col overflow-hidden">
+                                <div className="p-6 space-y-3">
+                                    <div className="space-y-1">
+                                        <h3 className="font-semibold">{facility.title}</h3>
+                                        <p className="text-sm text-muted-foreground">{facility.organization}</p>
+                                    </div>
+
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex items-start gap-2">
+                                            <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                            <span>{facility.location}</span>
+                                        </div>
+                                        {facility.openingHours && (
+                                            <div className="flex items-start gap-2">
+                                                <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                                <span>{facility.openingHours.open} - {facility.openingHours.close}</span>
+                                            </div>
+                                        )}
+                                        <div className="flex items-start gap-2">
+                                            <Euro className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                            <span>{getString('search.facilities.card.price')?.replace('{price}', String(facility.price)) || `€${facility.price} per hour`}</span>
+                                        </div>
+                                        {facility.availableSpots !== undefined && (
+                                            <div className="flex items-start gap-2">
+                                                <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                                <span>{getString('search.facilities.card.spots')?.replace('{spots}', String(facility.availableSpots)) || `${facility.availableSpots} spots available`}</span>
+                                            </div>
+                                        )}
+
+                                        {/* Features */}
+                                        <div className="pt-2">
+                                            <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
+                                                <Tag className="h-4 w-4" />
+                                                <span>{getString('search.facilities.card.features') || 'Features'}</span>
+                                            </div>
+                                            <div className="flex flex-wrap gap-1">
+                                                {facility.features.map(featureId => (
+                                                    <Badge key={featureId} variant="secondary" className="text-xs">
+                                                        {getFeatureName(featureId)}
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-4 border-t mt-auto">
+                                    <Button className="w-full">{getString('search.facilities.card.reserve') || 'Book Now'}</Button>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+
+                    {filteredFacilities.length === 0 && (
+                        <div className="text-center py-10">
+                            <p className="text-lg text-muted-foreground">{getString('search.facilities.noResults') || 'No facilities found'}</p>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     )

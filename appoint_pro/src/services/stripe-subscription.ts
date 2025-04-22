@@ -131,6 +131,16 @@ export const hasActiveSubscription = async (organizationId: string): Promise<boo
         // First check if the organization exists
         const organization = await db.organization.findUnique({
             where: { id: organizationId },
+            include: {
+                subscriptions: {
+                    where: {
+                        status: 'active',
+                        currentPeriodEnd: {
+                            gt: new Date(),
+                        },
+                    },
+                },
+            },
         });
 
         if (!organization) {
@@ -138,18 +148,29 @@ export const hasActiveSubscription = async (organizationId: string): Promise<boo
             return false;
         }
 
-        // Use the flag from the organization table as the source of truth
-        // This is more reliable than checking subscriptions directly each time
-        const hasSubscription = organization.hasActiveSubscription;
+        // Check for any discrepancy between the flag and actual subscriptions
+        const hasActiveSubscriptionsInDb = organization.subscriptions.length > 0;
 
+        // If there's a discrepancy, update the flag in the database
+        if (hasActiveSubscriptionsInDb !== organization.hasActiveSubscription) {
+            console.log(`Fixing subscription status discrepancy for organization ${organizationId}`);
+            await db.organization.update({
+                where: { id: organizationId },
+                data: { hasActiveSubscription: hasActiveSubscriptionsInDb },
+            });
+            return hasActiveSubscriptionsInDb;
+        }
+
+        // Use the flag from the organization table as the source of truth
+        const hasSubscription = organization.hasActiveSubscription;
         console.log(`Organization ${organizationId} hasActiveSubscription: ${hasSubscription}`);
 
         return hasSubscription;
     } catch (error) {
         console.error(`Error checking subscription status for org ${organizationId}:`, error);
-        // Default to true in case of errors to prevent blocking users
-        // It's better to potentially give access than to completely block users
-        return true;
+        // Default to false in case of errors to be safe
+        // Better to require explicit subscription validation than give access incorrectly
+        return false;
     }
 };
 

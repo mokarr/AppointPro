@@ -87,7 +87,31 @@
         "language": {
             "dutch": "NL",
             "english": "EN"
-        }
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "search": "Search",
+        "loading": "Loading...",
+        "retry": "Try Again",
+        "appointments": "Appointments",
+        "clients": "Clients",
+        "organizations": "Organizations",
+        "createNew": "Create New",
+        "submitError": "Error submitting form",
+        "submitSuccess": "Form submitted successfully",
+        "confirmDelete": "Are you sure you want to delete this?",
+        "confirmAction": "Are you sure you want to perform this action?",
+        "yes": "Yes",
+        "no": "No",
+        "dashboard": "Dashboard",
+        "signIn": "Sign In",
+        "signOut": "Sign Out",
+        "next": "Next",
+        "back": "Back",
+        "done": "Done"
     },
     "auth": {
         "email": "Email",
@@ -185,6 +209,12 @@
         "upcomingAppointments": "Upcoming Appointments",
         "totalCustomers": "Total Customers",
         "revenue": "Revenue",
+        "subscriptionSection": "Subscription Management",
+        "stats": {
+            "appointments": "Appointments",
+            "customers": "Customers",
+            "revenue": "Revenue"
+        },
         "locations": {
             "title": "Location Management",
             "description": "Manage all your sports locations and facilities in one place",
@@ -477,7 +507,8 @@
                 "features": "Features",
                 "reserve": "Reserve now"
             },
-            "noResults": "No activities found that match your search criteria."
+            "noResults": "No activities found that match your search criteria.",
+            "error": "Failed to load activities. Please try again."
         }
     }
 }

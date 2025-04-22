@@ -88,7 +88,27 @@
                 "created": "Aangemaakt op",
                 "viewOrganization": "Bekijk Organisatie"
             }
-        }
+        },
+        "save": "Opslaan",
+        "cancel": "Annuleren",
+        "delete": "Verwijderen",
+        "edit": "Bewerken",
+        "add": "Toevoegen",
+        "search": "Zoeken",
+        "loading": "Laden...",
+        "retry": "Opnieuw proberen",
+        "createNew": "Nieuw aanmaken",
+        "submitError": "Fout bij verzenden formulier",
+        "submitSuccess": "Formulier succesvol ingediend",
+        "confirmDelete": "Weet u zeker dat u dit wilt verwijderen?",
+        "confirmAction": "Weet u zeker dat u deze actie wilt uitvoeren?",
+        "yes": "Ja",
+        "no": "Nee",
+        "signIn": "Inloggen",
+        "signOut": "Uitloggen",
+        "next": "Volgende",
+        "back": "Terug",
+        "done": "Gereed"
     },
     "auth": {
         "email": "E-mail",
@@ -186,6 +206,12 @@
         "upcomingAppointments": "Aankomende Afspraken",
         "totalCustomers": "Totaal Klanten",
         "revenue": "Omzet",
+        "subscriptionSection": "Abonnementsbeheer",
+        "stats": {
+            "appointments": "Afspraken",
+            "customers": "Klanten",
+            "revenue": "Omzet"
+        },
         "locations": {
             "title": "Locatiebeheer",
             "description": "Beheer al uw sportlocaties en faciliteiten op één plek",
@@ -441,7 +467,8 @@
                     "features": "Kenmerken",
                     "reserve": "Reserveer nu"
                 },
-                "noResults": "Geen activiteiten gevonden die voldoen aan je zoekcriteria."
+                "noResults": "Geen activiteiten gevonden die voldoen aan je zoekcriteria.",
+                "error": "Er is een fout opgetreden bij het zoeken naar activiteiten"
             }
         }
     },
@@ -482,6 +509,26 @@
         "cta": {
             "title": "Klaar om Uw Sportfaciliteit te Transformeren?",
             "subtitle": "Sluit u aan bij succesvolle sportlocaties die AppointPro gebruiken"
+        }
+    },
+    "subscription": {
+        "manage": {
+            "title": "Abonnement",
+            "noActiveSubscription": "Geen actief abonnement gevonden voor {organizationName}",
+            "noActiveSubscriptionMessage": "Uw organisatie heeft geen actief abonnement. Abonneer om toegang te krijgen tot alle functies.",
+            "loading": "Laden...",
+            "viewPlans": "Bekijk Abonnementsplannen",
+            "currentSubscription": "Huidig abonnement voor {organizationName}",
+            "activeSubscription": "Actief Abonnement",
+            "activeSubscriptionMessage": "Uw {planName} abonnement is actief en wordt automatisch verlengd.",
+            "plan": "Plan",
+            "status": "Status",
+            "currentPeriodEnds": "Huidige periode eindigt op",
+            "cancelAtPeriodEnd": "Annuleren aan het einde van de periode",
+            "yes": "Ja",
+            "no": "Nee",
+            "detailsUnavailable": "Abonnementsgegevens niet beschikbaar",
+            "manageButton": "Beheer Abonnement"
         }
     }
 }
