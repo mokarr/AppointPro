@@ -62,33 +62,33 @@ type Facility = {
 // Available features
 const availableFeatures: Feature[] = [
     // Sport types
-    { id: 'tennis', name: 'Tennis', category: 'sport' },
-    { id: 'basketball', name: 'Basketball', category: 'sport' },
-    { id: 'volleyball', name: 'Volleyball', category: 'sport' },
-    { id: 'football', name: 'Football', category: 'sport' },
-    { id: 'badminton', name: 'Badminton', category: 'sport' },
-    { id: 'squash', name: 'Squash', category: 'sport' },
-    { id: 'swimming', name: 'Swimming', category: 'sport' },
+    { id: 'sport-tennis', name: 'Tennis', category: 'sport' },
+    { id: 'sport-basketball', name: 'Basketball', category: 'sport' },
+    { id: 'sport-volleyball', name: 'Volleyball', category: 'sport' },
+    { id: 'sport-football', name: 'Football', category: 'sport' },
+    { id: 'sport-badminton', name: 'Badminton', category: 'sport' },
+    { id: 'sport-squash', name: 'Squash', category: 'sport' },
+    { id: 'sport-swimming', name: 'Swimming', category: 'sport' },
 
     // Surface types
-    { id: 'clay', name: 'Clay', category: 'surface' },
-    { id: 'hard', name: 'Hard court', category: 'surface' },
-    { id: 'grass', name: 'Grass', category: 'surface' },
-    { id: 'artificial-grass', name: 'Artificial grass', category: 'surface' },
-    { id: 'carpet', name: 'Carpet', category: 'surface' },
-    { id: 'wood', name: 'Wood', category: 'surface' },
+    { id: 'surface-clay', name: 'Clay', category: 'surface' },
+    { id: 'surface-hard', name: 'Hard court', category: 'surface' },
+    { id: 'surface-grass', name: 'Grass', category: 'surface' },
+    { id: 'surface-artificial-grass', name: 'Artificial grass', category: 'surface' },
+    { id: 'surface-carpet', name: 'Carpet', category: 'surface' },
+    { id: 'surface-wood', name: 'Wood', category: 'surface' },
 
     // Indoor / Outdoor
-    { id: 'indoor', name: 'Indoor', category: 'indoor' },
-    { id: 'outdoor', name: 'Outdoor', category: 'indoor' },
-    { id: 'covered', name: 'Covered', category: 'indoor' },
+    { id: 'indoor-indoor', name: 'Indoor', category: 'indoor' },
+    { id: 'indoor-outdoor', name: 'Outdoor', category: 'indoor' },
+    { id: 'indoor-covered', name: 'Covered', category: 'indoor' },
 
     // Amenities
-    { id: 'changing-room', name: 'Changing room', category: 'amenities' },
-    { id: 'shower', name: 'Shower', category: 'amenities' },
-    { id: 'lighting', name: 'Lighting', category: 'amenities' },
-    { id: 'parking', name: 'Parking', category: 'amenities' },
-    { id: 'wheelchair-accessible', name: 'Wheelchair accessible', category: 'amenities' },
+    { id: 'amenities-changing-room', name: 'Changing room', category: 'amenities' },
+    { id: 'amenities-shower', name: 'Shower', category: 'amenities' },
+    { id: 'amenities-lighting', name: 'Lighting', category: 'amenities' },
+    { id: 'amenities-parking', name: 'Parking', category: 'amenities' },
+    { id: 'amenities-wheelchair-accessible', name: 'Wheelchair accessible', category: 'amenities' },
 ]
 
 export function SearchActivities() {
@@ -283,20 +283,20 @@ export function SearchActivities() {
                             </div>
 
                             {/* Feature filters */}
-                            <Accordion type="multiple" defaultValue={['sport']}>
-                                <AccordionItem value="sport">
+                            <Accordion type="multiple" defaultValue={['sport-category']}>
+                                <AccordionItem value="sport-category">
                                     <AccordionTrigger>{getString('search.facilities.filters.categories.sport') || 'Sport'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('sport').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
                                                     <Checkbox
-                                                        id={`sport-${feature.id}`}
+                                                        id={feature.id}
                                                         checked={selectedFeatures.includes(feature.id)}
                                                         onCheckedChange={() => toggleFeature(feature.id)}
                                                     />
                                                     <label
-                                                        htmlFor={`sport-${feature.id}`}
+                                                        htmlFor={feature.id}
                                                         className="text-sm leading-none"
                                                     >
                                                         {feature.name}
@@ -307,19 +307,19 @@ export function SearchActivities() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                <AccordionItem value="indoor">
+                                <AccordionItem value="indoor-outdoor">
                                     <AccordionTrigger>{getString('search.facilities.filters.categories.indoorOutdoor') || 'Indoor/Outdoor'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('indoor').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
                                                     <Checkbox
-                                                        id={`indoor-${feature.id}`}
+                                                        id={feature.id}
                                                         checked={selectedFeatures.includes(feature.id)}
                                                         onCheckedChange={() => toggleFeature(feature.id)}
                                                     />
                                                     <label
-                                                        htmlFor={`indoor-${feature.id}`}
+                                                        htmlFor={feature.id}
                                                         className="text-sm leading-none"
                                                     >
                                                         {feature.name}
@@ -330,19 +330,19 @@ export function SearchActivities() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                <AccordionItem value="surface">
+                                <AccordionItem value="surface-type">
                                     <AccordionTrigger>{getString('search.facilities.filters.categories.surface') || 'Surface'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('surface').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
                                                     <Checkbox
-                                                        id={`surface-${feature.id}`}
+                                                        id={feature.id}
                                                         checked={selectedFeatures.includes(feature.id)}
                                                         onCheckedChange={() => toggleFeature(feature.id)}
                                                     />
                                                     <label
-                                                        htmlFor={`surface-${feature.id}`}
+                                                        htmlFor={feature.id}
                                                         className="text-sm leading-none"
                                                     >
                                                         {feature.name}
@@ -353,19 +353,19 @@ export function SearchActivities() {
                                     </AccordionContent>
                                 </AccordionItem>
 
-                                <AccordionItem value="amenities">
+                                <AccordionItem value="amenities-list">
                                     <AccordionTrigger>{getString('search.facilities.filters.categories.amenities') || 'Amenities'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('amenities').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
                                                     <Checkbox
-                                                        id={`amenities-${feature.id}`}
+                                                        id={feature.id}
                                                         checked={selectedFeatures.includes(feature.id)}
                                                         onCheckedChange={() => toggleFeature(feature.id)}
                                                     />
                                                     <label
-                                                        htmlFor={`amenities-${feature.id}`}
+                                                        htmlFor={feature.id}
                                                         className="text-sm leading-none"
                                                     >
                                                         {feature.name}
