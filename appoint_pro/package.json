@@ -14,8 +14,8 @@
     "db:seed-plans": "ts-node -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts",
     "stripe:sync": "ts-node -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
     "cypress:open": "cypress open",
-    "e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
-    "e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\"",
+    "e2e": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress open --e2e\"",
+    "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\"",
     "component": "cypress open --component",
     "component:headless": "cypress run --component"
   },
@@ -77,6 +77,7 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "postcss": "^8.4.35",
     "prisma": "^5.10.2",
+    "start-server-and-test": "^2.0.11",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
