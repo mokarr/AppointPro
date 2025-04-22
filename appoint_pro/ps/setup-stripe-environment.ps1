@@ -82,6 +82,7 @@ if ($needUpdate) {
 }
 
 # Define the path to the Stripe CLI executable
+# $stripeCLI = "C:\Users\KomtGoedd\scoop\apps\stripe\1.26.1\stripe.exe"
 $stripeCLI = "C:\Users\moham\Downloads\stripe_1.26.1_windows_x86_64\stripe.exe"
 
 # Check if Stripe CLI is available
