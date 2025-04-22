@@ -93,18 +93,19 @@ model Feature {
 }
 
 model Booking {
-  id         String   @id @default(cuid())
-  startTime  DateTime
-  endTime    DateTime
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  facilityId String
-  facility   Facility @relation(fields: [facilityId], references: [id])
-  locationId String
-  location   Location @relation(fields: [locationId], references: [id])
-  status     String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            String         @id @default(cuid())
+  startTime     DateTime
+  endTime       DateTime
+  userId        String
+  user          User           @relation(fields: [userId], references: [id])
+  facilityId    String
+  facility      Facility       @relation(fields: [facilityId], references: [id])
+  locationId    String
+  location      Location       @relation(fields: [locationId], references: [id])
+  status        String         @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  notifications Notification[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 //REGION USER AUTHENTICATION and AUTHORIZATION
@@ -121,12 +122,32 @@ model User {
   sessions                    Session[]
   authenticators              Authenticator[]
   bookings                    Booking[]
+  notifications               Notification[]
+  // Password reset fields
+  resetToken                  String?
+  resetTokenExpires           DateTime?
   // Subscription-related fields
   lastActiveSubscriptionCheck DateTime?
   createdAt                   DateTime        @default(now())
   updatedAt                   DateTime        @updatedAt
   organizationId              String?
   organization                Organization?   @relation(fields: [organizationId], references: [id])
+  // Refresh tokens
+  refreshTokens               RefreshToken[]
+  // Two-factor authentication
+  twoFactorAuth               TwoFactorAuth?
+  backupCodes                 BackupCode[]
+}
+
+// Model for storing refresh tokens
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
@@ -179,4 +200,47 @@ model Authenticator {
   user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String // "BOOKING_CONFIRMATION", "BOOKING_REMINDER", "BOOKING_CANCELLATION", etc.
+  title     String
+  content   String
+  isRead    Boolean   @default(false)
+  sentAt    DateTime  @default(now())
+  readAt    DateTime?
+  bookingId String?
+  booking   Booking?  @relation(fields: [bookingId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Two-Factor Authentication
+model TwoFactorAuth {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  secret    String
+  verified  Boolean  @default(false)
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Backup codes for 2FA recovery
+model BackupCode {
+  id        String   @id @default(cuid())
+  userId    String
+  code      String
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([code])
 }

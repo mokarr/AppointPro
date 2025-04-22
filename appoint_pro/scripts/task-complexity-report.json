@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "generatedAt": "2025-04-22T20:13:40.625Z",
+    "tasksAnalyzed": 10,
+    "thresholdScore": 5,
+    "projectName": "Your Project Name",
+    "usedResearch": false
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 2,
+      "taskTitle": "Authentication System Implementation",
+      "complexityScore": 7,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the Authentication System Implementation into 4 logical subtasks covering user registration/login, JWT middleware, password management, and role-based access control. For each subtask, include specific technical requirements, acceptance criteria, and potential security considerations.",
+      "reasoning": "Authentication involves multiple security-critical components (JWT, bcrypt, Redis) with several interconnected features (registration, login, recovery). The task requires careful implementation of security best practices and session management, warranting a moderately high complexity score."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Core API Development",
+      "complexityScore": 8,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the Core API Development task into 5 focused subtasks covering API architecture design, user management endpoints, facility management endpoints, booking management endpoints, and API security/documentation. For each subtask, specify the exact endpoints needed, data models, validation requirements, and error handling approach.",
+      "reasoning": "This task forms the foundation of the entire application with multiple entity types (users, facilities, bookings) and requires comprehensive API design. It includes CRUD operations across several domains, error handling, validation, documentation, and security considerations, making it a highly complex task."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Facility Management Module",
+      "complexityScore": 7,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the Facility Management Module into 4 subtasks covering facility CRUD operations, location/address management, availability configuration, and media management. For each subtask, detail the UI components needed, validation rules, and integration points with the backend API.",
+      "reasoning": "This task involves building a complete management interface with multiple forms, validation rules, and complex availability settings. The image upload functionality and location validation add additional complexity, requiring integration with external services."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Booking System Development",
+      "complexityScore": 9,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the Booking System Development into 5 subtasks focusing on calendar visualization, booking creation workflow, booking management interfaces, concurrency handling, and conflict resolution. For each subtask, specify the algorithms needed, database considerations, and UI/UX requirements.",
+      "reasoning": "The booking system is highly complex due to its concurrent transaction requirements, conflict resolution needs, and complex availability calculations. This is core business logic requiring careful implementation of time-based operations and prevention of race conditions."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Notification System Implementation",
+      "complexityScore": 6,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Break down the Notification System Implementation into 3 subtasks covering email service integration, template creation, and notification scheduling/delivery. For each subtask, detail the technical approach, error handling strategies, and testing methodologies.",
+      "reasoning": "While not trivial, the notification system has moderate complexity. It requires integration with external services, template management, and queue implementation, but follows relatively standard patterns for notification systems."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Business Owner Dashboard",
+      "complexityScore": 7,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Divide the Business Owner Dashboard into 4 subtasks covering dashboard layout/structure, schedule visualization, booking management interfaces, and metrics/reporting. For each subtask, specify the React components needed, data fetching requirements, and responsive design considerations.",
+      "reasoning": "This dashboard requires multiple interactive views, complex calendar visualizations, and integration with several backend services. The complexity comes from creating an intuitive UI that handles various business operations and displays dynamic data effectively."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Customer Booking Interface",
+      "complexityScore": 7,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the Customer Booking Interface into 4 subtasks covering facility discovery/search, facility details view, booking creation workflow, and user profile/booking management. For each subtask, detail the UI components, user experience flow, and accessibility requirements.",
+      "reasoning": "This customer-facing interface requires an intuitive, accessible design with multiple interactive elements. The search functionality, booking flow, and responsive design considerations add significant complexity, especially with the WCAG compliance requirement."
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Admin Panel Development",
+      "complexityScore": 6,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Divide the Admin Panel Development into 3 subtasks covering user/account management, reporting/analytics, and system configuration. For each subtask, specify the administrative capabilities needed, data visualization requirements, and security considerations.",
+      "reasoning": "The admin panel has moderate complexity with standard administrative functions. While it includes reporting and configuration interfaces, these are fairly typical admin features without the complex business logic of other modules."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Deployment and Integration",
+      "complexityScore": 8,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the Deployment and Integration task into 4 subtasks covering containerization, CI/CD pipeline setup, cloud infrastructure configuration, and monitoring/logging implementation. For each subtask, detail the specific tools to use, configuration requirements, and documentation needs.",
+      "reasoning": "Deployment involves multiple infrastructure components, containerization, CI/CD pipelines, and cloud configuration. The need to set up staging/production environments and implement proper monitoring adds significant complexity requiring DevOps expertise."
+    },
+    {
+      "taskId": 11,
+      "taskTitle": "Implement Multi-tenant Architecture with Custom Subdomains",
+      "complexityScore": 10,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the Multi-tenant Architecture implementation into 5 subtasks covering DNS/routing configuration, database schema design for multi-tenancy, frontend theming system, tenant isolation mechanisms, and admin interfaces for tenant configuration. For each subtask, specify the technical approach, scalability considerations, and security requirements.",
+      "reasoning": "This is the most complex task, requiring fundamental architectural changes to support multi-tenancy. It involves DNS configuration, database partitioning, dynamic theming, security isolation, and scaling considerations. The white-labeling and performance requirements across thousands of tenants add significant complexity."
+    }
+  ]
+}

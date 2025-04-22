@@ -15,12 +15,15 @@ const publicPaths = [
     '/favicon.ico',
     '/landing/company',   // Allow access to company landing pages
     '/landing/user',      // Allow access to user landing pages
+    '/organization-not-found', // Allow access to organization not found page
 ];
 
 // Pages that are allowed to be accessed via subdomain
 const allowedSubdomainPages = [
     '/', // Root path of the subdomain
     '/book', // Booking page
+    '/services', // Services page
+    '/contact', // Contact page
 ];
 
 // Check if the path is public
@@ -73,27 +76,97 @@ export async function middleware(request: NextRequest) {
     const host = request.headers.get('host') || '';
     const subdomain = getSubdomain(host);
 
+    // Initialize response
+    let response = NextResponse.next();
+
+    // Security headers - Apply to all responses
+    // Content-Security-Policy
+    const cspHeader = [
+        // Default sources restriction
+        "default-src 'self'",
+        // Script sources
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.vercel-analytics.com https://plausible.io",
+        // Style sources
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        // Font sources
+        "font-src 'self' https://fonts.gstatic.com data:",
+        // Image sources
+        "img-src 'self' data: https://*.stripe.com https://avatars.githubusercontent.com https://*.googleusercontent.com blob:",
+        // Connect sources (for API calls, WebSockets)
+        "connect-src 'self' https://*.stripe.com https://*.vercel-analytics.com https://plausible.io",
+        // Frame sources
+        "frame-src 'self' https://*.stripe.com",
+        // Form actions
+        "form-action 'self'",
+        // Object sources
+        "object-src 'none'",
+        // Base URI
+        "base-uri 'self'",
+        // Frame ancestors (control iframing)
+        "frame-ancestors 'self'",
+        // Upgrade insecure requests
+        "upgrade-insecure-requests",
+    ].join(';');
+
+    // Set security headers
+    response.headers.set('Content-Security-Policy', cspHeader);
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+
+    // Enhanced security headers
+    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+    response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+    response.headers.set('X-DNS-Prefetch-Control', 'off');
+    response.headers.set('X-Download-Options', 'noopen');
+    response.headers.set('X-Permitted-Cross-Domain-Policies', 'none');
+
+    // Cookie policy
+    response.headers.set('Set-Cookie', 'SameSite=Strict; Secure; HttpOnly; Path=/');
+
+    // Set Strict-Transport-Security header (HSTS) for HTTPS
+    if (process.env.NODE_ENV === 'production') {
+        response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+    }
+
     // Handle subdomain routing
     if (subdomain) {
+        // Always allow access to the organization-not-found page
+        if (pathname === '/organization-not-found') {
+            return response;
+        }
+
         // Check if the current path is allowed to be accessed via subdomain
         if (isAllowedSubdomainPage(pathname)) {
-            // If accessing the root path, redirect to the company landing page
+            // If accessing the root path, redirect to the organization page with subdomain
             if (pathname === '/') {
-                return NextResponse.rewrite(new URL(`/landing/company/${subdomain}`, request.url));
+                const url = new URL(`/organization/${subdomain}`, request.url);
+                return NextResponse.rewrite(url);
             }
 
             // Special case for booking page - redirect to appropriate booking page
             if (pathname === '/book' || pathname.startsWith('/book/')) {
-                // Implementation depends on how booking pages are structured
-                // For example, if booking is part of the company landing:
-                return NextResponse.rewrite(new URL(`/landing/company/${subdomain}/book${pathname.replace('/book', '')}`, request.url));
-                // Or if there's a dedicated booking route:
-                // return NextResponse.rewrite(new URL(`/booking/${subdomain}${pathname.replace('/book', '')}`, request.url));
+                // Rewrite to the organization's booking page
+                const url = new URL(`/organization/${subdomain}/book${pathname.replace('/book', '')}`, request.url);
+                return NextResponse.rewrite(url);
             }
 
-            // For other allowed paths (if any are added in the future)
-            // This might need customization based on your routing structure
-            return NextResponse.next();
+            // For other allowed paths (services, contact, etc.)
+            if (pathname === '/services' || pathname.startsWith('/services/')) {
+                const url = new URL(`/organization/${subdomain}/services${pathname.replace('/services', '')}`, request.url);
+                return NextResponse.rewrite(url);
+            }
+
+            if (pathname === '/contact') {
+                const url = new URL(`/organization/${subdomain}/contact`, request.url);
+                return NextResponse.rewrite(url);
+            }
+
+            // For any other allowed paths added in the future
+            return response;
         } else {
             // For non-allowed pages, redirect to the main domain
             const url = request.nextUrl.clone();
@@ -137,18 +210,20 @@ export async function middleware(request: NextRequest) {
 
     // Allow access to public paths
     if (isPublicPath(pathname)) {
-        return NextResponse.next();
+        return response;
     }
 
     // Allow access to public organization pages
     if (isPublicOrganizationPage(pathname)) {
-        return NextResponse.next();
+        return response;
     }
 
-    // The organization paths no longer exist, so we don't need to check subscription
-    // for organization-specific routes anymore
+    // Allow access to the organization page for specific subdomains
+    if (pathname.startsWith('/organization/')) {
+        return response;
+    }
 
-    return NextResponse.next();
+    return response;
 }
 
 // Configure which paths the middleware runs on

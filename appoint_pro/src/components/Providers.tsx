@@ -1,23 +1,25 @@
 'use client';
 
 import { SessionProvider } from 'next-auth/react';
+import { ThemeProvider } from 'next-themes';
+import { CsrfProvider } from '@/providers/csrf-provider';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from 'sonner';
 import { TranslationLoader } from './TranslationLoader';
 
-interface ProvidersProps {
-    children: React.ReactNode;
-}
-
-export default function Providers({ children }: ProvidersProps) {
+export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <SessionProvider>
-            <LanguageProvider>
-                <TranslationLoader>
-                    {children}
-                    <Toaster />
-                </TranslationLoader>
-            </LanguageProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                <CsrfProvider>
+                    <LanguageProvider>
+                        <TranslationLoader>
+                            {children}
+                            <Toaster position="bottom-right" />
+                        </TranslationLoader>
+                    </LanguageProvider>
+                </CsrfProvider>
+            </ThemeProvider>
         </SessionProvider>
     );
 } 

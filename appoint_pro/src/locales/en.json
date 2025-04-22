@@ -64,7 +64,9 @@
                 "incoming": "Incoming appointments",
                 "outgoing": "Outgoing appointments",
                 "history": "History",
-                "description": "View and manage your calendar and appointments"
+                "description": "View and manage your calendar and appointments",
+                "overview": "Appointments Overview",
+                "new": "New Appointment"
             },
             "clients": {
                 "overview": "Client overview",
@@ -111,7 +113,14 @@
         "signOut": "Sign Out",
         "next": "Next",
         "back": "Back",
-        "done": "Done"
+        "done": "Done",
+        "location": "Location",
+        "facility": "Facility",
+        "status": "Status",
+        "actions": "Actions",
+        "confirm": "Confirm",
+        "complete": "Complete",
+        "create": "Create"
     },
     "auth": {
         "email": "Email",
@@ -510,5 +519,47 @@
             "noResults": "No activities found that match your search criteria.",
             "error": "Failed to load activities. Please try again."
         }
+    },
+    "appointments": {
+        "calendar": "Calendar View",
+        "list": "List View",
+        "allBookings": "All Bookings",
+        "createNew": "Create New Booking",
+        "createDescription": "Fill in the details to create a new booking",
+        "selectDate": "Select Date",
+        "filterDescription": "Filter bookings by date, location, and facility",
+        "selectLocation": "Select a location",
+        "selectFacility": "Select a facility",
+        "scheduledBookings": "Scheduled bookings for this day",
+        "noBookings": "No bookings found for the selected filters",
+        "listDescription": "View all your bookings in a list format",
+        "startTime": "Start Time",
+        "endTime": "End Time",
+        "time": "Time",
+        "notes": "Notes",
+        "notesPlaceholder": "Add any additional information here",
+        "pickDate": "Pick a date"
+    },
+    "status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+    },
+    "errors": {
+        "fetchLocationsFailed": "Failed to fetch locations",
+        "fetchFacilitiesFailed": "Failed to fetch facilities",
+        "fetchBookingsFailed": "Failed to fetch bookings",
+        "selectLocationAndFacility": "Please select both a location and a facility",
+        "createBookingFailed": "Failed to create booking",
+        "bookingCONFIRMEDFailed": "Failed to confirm booking",
+        "bookingCANCELLEDFailed": "Failed to cancel booking",
+        "bookingCOMPLETEDFailed": "Failed to complete booking"
+    },
+    "success": {
+        "bookingCreated": "Booking created successfully",
+        "bookingCONFIRMED": "Booking confirmed successfully",
+        "bookingCANCELLED": "Booking cancelled successfully",
+        "bookingCOMPLETED": "Booking completed successfully"
     }
 }

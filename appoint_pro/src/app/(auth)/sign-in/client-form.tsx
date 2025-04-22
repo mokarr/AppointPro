@@ -3,6 +3,7 @@
 import { authenticate } from "@/lib/auth-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SecureForm, SecureFormSubmit } from "@/components/ui/secure-form";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -61,7 +62,7 @@ export default function ClientSignInForm() {
             </div>
 
             {/* Email/Password Sign In */}
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <SecureForm className="space-y-4" onSubmit={handleSubmit}>
                 <Input
                     name="email"
                     placeholder="Email"
@@ -78,10 +79,10 @@ export default function ClientSignInForm() {
                     autoComplete="current-password"
                     disabled={isLoading}
                 />
-                <Button className="w-full" type="submit" disabled={isLoading}>
+                <SecureFormSubmit className="w-full" disabled={isLoading}>
                     {isLoading ? 'Signing in...' : 'Sign In'}
-                </Button>
-            </form>
+                </SecureFormSubmit>
+            </SecureForm>
 
             <div className="text-center">
                 <Button asChild variant="link">
