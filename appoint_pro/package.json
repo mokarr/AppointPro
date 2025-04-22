@@ -2,6 +2,7 @@
   "name": "appoint_pro",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
@@ -11,7 +12,12 @@
     "db:studio": "npx prisma studio",
     "db:reset": "prisma migrate reset && prisma migrate dev",
     "db:seed-plans": "ts-node -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts",
-    "stripe:sync": "ts-node -r tsconfig-paths/register src/scripts/sync-subscriptions.ts"
+    "stripe:sync": "ts-node -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
+    "cypress:open": "cypress open",
+    "e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
+    "e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\"",
+    "component": "cypress open --component",
+    "component:headless": "cypress run --component"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

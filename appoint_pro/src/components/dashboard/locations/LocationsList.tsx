@@ -210,7 +210,7 @@ export function LocationsList() {
                             <Button variant="outline" onClick={() => setIsAddLocationOpen(false)}>
                                 {getTranslation('dashboard.locations.cancel')}
                             </Button>
-                            <Button onClick={handleAddLocation}>
+                            <Button onClick={handleAddLocation} type="submit">
                                 {getTranslation('dashboard.locations.addLocation')}
                             </Button>
                         </DialogFooter>
