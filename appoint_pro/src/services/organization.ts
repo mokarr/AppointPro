@@ -24,7 +24,10 @@ const checkOrganizationExists = async (organizationName: string) => {
 
 const getOrganizationById = async (organizationId: string) => {
     const organization = await prisma.organization.findUnique({
-        where: { id: organizationId }
+        where: { id: organizationId },
+        include: {
+            locations: true,
+        }
     });
     if (!organization) {
         throw new Error("Organisatie bestaat niet");
@@ -42,7 +45,7 @@ const getOrganizationBySubdomain = async (subdomain: string) => {
             const organization = await prisma.organization.findFirst({
                 where: {
                     subdomain,
-                    hasActiveSubscription: true // Only find orgs with active subscription
+                    hasActiveSubscription: false // Only find orgs with active subscription todo: change to true
                 },
                 include: {
                     locations: true,

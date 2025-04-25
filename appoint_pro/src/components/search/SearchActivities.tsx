@@ -48,6 +48,7 @@ type Facility = {
     id: string
     title: string
     organization: string
+    organizationSubdomain: string
     location: string
     address?: string
     price: number
@@ -232,6 +233,20 @@ export function SearchActivities() {
     const clearFilters = () => {
         setSelectedFeatures([])
         setPriceRange("all")
+    }
+
+    // Handle booking a facility
+    const handleBookFacility = (facility: Facility) => {
+        // Create URL to the organization's subdomain booking page with facility ID
+        const protocol = window.location.protocol
+        const domain = window.location.hostname.split('.').slice(-2).join('.')
+        const port = window.location.port ? `:${window.location.port}` : ''
+
+        // Construct the URL - using subdomain.domain.com/book/facilityId format
+        const bookingUrl = `${protocol}//${facility.organizationSubdomain}.${domain}${port}/book/${facility.id}`
+
+        // Navigate to the booking URL
+        window.location.href = bookingUrl
     }
 
     return (
@@ -455,7 +470,12 @@ export function SearchActivities() {
                                     </div>
                                 </div>
                                 <div className="p-4 border-t mt-auto">
-                                    <Button className="w-full">{getString('search.facilities.card.reserve') || 'Book Now'}</Button>
+                                    <Button
+                                        className="w-full"
+                                        onClick={() => handleBookFacility(facility)}
+                                    >
+                                        {getString('search.facilities.card.reserve') || 'Book Now'}
+                                    </Button>
                                 </div>
                             </Card>
                         ))}

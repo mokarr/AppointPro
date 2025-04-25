@@ -6,6 +6,9 @@ export default defineConfig({
         setupNodeEvents(on, config) {
             // implement node event listeners here
         },
+        experimentalModifyObstructiveThirdPartyCode: true,
+        experimentalWebKitSupport: true,
+        chromeWebSecurity: false,
     },
     component: {
         devServer: {
@@ -13,4 +16,8 @@ export default defineConfig({
             bundler: 'webpack',
         },
     },
+    // Add hosts mapping to resolve all *.localhost subdomains to localhost
+    hosts: {
+        "*.localhost": "127.0.0.1"
+    }
 }); 

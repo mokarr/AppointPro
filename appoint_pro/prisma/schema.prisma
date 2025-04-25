@@ -93,18 +93,22 @@ model Feature {
 }
 
 model Booking {
-  id         String   @id @default(cuid())
-  startTime  DateTime
-  endTime    DateTime
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  facilityId String
-  facility   Facility @relation(fields: [facilityId], references: [id])
-  locationId String
-  location   Location @relation(fields: [locationId], references: [id])
-  status     String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            String   @id @default(cuid())
+  startTime     DateTime
+  endTime       DateTime
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+  facilityId    String
+  facility      Facility @relation(fields: [facilityId], references: [id])
+  locationId    String
+  location      Location @relation(fields: [locationId], references: [id])
+  status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  customerEmail String?
+  customerName  String?
+  customerPhone String?
+  notes         String?
 }
 
 //REGION USER AUTHENTICATION and AUTHORIZATION

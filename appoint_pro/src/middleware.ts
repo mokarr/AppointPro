@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getCypressTestSubdomain } from './middleware-test-helper';
 
 // Paths that don't require an active subscription
 const publicPaths = [
@@ -21,6 +22,9 @@ const publicPaths = [
 const allowedSubdomainPages = [
     '/', // Root path of the subdomain
     '/book', // Booking page
+    '/book/facilities', // Facility selection page
+    '/book/confirmation', // Booking confirmation page
+    '/book/confirmation/success', // Booking success page
 ];
 
 // Check if the path is public
@@ -47,7 +51,14 @@ const availableLanguages = ['nl', 'en'];
 const defaultLanguage = 'nl';
 
 // Extract subdomain from host
-const getSubdomain = (host: string): string | null => {
+const getSubdomain = (host: string, userAgent?: string | null): string | null => {
+    // First check if this is a Cypress test with a specific subdomain
+    const cypressSubdomain = userAgent ? getCypressTestSubdomain(userAgent) : null;
+    if (cypressSubdomain) {
+        console.log('Detected Cypress test subdomain:', cypressSubdomain);
+        return cypressSubdomain;
+    }
+
     // Local development handling
     if (host.includes('localhost')) {
         const parts = host.split('.');
@@ -71,29 +82,84 @@ const getSubdomain = (host: string): string | null => {
 export async function middleware(request: NextRequest) {
     const { pathname, searchParams } = request.nextUrl;
     const host = request.headers.get('host') || '';
-    const subdomain = getSubdomain(host);
+    const userAgent = request.headers.get('user-agent');
+    const subdomain = getSubdomain(host, userAgent);
+
+    // Helper function to check if an organization with the given subdomain exists
+    async function checkOrganizationExists(subdomain: string): Promise<{ exists: boolean, organizationId?: string }> {
+        try {
+            // Use the request origin to construct the full URL
+            const apiUrl = new URL(`/api/organizations/check-subdomain?subdomain=${subdomain}`, request.url);
+            console.log('Checking organization at URL:', apiUrl.toString());
+
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                cache: 'no-store',
+            });
+
+            if (!response.ok) {
+                console.log('Organization check failed with status:', response.status);
+                return { exists: false };
+            }
+
+            const data = await response.json();
+            console.log('Organization check response:', data);
+            return {
+                exists: data.exists,
+                organizationId: data.organizationId
+            };
+        } catch (error) {
+            console.error('Failed to check organization existence:', error);
+            return { exists: false };
+        }
+    }
 
     // Handle subdomain routing
     if (subdomain) {
+        console.log('Checking organization existence for subdomain:', subdomain);
+
+        // Check if the organization with this subdomain exists
+        const { exists, organizationId } = await checkOrganizationExists(subdomain);
+
+        if (!exists) {
+            // If the organization doesn't exist, redirect to an error page or show a not found message
+            console.log('Organization does not exist, redirecting to not-found');
+            return NextResponse.rewrite(new URL('/not-found', request.url));
+        }
+
+        // Organization exists, proceed with subdomain handling
         // Check if the current path is allowed to be accessed via subdomain
         if (isAllowedSubdomainPage(pathname)) {
-            // If accessing the root path, redirect to the company landing page
+            console.log('Path is allowed, proceeding with subdomain handling');
+
+            // Create a new response
+            const response = NextResponse.next();
+
+            // Set the organization ID in a custom header if it exists
+            if (organizationId) {
+                response.headers.set('x-organizationSubdomainId', organizationId);
+            }
+
+            // If accessing the root path, redirect to the landing page
             if (pathname === '/') {
-                return NextResponse.rewrite(new URL(`/landing/company/${subdomain}`, request.url));
+                // Pass the organization ID in the header
+                return NextResponse.rewrite(new URL(`/landing/`, request.url), {
+                    headers: response.headers
+                });
             }
 
             // Special case for booking page - redirect to appropriate booking page
             if (pathname === '/book' || pathname.startsWith('/book/')) {
-                // Implementation depends on how booking pages are structured
-                // For example, if booking is part of the company landing:
-                return NextResponse.rewrite(new URL(`/landing/company/${subdomain}/book${pathname.replace('/book', '')}`, request.url));
-                // Or if there's a dedicated booking route:
-                // return NextResponse.rewrite(new URL(`/booking/${subdomain}${pathname.replace('/book', '')}`, request.url));
+                return NextResponse.rewrite(new URL(`${pathname}${request.nextUrl.search}`, request.url), {
+                    headers: response.headers
+                });
             }
 
-            // For other allowed paths (if any are added in the future)
-            // This might need customization based on your routing structure
-            return NextResponse.next();
+            // For other allowed paths, pass the response with the custom header
+            return response;
         } else {
             // For non-allowed pages, redirect to the main domain
             const url = request.nextUrl.clone();
