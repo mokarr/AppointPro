@@ -4,7 +4,22 @@ export default defineConfig({
     e2e: {
         baseUrl: 'http://localhost:3000',
         setupNodeEvents(on, config) {
-            // implement node event listeners here
+            // Store data between tests
+            const localStorage: Record<string, any> = {};
+
+            on('task', {
+                setLocalStorage: ({ key, value }: { key: string, value: any }) => {
+                    localStorage[key] = value;
+                    return null;
+                },
+                getLocalStorage: (key: string) => {
+                    return localStorage[key] || null;
+                },
+                clearLocalStorage: () => {
+                    Object.keys(localStorage).forEach(key => delete localStorage[key]);
+                    return null;
+                }
+            });
         },
         experimentalModifyObstructiveThirdPartyCode: true,
         experimentalWebKitSupport: true,

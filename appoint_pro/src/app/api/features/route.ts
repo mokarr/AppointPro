@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
-
-// Create a separate instance to bypass TypeScript errors
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 export async function GET() {
     try {
-        const features = await prisma.$queryRaw`SELECT * FROM Feature ORDER BY name ASC`
-        return NextResponse.json(features)
+        const features = await prisma.feature.findMany({
+            orderBy: { name: 'asc' }
+        });
+
+        return NextResponse.json({ success: true, data: features })
     } catch (error) {
         console.error("Error fetching features:", error)
         return NextResponse.json(
-            { error: "Er is een fout opgetreden bij het ophalen van de kenmerken" },
+            { success: false, error: "Er is een fout opgetreden bij het ophalen van de kenmerken" },
             { status: 500 }
         )
     }

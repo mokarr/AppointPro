@@ -287,7 +287,11 @@ export function LocationsList() {
             ) : (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {locations.map((location) => (
-                        <Card key={location.id} className="flex flex-col">
+                        <Card
+                            key={location.id}
+                            className="flex flex-col"
+                            data-location-id={location.id}
+                        >
                             <CardHeader>
                                 <CardTitle>{location.name}</CardTitle>
                                 <CardDescription className="flex items-center gap-1">

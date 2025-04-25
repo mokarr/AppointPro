@@ -15,16 +15,16 @@ export async function GET(
 
         if (!location) {
             return NextResponse.json(
-                { error: "Locatie niet gevonden" },
+                { success: false, error: "Locatie niet gevonden" },
                 { status: 404 }
             )
         }
 
-        return NextResponse.json(location)
+        return NextResponse.json({ success: true, data: location })
     } catch (error) {
         console.error("Error fetching location:", error)
         return NextResponse.json(
-            { error: "Er is een fout opgetreden bij het ophalen van de locatie" },
+            { success: false, error: "Er is een fout opgetreden bij het ophalen van de locatie" },
             { status: 500 }
         )
     }

@@ -63,19 +63,19 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                 const locationResponse = await fetch(`/api/locations/${locationId}`)
                 if (!locationResponse.ok) throw new Error(getTranslation('errors.fetchLocationFailed'))
                 const locationData = await locationResponse.json()
-                setLocation(locationData)
+                setLocation(locationData.data || locationData) // Handle both formats for backward compatibility
 
                 // Fetch facilities for this location
                 const facilitiesResponse = await fetch(`/api/locations/${locationId}/facilities`)
                 if (!facilitiesResponse.ok) throw new Error(getTranslation('errors.fetchFacilitiesFailed'))
-                const facilitiesData = await facilitiesResponse.json()
-                setFacilities(facilitiesData)
+                const facilitiesResult = await facilitiesResponse.json()
+                setFacilities(facilitiesResult.data || facilitiesResult) // Handle both formats for backward compatibility
 
                 // Fetch all available features
                 const featuresResponse = await fetch('/api/features')
                 if (!featuresResponse.ok) throw new Error(getTranslation('errors.fetchFeaturesFailed'))
-                const featuresData = await featuresResponse.json()
-                setAvailableFeatures(featuresData)
+                const featuresResult = await featuresResponse.json()
+                setAvailableFeatures(featuresResult.data || featuresResult) // Handle both formats for backward compatibility
 
             } catch (error) {
                 console.error('Error fetching data:', error)
@@ -90,30 +90,32 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
     const handleAddFacility = async () => {
         try {
-            // In de echte implementatie zou je deze API call maken
-            // const response = await fetch(`/api/locations/${locationId}/facilities`, {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify(newFacility)
-            // })
-            // if (!response.ok) throw new Error('Failed to add facility')
-            // const addedFacility = await response.json()
+            // Make the actual API call to create a facility
+            const response = await fetch(`/api/locations/${locationId}/facilities`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newFacility)
+            });
 
-            // Voor demo doeleinden
-            const addedFacility: Facility = {
-                ...newFacility,
-                id: `${facilities.length + 1}`,
-                features: newFacility.features,
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || getTranslation('errors.addFacilityFailed'));
             }
 
-            setFacilities([...facilities, addedFacility])
-            setNewFacility({ name: "", description: "", price: 0, features: [] })
-            setIsAddFacilityOpen(false)
+            const result = await response.json();
+            const addedFacility = result.data;
 
-            toast.success(getTranslation('facilities.addSuccess'))
+            // Update the local state with the new facility
+            setFacilities([...facilities, addedFacility]);
+
+            // Reset form and close dialog
+            setNewFacility({ name: "", description: "", price: 0, features: [] });
+            setIsAddFacilityOpen(false);
+
+            toast.success(getTranslation('facilities.addSuccess'));
         } catch (error) {
-            console.error('Error adding facility:', error)
-            toast.error(getTranslation('errors.addFacilityFailed'))
+            console.error('Error adding facility:', error);
+            toast.error(error instanceof Error ? error.message : getTranslation('errors.addFacilityFailed'));
         }
     }
 
@@ -156,12 +158,12 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                 </div>
                 <Dialog open={isAddFacilityOpen} onOpenChange={setIsAddFacilityOpen}>
                     <DialogTrigger asChild>
-                        <Button className="flex items-center gap-2">
+                        <Button id="add-facility-button" className="flex items-center gap-2">
                             <PlusCircle className="h-4 w-4" />
                             {getTranslation('facilities.addNew')}
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[650px]">
+                    <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>{getTranslation('facilities.addNewTitle')}</DialogTitle>
                             <DialogDescription>
@@ -292,11 +294,11 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                                 </div>
                             </div>
                         </div>
-                        <DialogFooter>
+                        <DialogFooter className="mt-4 gap-2 sm:gap-0">
                             <Button variant="outline" onClick={() => setIsAddFacilityOpen(false)}>
                                 {getTranslation('common.cancel')}
                             </Button>
-                            <Button onClick={handleAddFacility}>
+                            <Button id="submit-add-facility" type="button" onClick={handleAddFacility}>
                                 {getTranslation('facilities.addFacility')}
                             </Button>
                         </DialogFooter>

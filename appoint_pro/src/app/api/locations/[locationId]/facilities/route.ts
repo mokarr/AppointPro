@@ -15,7 +15,7 @@ export async function GET(
 
         if (!location) {
             return NextResponse.json(
-                { error: "Locatie niet gevonden" },
+                { success: false, error: "Locatie niet gevonden" },
                 { status: 404 }
             )
         }
@@ -28,11 +28,11 @@ export async function GET(
             orderBy: { name: "asc" }
         })
 
-        return NextResponse.json(facilities)
+        return NextResponse.json({ success: true, data: facilities })
     } catch (error) {
         console.error("Error fetching facilities:", error)
         return NextResponse.json(
-            { error: "Er is een fout opgetreden bij het ophalen van de faciliteiten" },
+            { success: false, error: "Er is een fout opgetreden bij het ophalen van de faciliteiten" },
             { status: 500 }
         )
     }
@@ -55,7 +55,7 @@ export async function POST(
 
         if (!location) {
             return NextResponse.json(
-                { error: "Locatie niet gevonden" },
+                { success: false, error: "Locatie niet gevonden" },
                 { status: 404 }
             )
         }
@@ -75,11 +75,11 @@ export async function POST(
             }
         })
 
-        return NextResponse.json(facility, { status: 201 })
+        return NextResponse.json({ success: true, data: facility }, { status: 201 })
     } catch (error) {
         console.error("Error creating facility:", error)
         return NextResponse.json(
-            { error: "Er is een fout opgetreden bij het aanmaken van de faciliteit" },
+            { success: false, error: "Er is een fout opgetreden bij het aanmaken van de faciliteit" },
             { status: 500 }
         )
     }
