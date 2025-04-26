@@ -198,6 +198,7 @@
             "subscription": "Abonnement",
             "settings": "Instellingen"
         },
+        "subscriptionSection": "Abbonement",
         "welcome": "Welkom",
         "description": "Beheer uw afspraken en bedrijf vanaf één plek.",
         "newAppointment": "Nieuwe Afspraak",
@@ -251,6 +252,24 @@
                 "add": "Locatie succesvol toegevoegd"
             }
         }
+    },
+
+    "subscription": {
+        "manage": {
+            "title": "Uw Abbonement",
+            "noActiveSubscription": "U heeft geen actief abonnement.",
+            "noActiveSubscriptionMessage": "U heeft een abbonement nodig om gebruik te maken van AppointPro.",
+            "manageSubscription": "Abonnement Beheren",
+            "upgrade": "Upgrade",
+            "cancel": "Annuleren",
+            "currentPlan": "Huidig Plan",
+            "nextBilling": "Volgende Facturatie",
+            "billingHistory": "Facturatiegeschiedenis",
+            "loading": "Licentie Checken..."
+
+        }
+
+
     },
     "business": {
         "hero": {
@@ -433,8 +452,9 @@
             "title": "Klaar Om Je Volgende Wedstrijd Te Boeken?",
             "subtitle": "Sluit je aan bij duizenden sportliefhebbers die AppointPro gebruiken"
         },
+        
         "search": {
-            "activities": {
+            "faciliteis": {
                 "filters": {
                     "button": "Filters",
                     "title": "Filters",
