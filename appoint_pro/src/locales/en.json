@@ -61,6 +61,7 @@
         "locations": "Locations",
         "header": {
             "appointments": {
+                "overview": "Overview",
                 "incoming": "Incoming appointments",
                 "outgoing": "Outgoing appointments",
                 "history": "History",
@@ -185,6 +186,11 @@
         "upcomingAppointments": "Upcoming Appointments",
         "totalCustomers": "Total Customers",
         "revenue": "Revenue",
+        "stats": {
+            "appointments": "Appointments",
+            "customers": "Customers",
+            "revenue": "Revenue"
+        },
         "locations": {
             "title": "Location Management",
             "description": "Manage all your sports locations and facilities in one place",

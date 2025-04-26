@@ -66,6 +66,7 @@
         },
         "header": {
             "appointments": {
+                "overview": "Overzicht",
                 "incoming": "Inkomende afspraken",
                 "outgoing": "Uitgaande afspraken",
                 "history": "Geschiedenis",
@@ -186,6 +187,11 @@
         "upcomingAppointments": "Aankomende Afspraken",
         "totalCustomers": "Totaal Klanten",
         "revenue": "Omzet",
+        "stats": {
+            "appointments": "Afspraken",
+            "customers": "Klanten",
+            "revenue": "Omzet"
+        },
         "locations": {
             "title": "Locatiebeheer",
             "description": "Beheer al uw sportlocaties en faciliteiten op één plek",
