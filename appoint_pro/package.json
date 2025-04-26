@@ -42,7 +42,7 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "cmdk": "^0.2.1",
+    "cmdk": "^1.1.1",
     "date-fns": "^2.30.0",
     "dotenv": "^16.5.0",
     "lucide-react": "^0.344.0",
@@ -86,8 +86,8 @@
     "typescript": "^5.3.3"
   },
   "resolutions": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "@types/react": "18.2.64",
     "@types/react-dom": "18.2.21"
   }
