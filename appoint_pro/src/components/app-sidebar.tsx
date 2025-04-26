@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 
 // Menu items.
 const items = [
-    { title: "Home", slug: "home", icon: Home },
+    { title: "Homeee", slug: "home", icon: Home },
     { title: "Inbox", slug: "inbox", icon: Inbox },
     { title: "Calendar", slug: "calendar", icon: Calendar },
     { title: "Search", slug: "search", icon: Search },
