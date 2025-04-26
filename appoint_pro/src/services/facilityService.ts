@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 const createFacility = async (locationId: string, name: string) => {
     // Zoek de locatie op basis van de locatieId

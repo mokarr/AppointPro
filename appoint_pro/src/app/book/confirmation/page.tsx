@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
 import { getFacilityById, Facility } from '@/services/facility';
-import BookingForm from './BookingForm';
+import BookingForm from '@/app/book/confirmation/BookingForm';
+import type { OrganizationWithLocations, Location } from '@/types/organization';
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {
@@ -13,7 +14,7 @@ const getOrganizationData = cache(async (organizationId: string) => {
 
     try {
         const organization = await getOrganizationById(organizationId);
-        return organization;
+        return organization as OrganizationWithLocations;
     } catch (error) {
         console.error('Error fetching organization:', error);
         return null;
@@ -21,19 +22,22 @@ const getOrganizationData = cache(async (organizationId: string) => {
 });
 
 // Find a location by ID in an organization
-const findLocationById = (organization: any, locationId: string) => {
+const findLocationById = (organization: OrganizationWithLocations, locationId: string): Location | null => {
     if (!organization || !organization.locations) return null;
-    return organization.locations.find((loc: any) => loc.id === locationId);
+    return organization.locations.find((loc: Location) => loc.id === locationId) || null;
 };
 
-export default async function ConfirmationPage({
-    searchParams,
-}: {
-    searchParams: { [key: string]: string | string[] | undefined };
-}) {
-    // Get query parameters
-    const locationId = typeof searchParams.locationId === 'string' ? searchParams.locationId : '';
-    const facilityId = typeof searchParams.facilityId === 'string' ? searchParams.facilityId : '';
+// First, update the component props
+type Props = {
+    params: Promise<Record<string, string>>;
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function ConfirmationPage({ params, searchParams }: Props) {
+    // Get query parameters from the Promise
+    const resolvedSearchParams = await searchParams;
+    const locationId = typeof resolvedSearchParams.locationId === 'string' ? resolvedSearchParams.locationId : '';
+    const facilityId = typeof resolvedSearchParams.facilityId === 'string' ? resolvedSearchParams.facilityId : '';
 
     if (!locationId || !facilityId) {
         redirect('/book');

@@ -67,11 +67,11 @@ export async function POST(req: NextRequest) {
 
             return NextResponse.json({ url: checkoutSession.url });
         } catch (checkoutError) {
-            logger.error('Error in createSubscriptionCheckoutSession:', checkoutError);
+            logger.error('Error in createSubscriptionCheckoutSession:', checkoutError as Error);
             throw checkoutError; // Re-throw to be caught by outer try-catch
         }
     } catch (error) {
-        logger.error('Error creating checkout session:', error);
+        logger.error('Error creating checkout session:', error as Error);
 
         // Log more details about the error
         if (error instanceof Error) {

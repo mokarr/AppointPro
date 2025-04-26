@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { getOrganizationById } from "@/services/organization";
 import { redirect } from "next/navigation";
 
-import CustomersPageContent from "./customers-page-content";
+import CustomersPageContent from "@/app/dashboard/customers/customers-page-content";
 
 export default async function CustomersPage() {
     const session = await auth();

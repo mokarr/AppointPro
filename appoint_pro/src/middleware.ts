@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getCypressTestSubdomain } from './middleware-test-helper';
+import { getCypressTestSubdomain } from '@/middleware-test-helper';
 
 // Paths that don't require an active subscription
 const publicPaths = [

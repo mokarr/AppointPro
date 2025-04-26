@@ -1,12 +1,15 @@
 import { getBookingById } from '@/services/booking';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 export default async function BookingSuccessPage({
     searchParams,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    const bookingId = typeof searchParams.bookingId === 'string' ? searchParams.bookingId : '';
+    // Resolve the searchParams Promise
+    const resolvedSearchParams = await searchParams;
+    const bookingId = typeof resolvedSearchParams.bookingId === 'string' ? resolvedSearchParams.bookingId : '';
 
     if (!bookingId) {
         redirect('/book');
@@ -123,12 +126,13 @@ export default async function BookingSuccessPage({
                         </p>
 
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <a
+                            <Link
                                 href="/"
                                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
+                                aria-label="Terug naar Home"
                             >
                                 Terug naar Home
-                            </a>
+                            </Link>
                             <a
                                 href="/book"
                                 className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-md transition-colors"

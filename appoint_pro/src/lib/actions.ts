@@ -1,10 +1,10 @@
 'use server';
 
 import { saltAndHashPassword } from "@/utils/password";
-import { executeAction } from "./executeAction"
-import { db } from "./server";  // Import from server-only module
-import { signUpSchema } from "./zod";
-import { signIn } from "./auth";  // Import auth en signIn
+import { executeAction } from "@/lib/executeAction";
+import { db } from "@/lib/server";  // Import from server-only module
+import { signUpSchema } from "@/lib/zod";
+import { signIn } from "@/lib/auth";  // Import auth en signIn
 
 // Generate a sanitized subdomain from organization name
 const generateSubdomainFromName = (name: string): string => {

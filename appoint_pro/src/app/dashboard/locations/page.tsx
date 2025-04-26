@@ -1,4 +1,4 @@
-import { LocationsPageContent } from "./LocationsPageContent"
+import { LocationsPageContent } from "@/app/dashboard/locations/LocationsPageContent"
 
 export const metadata = {
     title: "Locatiebeheer | AppointPro",

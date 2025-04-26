@@ -46,42 +46,17 @@ Cypress.Commands.add('navigateToBookingConfirmation', (subdomain: string) => {
     cy.contains('Boeking bijna bevestigd!').should('be.visible');
 });
 
-// Extend Cypress interface
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
     namespace Cypress {
         interface Chainable {
-            /**
-             * Custom command to wait for translations to be loaded
-             * @example cy.waitForTranslations()
-             */
-            waitForTranslations(): Chainable<void>
-
-            /**
-             * Custom command to switch the application language
-             * @example cy.switchLanguage('nl')
-             */
-            switchLanguage(lang: 'nl' | 'en'): Chainable<void>
-
-            /**
-             * Custom command to login to the application
-             * @example cy.login('test@example.com', 'password123')
-             */
-            login(email: string, password: string): Chainable<void>
-
-            /**
-             * Custom command to visit a page with a subdomain
-             * @example cy.visitSubdomain('test', '/book')
-             */
-            visitSubdomain(subdomain: string, path?: string): Chainable<void>
-
-            /**
-             * Custom command to navigate directly to the booking confirmation page
-             * @example cy.navigateToBookingConfirmation('test')
-             */
-            navigateToBookingConfirmation(subdomain: string): Chainable<void>
+            waitForTranslations(): Chainable<void>;
+            switchLanguage(lang: 'nl' | 'en'): Chainable<void>;
+            login(email: string, password: string): Chainable<void>;
+            visitSubdomain(subdomain: string, path?: string): Chainable<void>;
+            navigateToBookingConfirmation(subdomain: string): Chainable<void>;
         }
     }
 }
-
-// Add other custom commands as needed
+/* eslint-enable @typescript-eslint/no-namespace */
 export { }; 

@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { getOrganizationById } from "@/services/organization";
 import { redirect } from "next/navigation";
 
-import AppointmentsPageContent from "./appointments-page-content";
+import AppointmentsPageContent from "@/app/dashboard/appointments/appointments-page-content";
 
 export default async function AppointmentsPage() {
     const session = await auth();

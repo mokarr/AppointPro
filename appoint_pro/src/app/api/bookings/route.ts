@@ -37,11 +37,7 @@ export async function POST(request: NextRequest) {
                     customerPhone: validatedData.customerPhone,
                     notes: validatedData.notes,
                     status: 'CONFIRMED',
-                    user: {
-                        connect: {
-                            id: validatedData.userId
-                        }
-                    }
+                    userId: validatedData.userId
                 },
             });
         } else {

@@ -3,7 +3,7 @@
 import { SessionProvider } from 'next-auth/react';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from 'sonner';
-import { TranslationLoader } from './TranslationLoader';
+import { TranslationLoader } from '@/components/TranslationLoader';
 
 interface ProvidersProps {
     children: React.ReactNode;

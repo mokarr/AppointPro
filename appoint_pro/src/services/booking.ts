@@ -19,10 +19,10 @@ export interface BookingResponse {
     facilityId: string;
     locationId: string;
     status: string;
-    customerName?: string;
-    customerEmail?: string;
-    customerPhone?: string;
-    notes?: string;
+    customerName?: string | null;
+    customerEmail?: string | null;
+    customerPhone?: string | null;
+    notes?: string | null;
     createdAt: Date;
 }
 

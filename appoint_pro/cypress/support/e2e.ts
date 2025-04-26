@@ -1,5 +1,5 @@
 // Import commands.js using ES2015 syntax:
-import './commands'
+import '@/cypress/support/commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -8,12 +8,18 @@ import './commands'
 const app = window.top;
 if (app) {
     app.document.addEventListener('DOMContentLoaded', () => {
-        // Hide fetch/XHR requests
-        const xhr = new XMLHttpRequest();
-        xhr.prototype.originalOpen = xhr.prototype.open;
-        xhr.prototype.open = function (method, url) {
-            if (url.indexOf('hot-update.json') === -1) {
-                this.originalOpen.apply(this, arguments);
+        // Save the original open method
+        const originalOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function (
+            this: XMLHttpRequest,
+            method: string,
+            url: string | URL,
+            async: boolean = true,
+            username?: string | null,
+            password?: string | null
+        ) {
+            if (typeof url === 'string' && url.indexOf('hot-update.json') === -1) {
+                return originalOpen.call(this, method, url, async, username, password);
             }
         };
     });

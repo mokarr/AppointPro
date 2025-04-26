@@ -1,7 +1,7 @@
 'use server';
 
-import { executeAction } from "../lib/executeAction";
-import { prisma } from "../lib/prisma";
+import { executeAction } from "@/lib/executeAction";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Controleer of een organisatie met de gegeven naam bestaat.

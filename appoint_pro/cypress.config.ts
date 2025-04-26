@@ -5,10 +5,10 @@ export default defineConfig({
         baseUrl: 'http://localhost:3000',
         setupNodeEvents(on, config) {
             // Store data between tests
-            const localStorage: Record<string, any> = {};
+            const localStorage: Record<string, unknown> = {};
 
             on('task', {
-                setLocalStorage: ({ key, value }: { key: string, value: any }) => {
+                setLocalStorage: ({ key, value }: { key: string, value: unknown }) => {
                     localStorage[key] = value;
                     return null;
                 },

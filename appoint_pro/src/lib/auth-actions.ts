@@ -1,8 +1,8 @@
 'use server';
 
-import { auth, signIn, signOut } from './auth';
-import { AuthError } from 'next-auth';
-import { redirect } from 'next/navigation';
+import { auth, signIn, signOut } from "@/lib/auth";
+import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
 
 /**
  * Server action to authenticate a user

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { ensureServerSide } from '../prisma'
+import { ensureServerSide } from '@/lib/prisma'
 
 // Ensure this code only runs on the server
 ensureServerSide()

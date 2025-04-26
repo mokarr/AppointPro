@@ -20,6 +20,9 @@ const LOG_LEVEL_MAP: Record<string, LogLevel> = {
     'trace': LogLevel.TRACE
 };
 
+// Define type for log data
+type LogData = string | number | boolean | null | undefined | object | Error | unknown;
+
 // Get the current log level from environment variables or default to INFO
 const getLogLevel = (): LogLevel => {
     const envLevel = process.env.LOG_LEVEL?.toLowerCase() || 'info';
@@ -62,7 +65,7 @@ export const createLogger = (module: string) => {
     const currentLogLevel = getLogLevel();
 
     // Generic log function
-    const log = (level: LogLevel, message: string | object, ...args: any[]) => {
+    const log = (level: LogLevel, message: string | object, ...args: LogData[]) => {
         if (level > currentLogLevel) return;
 
         const formattedMessage = formatMessage(module, message);
@@ -84,28 +87,28 @@ export const createLogger = (module: string) => {
     };
 
     return {
-        error: (message: string | object, ...args: any[]) => log(LogLevel.ERROR, message, ...args),
-        warn: (message: string | object, ...args: any[]) => log(LogLevel.WARN, message, ...args),
-        info: (message: string | object, ...args: any[]) => log(LogLevel.INFO, message, ...args),
-        debug: (message: string | object, ...args: any[]) => log(LogLevel.DEBUG, message, ...args),
-        trace: (message: string | object, ...args: any[]) => log(LogLevel.TRACE, message, ...args),
+        error: (message: string | object, ...args: LogData[]) => log(LogLevel.ERROR, message, ...args),
+        warn: (message: string | object, ...args: LogData[]) => log(LogLevel.WARN, message, ...args),
+        info: (message: string | object, ...args: LogData[]) => log(LogLevel.INFO, message, ...args),
+        debug: (message: string | object, ...args: LogData[]) => log(LogLevel.DEBUG, message, ...args),
+        trace: (message: string | object, ...args: LogData[]) => log(LogLevel.TRACE, message, ...args),
 
         // Shorthand for specific categories
-        http: (message: string | object, ...args: any[]) => {
+        http: (message: string | object, ...args: LogData[]) => {
             const enhancedMessage = typeof message === 'object'
                 ? { type: 'http', ...message }
                 : `[HTTP] ${message}`;
             log(LogLevel.INFO, enhancedMessage, ...args);
         },
 
-        db: (message: string | object, ...args: any[]) => {
+        db: (message: string | object, ...args: LogData[]) => {
             const enhancedMessage = typeof message === 'object'
                 ? { type: 'database', ...message }
                 : `[DB] ${message}`;
             log(LogLevel.DEBUG, enhancedMessage, ...args);
         },
 
-        payment: (message: string | object, ...args: any[]) => {
+        payment: (message: string | object, ...args: LogData[]) => {
             const enhancedMessage = typeof message === 'object'
                 ? { type: 'payment', ...message }
                 : `[PAYMENT] ${message}`;

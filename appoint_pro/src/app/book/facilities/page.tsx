@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
 import { getFacilitiesByLocationId, Facility } from '@/services/facility';
+import type { OrganizationWithLocations, Location } from '@/types/organization';
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {
@@ -12,7 +13,7 @@ const getOrganizationData = cache(async (organizationId: string) => {
 
     try {
         const organization = await getOrganizationById(organizationId);
-        return organization;
+        return organization as OrganizationWithLocations;
     } catch (error) {
         console.error('Error fetching organization:', error);
         return null;
@@ -26,9 +27,8 @@ const getLocationFacilities = cache(async (locationId: string) => {
     }
 
     try {
-        const facilitiesResponse = await getFacilitiesByLocationId(locationId);
-        // Omdat de executeAction een wrapper object teruggeeft, halen we de data eruit
-        return facilitiesResponse.data as Facility[] || [];
+        const facilities = await getFacilitiesByLocationId(locationId);
+        return facilities || [];
     } catch (error) {
         console.error('Error fetching facilities:', error);
         return [];
@@ -36,18 +36,19 @@ const getLocationFacilities = cache(async (locationId: string) => {
 });
 
 // Find a location by ID in an organization
-const findLocationById = (organization: any, locationId: string) => {
+const findLocationById = (organization: OrganizationWithLocations, locationId: string): Location | null => {
     if (!organization || !organization.locations) return null;
-    return organization.locations.find((loc: any) => loc.id === locationId);
+    return organization.locations.find((loc: Location) => loc.id === locationId) || null;
 };
 
 export default async function FacilitiesPage({
     searchParams,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     // Get locationId from query params
-    const locationId = typeof searchParams.locationId === 'string' ? searchParams.locationId : '';
+    const resolvedSearchParams = await searchParams;
+    const locationId = typeof resolvedSearchParams.locationId === 'string' ? resolvedSearchParams.locationId : '';
 
     if (!locationId) {
         redirect('/book');

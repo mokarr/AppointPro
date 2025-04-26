@@ -2,7 +2,7 @@ import { db } from '@/lib/server';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import SubscriptionPlanCard from './plan-card';
+import SubscriptionPlanCard from '@/app/subscription/plans/plan-card';
 
 export default async function SubscriptionPlansPage() {
     const session = await auth();

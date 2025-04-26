@@ -1,6 +1,7 @@
 // app/api/facilities/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -12,29 +13,38 @@ export async function GET(request: Request) {
     const features = searchParams.getAll('features');
 
     try {
-        // Build query filters
-        const whereClause: any = {
-            OR: search ? [
-                { name: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } },
-                { location: { name: { contains: search, mode: 'insensitive' } } },
-                { location: { address: { contains: search, mode: 'insensitive' } } }
-            ] : undefined,
-            AND: []
-        };
+        // Top-level filters with mode
+        const topLevelOrFilters: Prisma.FacilityWhereInput[] = search
+            ? [
+                { name: { contains: search, mode: 'insensitive' } as Prisma.StringFilter },
+                { description: { contains: search, mode: 'insensitive' } as Prisma.StringFilter }
+            ]
+            : [];
+        // Nested filters without mode
+        const nestedOrFilters: Prisma.FacilityWhereInput[] = search
+            ? [
+                { location: { name: { contains: search } } },
+                { location: { address: { contains: search } } }
+            ]
+            : [];
+        const orFilters: Prisma.FacilityWhereInput[] = [...topLevelOrFilters, ...nestedOrFilters];
 
-        // Add price filters if specified
+        // Build AND filters for price
+        const andFilters: Prisma.FacilityWhereInput[] = [];
         if (minPrice !== undefined) {
-            whereClause.AND.push({ price: { gte: minPrice } });
+            andFilters.push({ price: { gte: minPrice } });
         }
-
         if (maxPrice !== undefined) {
-            whereClause.AND.push({ price: { lte: maxPrice } });
+            andFilters.push({ price: { lte: maxPrice } });
         }
 
-        // If no AND conditions, remove the empty array
-        if (whereClause.AND.length === 0) {
-            delete whereClause.AND;
+        // Construct the whereClause
+        const whereClause: Prisma.FacilityWhereInput = {};
+        if (orFilters.length > 0) {
+            whereClause.OR = orFilters;
+        }
+        if (andFilters.length > 0) {
+            whereClause.AND = andFilters;
         }
 
         // Features filtering will be done in-memory after fetching

@@ -11,6 +11,8 @@ interface Location {
     postalCode?: string | null;
     country?: string | null;
     organizationId: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 interface OrganizationWithLocations {
@@ -21,7 +23,9 @@ interface OrganizationWithLocations {
     subdomain: string | null;
     hasActiveSubscription: boolean;
     locations: Location[];
-    [key: string]: any; // Allow additional properties for flexibility
+    createdAt?: Date;
+    updatedAt?: Date;
+    [key: string]: string | string[] | boolean | null | Location[] | Date | undefined; // Added Date type
 }
 
 // Cached function to get organization data - will only run once per request
@@ -40,8 +44,8 @@ const getOrganizationData = cache(async (organizationId: string) => {
 });
 
 type Props = {
-    params: {};
-    searchParams: { [key: string]: string | string[] | undefined };
+    params: Promise<Record<string, never>>; // Empty object type
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata(

@@ -1,8 +1,8 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { signInSchema } from "./zod"
+import { signInSchema } from "@/lib/zod"
 import { verifyPassword } from "@/utils/password"
-import { db } from "./server"
+import { db } from "@/lib/server"
 import { v4 as uuid } from "uuid";
 import { encode as defaultEncode } from "next-auth/jwt";
 import type { Adapter, AdapterUser } from "next-auth/adapters";

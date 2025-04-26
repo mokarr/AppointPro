@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { getOrganizationById } from "@/services/organization";
 import { redirect } from "next/navigation";
 
-import OrganizationsPageContent from "./organizations-page-content";
+import OrganizationsPageContent from "@/app/dashboard/organizations/organizations-page-content";
 
 export default async function OrganizationsPage() {
     const session = await auth();
