@@ -27,18 +27,19 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: 'appoint_pro/package-lock.json'
 
       - name: Install Dependencies
-        run: npm ci
+        run: cd appoint_pro && npm ci
 
       - name: Generate Prisma Client
-        run: npx prisma generate
+        run: cd appoint_pro && npx prisma generate
 
       - name: Build Next.js App
-        run: npm run build
+        run: cd appoint_pro && npm run build
 
       - name: Apply Database Migrations
-        run: npx prisma migrate deploy
+        run: cd appoint_pro && npx prisma migrate deploy
 
       # For Vercel deployment
       - name: Install Vercel CLI
@@ -46,9 +47,9 @@ jobs:
 
       - name: Deploy to Vercel
         run: |
-          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+          cd appoint_pro && vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          cd appoint_pro && vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          cd appoint_pro && vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -56,4 +57,4 @@ jobs:
       # Optional: Sync Stripe subscriptions after deployment
       - name: Sync Stripe Subscriptions
         if: ${{ success() }}
-        run: npm run stripe:sync 
+        run: cd appoint_pro && npm run stripe:sync 
