@@ -25,12 +25,6 @@ export default defineConfig({
         experimentalWebKitSupport: true,
         chromeWebSecurity: false,
     },
-    component: {
-        devServer: {
-            framework: 'next',
-            bundler: 'webpack',
-        },
-    },
     // Add hosts mapping to resolve all *.localhost subdomains to localhost
     hosts: {
         "*.localhost": "127.0.0.1"

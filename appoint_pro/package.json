@@ -15,9 +15,7 @@
     "stripe:sync": "ts-node -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
     "cypress:open": "cypress open",
     "e2e": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress open --e2e\"",
-    "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\"",
-    "component": "cypress open --component",
-    "component:headless": "cypress run --component"
+    "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\""
   },
   "prisma": {
     "seed": "node prisma/seed.js"

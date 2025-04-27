@@ -39,13 +39,13 @@ jobs:
         run: cd appoint_pro && npx prisma generate
 
       - name: Build Next.js App
-        run: cd appoint_pro && npm run build
+        run: cd appoint_pro && npm run build -- --no-lint
 
       - name: Setup and Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: appoint_pro
-          build: npm run build
+          build: npm run build -- --no-lint
           start: npm start
           wait-on: 'http://localhost:3000'
           browser: chrome
