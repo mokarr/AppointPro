@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      DATABASE_URL: "file:./test.db"
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      DATABASE_URL: "file:./dev.db"
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'supersecretkey' }}
       NEXTAUTH_URL: http://localhost:3000
-      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-      STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY || 'sk_test_example' }}
+      STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET || 'whsec_example' }}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_example' }}
 
     steps:
       - name: Checkout Repository
@@ -50,6 +50,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'appoint_pro/package-lock.json'
 
+      - name: Create .env file
+        run: |
+          cd appoint_pro
+          echo "DATABASE_URL=\"file:./dev.db\"" >> .env
+          echo "NEXTAUTH_SECRET=\"$NEXTAUTH_SECRET\"" >> .env
+          echo "NEXTAUTH_URL=\"$NEXTAUTH_URL\"" >> .env
+          echo "STRIPE_SECRET_KEY=\"$STRIPE_SECRET_KEY\"" >> .env
+          echo "STRIPE_WEBHOOK_SECRET=\"$STRIPE_WEBHOOK_SECRET\"" >> .env
+          echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=\"$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\"" >> .env
+          echo ".env file created successfully"
+
       - name: Install Dependencies
         run: cd appoint_pro && npm ci
 
@@ -59,28 +70,22 @@ jobs:
       - name: Generate Prisma Client
         run: cd appoint_pro && npx prisma generate
 
-      # Set up the database using the project's existing commands
-      - name: Database Setup
-        working-directory: appoint_pro
+      - name: Setup Database (Migrate, Seed & Seed Plans)
+        run: cd appoint_pro && npm run db:setup
+
+      - name: Start Prisma Studio (Background)
         run: |
-          echo "🔄 Setting up database..."
-          
-          # Display the database URL being used
-          echo "Using database URL: $DATABASE_URL"
-          
-          # Use the project's db:reset command to reset and migrate the database
-          echo "🧹 Resetting database and applying migrations..."
-          npm run db:reset -- --skip-seed
-          
-          # Seed the database with initial data
-          echo "🌱 Seeding initial stripe plans..."
-          npm run db:seed-plans
-          
-          echo "✅ Database setup completed!"
+          cd appoint_pro
+          npm run db:studio -- --port 5555 &
+          echo "Prisma Studio started on port 5555"
+          sleep 5
 
       # Build once and serve the built app for tests
       - name: Build Next.js App
         run: cd appoint_pro && npm run build -- --no-lint
+
+      - name: Database Status
+        run: cd appoint_pro && npm run db:status
 
       # Cache the .next directory for subsequent steps
       - name: Cache Next.js build output
@@ -89,7 +94,7 @@ jobs:
           path: appoint_pro/.next
           key: nextjs-build-${{ github.sha }}
 
-      - name: Setup and Run Cypress E2E Tests
+      - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: appoint_pro
@@ -97,4 +102,10 @@ jobs:
           start: npm start
           wait-on: 'http://localhost:3000'
           browser: chrome
-          headless: true 
+          headless: true
+
+      - name: Cleanup Background Processes
+        if: always()
+        run: |
+          pkill -f "prisma studio" || true
+          echo "Background processes cleaned up" 
