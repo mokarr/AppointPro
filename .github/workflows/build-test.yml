@@ -59,7 +59,7 @@ jobs:
       - name: Generate Prisma Client
         run: cd appoint_pro && npx prisma generate
 
-      # Set up the database with migrations and normal seeding
+      # Set up the database using the project's existing commands
       - name: Database Setup
         working-directory: appoint_pro
         run: |
@@ -68,9 +68,13 @@ jobs:
           # Display the database URL being used
           echo "Using database URL: $DATABASE_URL"
           
-          # Run migrations and seed data in a single step
-          echo "🌱 Running migrations and seeding database..."
-          npx prisma migrate reset --force
+          # Use the project's db:reset command to reset and migrate the database
+          echo "🧹 Resetting database and applying migrations..."
+          npm run db:reset -- --skip-seed
+          
+          # Seed the database with initial data
+          echo "🌱 Seeding initial stripe plans..."
+          npm run db:seed-plans
           
           echo "✅ Database setup completed!"
 
