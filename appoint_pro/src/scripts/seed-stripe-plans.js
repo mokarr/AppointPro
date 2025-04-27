@@ -2,7 +2,7 @@ import { createSubscriptionPlans } from '@/services/stripe-subscription';
 
 /**
  * Script to seed the database with subscription plans
- * Run with: npx ts-node -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts
+ * Run with: npx ts-node -r tsconfig-paths/register src/scripts/seed-stripe-plans.js
  */
 async function main() {
     try {

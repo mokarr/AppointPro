@@ -13,10 +13,10 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && prisma migrate deploy",
     "db:seed": "prisma db seed",
-    "db:seed-plans": "ts-node --esm -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts",
+    "db:seed-plans": "tsx src/scripts/seed-stripe-plans.js",
     "db:status": "prisma db pull --print",
     "db:setup": "npm run db:deploy && npm run db:seed && npm run db:seed-plans",
-    "stripe:sync": "ts-node --esm -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
+    "stripe:sync": "tsx -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
     "cypress:open": "cypress open",
     "e2e": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress open --e2e\"",
     "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\""
@@ -59,6 +59,7 @@
     "stripe": "^18.0.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.3",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
