@@ -1,5 +1,10 @@
-import { prisma } from '../lib/prisma-script';
+import { PrismaClient } from "@prisma/client";
 import Stripe from 'stripe';
+
+// Initialize PrismaClient for scripts (doesn't use server-only restrictions)
+const prisma = new PrismaClient({
+    log: ["error"],
+});
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -78,12 +83,12 @@ async function main() {
         console.log('Starting subscription plan seeding...');
         await createSubscriptionPlans();
         console.log('Done!');
-        process.exit(0);
     } catch (error) {
         console.error('Error seeding subscription plans:', error);
         process.exit(1);
     } finally {
         await prisma.$disconnect();
+        process.exit(0);
     }
 }
 
