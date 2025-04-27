@@ -79,7 +79,7 @@
                 "description": "Bekijk al uw klanten in één overzicht"
             },
             "organizations": {
-                "description": "Beheer uw organisaties en hun instellingen",
+                "description": "Beheer uw orgaPnisaties en hun instellingen",
                 "new": "Nieuwe Organisatie",
                 "myOrganization": "Mijn Organisatie",
                 "current": "Huidige",
@@ -454,7 +454,7 @@
         },
         
         "search": {
-            "faciliteis": {
+            "facilities": {
                 "filters": {
                     "button": "Filters",
                     "title": "Filters",

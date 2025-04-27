@@ -161,8 +161,8 @@ export function SearchActivities() {
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unknown error occurred')
             toast({
-                title: getString('search.facilities.error.title') || 'Error',
-                description: getString('search.facilities.error.description') || 'Failed to load facilities',
+                title: getString('user.search.facilities.error.title') || 'Error',
+                description: getString('user.search.facilities.error.description') || 'Failed to load facilities',
                 variant: "destructive",
             })
 
@@ -266,7 +266,7 @@ export function SearchActivities() {
                     <SheetTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
                             <Filter className="h-4 w-4" />
-                            <span>{getString('search.facilities.filters.button') || 'Filters'}</span>
+                            <span>{getString('user.search.facilities.filters.button') || 'Filters'}</span>
                             {selectedFeatures.length > 0 && (
                                 <Badge className="ml-1">{selectedFeatures.length}</Badge>
                             )}
@@ -274,25 +274,25 @@ export function SearchActivities() {
                     </SheetTrigger>
                     <SheetContent className="overflow-y-auto">
                         <SheetHeader>
-                            <SheetTitle>{getString('search.facilities.filters.title') || 'Filters'}</SheetTitle>
+                            <SheetTitle>{getString('user.search.facilities.filters.title') || 'Filters'}</SheetTitle>
                             <SheetDescription>
-                                {getString('search.facilities.filters.description') || 'Filter facilities by criteria'}
+                                {getString('user.search.facilities.filters.description') || 'Filter facilities by criteria'}
                             </SheetDescription>
                         </SheetHeader>
 
                         <div className="py-6 space-y-6">
                             {/* Price filter */}
                             <div className="space-y-2">
-                                <Label>{getString('search.facilities.filters.price.label') || 'Price'}</Label>
+                                <Label>{getString('user.search.facilities.filters.price.label') || 'Price'}</Label>
                                 <Select value={priceRange} onValueChange={setPriceRange}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder={getString('search.facilities.filters.price.placeholder') || 'Select price range'} />
+                                        <SelectValue placeholder={getString('user.search.facilities.filters.price.placeholder') || 'Select price range'} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">{getString('search.facilities.filters.price.all') || 'All prices'}</SelectItem>
-                                        <SelectItem value="0-25">{getString('search.facilities.filters.price.low') || '€0 - €25'}</SelectItem>
-                                        <SelectItem value="26-50">{getString('search.facilities.filters.price.medium') || '€26 - €50'}</SelectItem>
-                                        <SelectItem value="51+">{getString('search.facilities.filters.price.high') || '€51+'}</SelectItem>
+                                        <SelectItem value="all">{getString('user.search.facilities.filters.price.all') || 'All prices'}</SelectItem>
+                                        <SelectItem value="0-25">{getString('user.search.facilities.filters.price.low') || '€0 - €25'}</SelectItem>
+                                        <SelectItem value="26-50">{getString('user.search.facilities.filters.price.medium') || '€26 - €50'}</SelectItem>
+                                        <SelectItem value="51+">{getString('user.search.facilities.filters.price.high') || '€51+'}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -300,7 +300,7 @@ export function SearchActivities() {
                             {/* Feature filters */}
                             <Accordion type="multiple" defaultValue={['sport-category']}>
                                 <AccordionItem value="sport-category">
-                                    <AccordionTrigger>{getString('search.facilities.filters.categories.sport') || 'Sport'}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('user.search.facilities.filters.categories.sport') || 'Sport'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('sport').map(feature => (
@@ -323,7 +323,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="indoor-outdoor">
-                                    <AccordionTrigger>{getString('search.facilities.filters.categories.indoorOutdoor') || 'Indoor/Outdoor'}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('user.search.facilities.filters.categories.indoorOutdoor') || 'Indoor/Outdoor'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('indoor').map(feature => (
@@ -346,7 +346,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="surface-type">
-                                    <AccordionTrigger>{getString('search.facilities.filters.categories.surface') || 'Surface'}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('user.search.facilities.filters.categories.surface') || 'Surface'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('surface').map(feature => (
@@ -369,7 +369,7 @@ export function SearchActivities() {
                                 </AccordionItem>
 
                                 <AccordionItem value="amenities-list">
-                                    <AccordionTrigger>{getString('search.facilities.filters.categories.amenities') || 'Amenities'}</AccordionTrigger>
+                                    <AccordionTrigger>{getString('user.search.facilities.filters.categories.amenities') || 'Amenities'}</AccordionTrigger>
                                     <AccordionContent>
                                         <div className="grid grid-cols-2 gap-2">
                                             {getFeaturesByCategory('amenities').map(feature => (
@@ -395,10 +395,10 @@ export function SearchActivities() {
 
                         <SheetFooter>
                             <SheetClose asChild>
-                                <Button variant="outline" onClick={clearFilters}>{getString('search.facilities.filters.actions.clear') || 'Clear'}</Button>
+                                <Button variant="outline" onClick={clearFilters}>{getString('user.search.facilities.filters.actions.clear') || 'Clear'}</Button>
                             </SheetClose>
                             <SheetClose asChild>
-                                <Button>{getString('search.facilities.filters.actions.apply') || 'Apply'}</Button>
+                                <Button>{getString('user.search.facilities.filters.actions.apply') || 'Apply'}</Button>
                             </SheetClose>
                         </SheetFooter>
                     </SheetContent>
@@ -411,13 +411,13 @@ export function SearchActivities() {
                 </div>
             ) : error ? (
                 <div className="text-center py-10">
-                    <p className="text-lg text-destructive">{getString('search.facilities.error.message') || 'Failed to load facilities'}</p>
+                    <p className="text-lg text-destructive">{getString('user.search.facilities.error.message') || 'Failed to load facilities'}</p>
                     <Button
                         onClick={fetchFacilities}
                         variant="outline"
                         className="mt-4"
                     >
-                        {getString('search.facilities.error.retry') || 'Retry'}
+                        {getString('user.search.facilities.error.retry') || 'Retry'}
                     </Button>
                 </div>
             ) : (
@@ -444,12 +444,12 @@ export function SearchActivities() {
                                         )}
                                         <div className="flex items-start gap-2">
                                             <Euro className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                            <span>{getString('search.facilities.card.price')?.replace('{price}', String(facility.price)) || `€${facility.price} per hour`}</span>
+                                            <span>{getString('user.search.facilities.card.price')?.replace('{price}', String(facility.price)) || `€${facility.price} per hour`}</span>
                                         </div>
                                         {facility.availableSpots !== undefined && (
                                             <div className="flex items-start gap-2">
                                                 <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                                <span>{getString('search.facilities.card.spots')?.replace('{spots}', String(facility.availableSpots)) || `${facility.availableSpots} spots available`}</span>
+                                                <span>{getString('user.search.facilities.card.spots')?.replace('{spots}', String(facility.availableSpots)) || `${facility.availableSpots} spots available`}</span>
                                             </div>
                                         )}
 
@@ -457,7 +457,7 @@ export function SearchActivities() {
                                         <div className="pt-2">
                                             <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
                                                 <Tag className="h-4 w-4" />
-                                                <span>{getString('search.facilities.card.features') || 'Features'}</span>
+                                                <span>{getString('user.search.facilities.card.features') || 'Features'}</span>
                                             </div>
                                             <div className="flex flex-wrap gap-1">
                                                 {facility.features.map(featureId => (
@@ -474,7 +474,7 @@ export function SearchActivities() {
                                         className="w-full"
                                         onClick={() => handleBookFacility(facility)}
                                     >
-                                        {getString('search.facilities.card.reserve') || 'Book Now'}
+                                        {getString('user.search.facilities.card.reserve') || 'Book Now'}
                                     </Button>
                                 </div>
                             </Card>
@@ -483,7 +483,7 @@ export function SearchActivities() {
 
                     {filteredFacilities.length === 0 && (
                         <div className="text-center py-10">
-                            <p className="text-lg text-muted-foreground">{getString('search.facilities.noResults') || 'No facilities found'}</p>
+                            <p className="text-lg text-muted-foreground">{getString('user.search.facilities.noResults') || 'No facilities found'}</p>
                         </div>
                     )}
                 </>

@@ -412,6 +412,49 @@
         "cta": {
             "title": "Ready to Book Your Next Game?",
             "subtitle": "Join thousands of sports enthusiasts using AppointPro"
+        },
+        "search": {
+            "facilities": {
+                "filters": {
+                    "button": "Filters",
+                    "title": "Filters",
+                    "description": "Filter sports activities by features",
+                    "price": {
+                        "label": "Price",
+                        "placeholder": "Select price range",
+                        "all": "All prices",
+                        "low": "€0 - €25",
+                        "medium": "€26 - €50",
+                        "high": "€51+"
+                    },
+                    "categories": {
+                        "sport": "Sport",
+                        "indoorOutdoor": "Indoor/Outdoor",
+                        "surface": "Surface",
+                        "amenities": "Amenities"
+                    },
+                    "actions": {
+                        "clear": "Clear filters",
+                        "apply": "Apply"
+                    }
+                },
+                "card": {
+                    "location": "Location",
+                    "date": "Date",
+                    "time": "Time",
+                    "price": "€{price} per hour",
+                    "spots": "{spots} available spots",
+                    "features": "Features",
+                    "reserve": "Book Now"
+                },
+                "noResults": "No activities found that match your search criteria.",
+                "error": {
+                    "title": "Error",
+                    "description": "Failed to load facilities",
+                    "message": "Failed to load facilities. Please try again.",
+                    "retry": "Retry"
+                }
+            }
         }
     },
     "company": {
