@@ -38,14 +38,22 @@ jobs:
       - name: Generate Prisma Client
         run: cd appoint_pro && npx prisma generate
 
+      # Build once and serve the built app for tests
       - name: Build Next.js App
         run: cd appoint_pro && npm run build -- --no-lint
+
+      # Cache the .next directory for subsequent steps
+      - name: Cache Next.js build output
+        uses: actions/cache@v3
+        with:
+          path: appoint_pro/.next
+          key: nextjs-build-${{ github.sha }}
 
       - name: Setup and Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: appoint_pro
-          build: npm run build -- --no-lint
+          # No need to build again, reuse the previous build
           start: npm start
           wait-on: 'http://localhost:3000'
           browser: chrome
