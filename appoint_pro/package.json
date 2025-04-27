@@ -13,7 +13,7 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && prisma migrate deploy",
     "db:seed": "prisma db seed",
-    "db:seed-plans": "node src/scripts/seed-stripe-plans.js",
+    "db:seed-plans": "tsx -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts",
     "db:status": "prisma db pull --print",
     "db:setup": "npm run db:deploy && npm run db:seed && npm run db:seed-plans",
     "stripe:sync": "tsx -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
