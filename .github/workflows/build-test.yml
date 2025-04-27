@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL: "file:./test.db"
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       NEXTAUTH_URL: http://localhost:3000
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
@@ -27,7 +27,6 @@ jobs:
         run: |
           missing_vars=()
           
-          [ -z "$DATABASE_URL" ] && missing_vars+=("DATABASE_URL")
           [ -z "$NEXTAUTH_SECRET" ] && missing_vars+=("NEXTAUTH_SECRET")
           [ -z "$STRIPE_SECRET_KEY" ] && missing_vars+=("STRIPE_SECRET_KEY")
           [ -z "$STRIPE_WEBHOOK_SECRET" ] && missing_vars+=("STRIPE_WEBHOOK_SECRET")
@@ -60,46 +59,20 @@ jobs:
       - name: Generate Prisma Client
         run: cd appoint_pro && npx prisma generate
 
-      # Set up the database with migrations only, skip seeding for now
+      # Set up the database with migrations and normal seeding
       - name: Database Setup
         working-directory: appoint_pro
         run: |
           echo "🔄 Setting up database..."
           
-          # First, check the current DATABASE_URL
-          echo "Current DATABASE_URL: ${DATABASE_URL}"
+          # Display the database URL being used
+          echo "Using database URL: $DATABASE_URL"
           
-          # For CI, let's create a local SQLite database instead of using remote DB
-          export CI_DATABASE_URL="file:./test.db"
-          echo "Using CI database: $CI_DATABASE_URL"
-          
-          # Create a modified schema.prisma for the CI environment
-          cp prisma/schema.prisma prisma/schema.prisma.bak
-          sed "s|url = env(\"DATABASE_URL\")|url = \"$CI_DATABASE_URL\"|g" prisma/schema.prisma.bak > prisma/schema.prisma
-          
-          # Apply migrations to the test database
-          npx prisma migrate deploy
-          
-          # Verify the created database
-          npx prisma db pull --print
+          # Run migrations and seed data in a single step
+          echo "🌱 Running migrations and seeding database..."
+          npx prisma migrate reset --force
           
           echo "✅ Database setup completed!"
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      # Create a simple bypass for authentication in tests
-      - name: Setup Test Environment
-        working-directory: appoint_pro
-        run: |
-          echo "🔧 Setting up test environment overrides..."
-          # Create a .env.local file with test-specific settings
-          cat << EOF > .env.local
-          # Test environment settings
-          SKIP_AUTH_IN_TESTS=true
-          TEST_MODE=true
-          EOF
-          
-          echo "✅ Test environment configured"
 
       # Build once and serve the built app for tests
       - name: Build Next.js App
