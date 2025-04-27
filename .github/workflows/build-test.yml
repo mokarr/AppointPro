@@ -60,11 +60,28 @@ jobs:
       - name: Generate Prisma Client
         run: cd appoint_pro && npx prisma generate
 
-      # Run database migrations to create the schema
-      - name: Run Prisma Migrations
-        run: cd appoint_pro && npx prisma migrate deploy
+      # Set up the database with a comprehensive approach
+      - name: Database Setup
+        working-directory: appoint_pro
+        run: |
+          echo "🔄 Setting up database..."
+          
+          # Use migrate reset for a clean database with applied migrations and seeding
+          echo "🧹 Resetting database, applying migrations, and running seeds..."
+          npx prisma migrate reset --force
+          
+          # Verify database structure after migration
+          echo "🔍 Verifying database schema..."
+          npx prisma db pull --print
+          
+          # Check if the User table exists in the schema
+          echo "🔍 Verifying User table existence..."
+          npx prisma db execute --stdin <<SQL
+          SELECT name FROM sqlite_master WHERE type='table' AND name='User';
+          SQL
+          
+          echo "✅ Database setup completed!"
         env:
-          # Ensure DATABASE_URL is available to the migration command
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       # Build once and serve the built app for tests
