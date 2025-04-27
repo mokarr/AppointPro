@@ -73,13 +73,6 @@ jobs:
       - name: Setup Database (Migrate, Seed & Seed Plans)
         run: cd appoint_pro && npm run db:setup
 
-      - name: Start Prisma Studio (Background)
-        run: |
-          cd appoint_pro
-          npm run db:studio -- --port 5555 &
-          echo "Prisma Studio started on port 5555"
-          sleep 5
-
       # Build once and serve the built app for tests
       - name: Build Next.js App
         run: cd appoint_pro && npm run build -- --no-lint

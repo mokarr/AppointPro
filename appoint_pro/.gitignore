@@ -1,6 +1,8 @@
 # Then, whitelist directories we want to track
 !src/
 !prisma/
+!prisma/migrations/
+!prisma/migrations/**/*
 !public/
 
 # Then, whitelist specific file types and configurations we want to track
@@ -48,6 +50,5 @@ Desktop.ini
 *.tmp
 *.temp
 .cache/
-migration.sql
 .vscode
 
