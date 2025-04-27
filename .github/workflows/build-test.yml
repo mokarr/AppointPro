@@ -22,6 +22,28 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Check if any required environment variables are empty
+      - name: Check Environment Variables
+        run: |
+          missing_vars=()
+          
+          [ -z "$DATABASE_URL" ] && missing_vars+=("DATABASE_URL")
+          [ -z "$NEXTAUTH_SECRET" ] && missing_vars+=("NEXTAUTH_SECRET")
+          [ -z "$STRIPE_SECRET_KEY" ] && missing_vars+=("STRIPE_SECRET_KEY")
+          [ -z "$STRIPE_WEBHOOK_SECRET" ] && missing_vars+=("STRIPE_WEBHOOK_SECRET")
+          [ -z "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" ] && missing_vars+=("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY")
+          
+          if [ ${#missing_vars[@]} -ne 0 ]; then
+            echo "⚠️ WARNING: The following environment variables are empty or not set:"
+            for var in "${missing_vars[@]}"; do
+              echo "  - $var"
+            done
+            echo "This may cause issues with your application functionality."
+            # Don't fail the build, just warn
+          else
+            echo "✅ All required environment variables are set."
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -37,6 +59,13 @@ jobs:
 
       - name: Generate Prisma Client
         run: cd appoint_pro && npx prisma generate
+
+      # Run database migrations to create the schema
+      - name: Run Prisma Migrations
+        run: cd appoint_pro && npx prisma migrate deploy
+        env:
+          # Ensure DATABASE_URL is available to the migration command
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       # Build once and serve the built app for tests
       - name: Build Next.js App
