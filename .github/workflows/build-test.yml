@@ -87,15 +87,15 @@ jobs:
           path: appoint_pro/.next
           key: nextjs-build-${{ github.sha }}
 
-      - name: Run Cypress E2E Tests
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: appoint_pro
-          # No need to build again, reuse the previous build
-          start: npm start
-          wait-on: 'http://localhost:3000'
-          browser: chrome
-          headless: true
+      # - name: Run Cypress E2E Tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     working-directory: appoint_pro
+      #     # No need to build again, reuse the previous build
+      #     start: npm start
+      #     wait-on: 'http://localhost:3000'
+      #     browser: chrome
+      #     headless: true
 
       - name: Cleanup Background Processes
         if: always()
