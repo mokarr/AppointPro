@@ -13,10 +13,10 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && prisma migrate deploy",
     "db:seed": "prisma db seed",
-    "db:seed-plans": "ts-node -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts",
+    "db:seed-plans": "ts-node --esm -r tsconfig-paths/register src/scripts/seed-stripe-plans.ts",
     "db:status": "prisma db pull --print",
     "db:setup": "npm run db:deploy && npm run db:seed && npm run db:seed-plans",
-    "stripe:sync": "ts-node -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
+    "stripe:sync": "ts-node --esm -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
     "cypress:open": "cypress open",
     "e2e": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress open --e2e\"",
     "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\""
