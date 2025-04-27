@@ -16,11 +16,13 @@
     "db:seed-plans": "tsx -r tsconfig-paths/register src/scripts/seed-stripe-plans-script.ts",
     "db:status": "prisma db pull --print",
     "db:setup": "npm run db:deploy && npm run db:seed && npm run db:seed-plans",
+    "db:setup-supabase": "tsx -r tsconfig-paths/register src/scripts/setup-supabase.ts",
+    "supabase:check": "npm run db:setup-supabase",
     "stripe:sync": "tsx -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
     "cypress:open": "cypress open",
     "e2e": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress open --e2e\"",
     "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\"",
-    "postinstall": "npx prisma generate && npm run db:deploy && npm run db:seed && npm run db:seed-plans"
+    "postinstall": "npm run db:deploy && npm run db:seed && npm run db:seed-plans"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -41,6 +43,7 @@
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@stripe/stripe-js": "^7.0.0",
+    "@supabase/supabase-js": "^2.49.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",

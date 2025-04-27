@@ -11,6 +11,8 @@ export const prisma =
     globalForPrisma.prisma ||
     new PrismaClient({
         log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+        // You can add additional configuration for Supabase connection if needed
+        // For example, connection pooling settings
     });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
@@ -21,5 +23,18 @@ export function ensureServerSide() {
         throw new Error(
             "This code can only be executed on the server side. Please use Server Components or Server Actions."
         );
+    }
+}
+
+// Utility function to help with database migrations and setup
+export async function checkDatabaseConnection() {
+    try {
+        // Try to run a simple query to check the connection
+        await prisma.$queryRaw`SELECT 1`;
+        console.log('✅ Database connection successful');
+        return true;
+    } catch (error) {
+        console.error('❌ Database connection failed:', error);
+        return false;
     }
 }
