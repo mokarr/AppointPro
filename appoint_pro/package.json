@@ -19,7 +19,8 @@
     "stripe:sync": "tsx -r tsconfig-paths/register src/scripts/sync-subscriptions.ts",
     "cypress:open": "cypress open",
     "e2e": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress open --e2e\"",
-    "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\""
+    "e2e:headless": "start-server-and-test \"npm run dev\" http://localhost:3000 \"cypress run --e2e\"",
+    "postinstall": "npm run db:deploy && npm run db:seed && npm run db:seed-plans"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
