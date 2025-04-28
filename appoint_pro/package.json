@@ -71,6 +71,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.25.1",
     "@faker-js/faker": "^9.7.0",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^6.6.0",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",

@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+const { PrismaPlugin } = require('@prisma/nextjs-monorepo-workaround-plugin')
 
 const config: NextConfig = {
     // Enable React strict mode for improved development experience
@@ -55,6 +56,10 @@ const config: NextConfig = {
                 os: false,
                 path: false,
             };
+        }
+
+        if (isServer) {
+            config.plugins = [...config.plugins, new PrismaPlugin()]
         }
         return config;
     },
