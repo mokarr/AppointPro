@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { PlusCircle, MapPin, Building, Edit, Trash, Plus, Loader2 } from "lucide-react"
+import { PlusCircle, MapPin, Building, Edit, Trash, Plus, Loader2, AlertTriangle } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { toast } from "sonner"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
 
 type Location = {
     id: string
@@ -36,6 +37,9 @@ export function LocationsList() {
     const [locations, setLocations] = useState<Location[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [isAddLocationOpen, setIsAddLocationOpen] = useState(false)
+    const [isEditLocationOpen, setIsEditLocationOpen] = useState(false)
+    const [isDeleteLocationOpen, setIsDeleteLocationOpen] = useState(false)
+    const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
     const [newLocation, setNewLocation] = useState<Omit<Location, "id" | "facilitiesCount">>({
         name: "",
         address: "",
@@ -167,12 +171,121 @@ export function LocationsList() {
         }
     }
 
+    const handleEditLocation = async () => {
+        if (!selectedLocation) return;
+
+        if (!validateForm()) {
+            return;
+        }
+
+        try {
+            // In a real app, make API call to update location
+            const response = await fetch(`/api/locations/${selectedLocation.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newLocation)
+            })
+
+            if (!response.ok) throw new Error('Failed to update location')
+
+            // Update the location in our state
+            setLocations(locations.map(loc =>
+                loc.id === selectedLocation.id
+                    ? { ...loc, ...newLocation }
+                    : loc
+            ))
+
+            // Reset form and close dialog
+            setNewLocation({ name: "", address: "", postalCode: "", country: "" })
+            setSelectedLocation(null)
+            setIsEditLocationOpen(false)
+            setErrors({})
+
+            toast.success(getTranslation('dashboard.locations.success.update'))
+        } catch (error) {
+            console.error('Error updating location:', error)
+            toast.error(getTranslation('dashboard.locations.error.update'))
+
+            // For demo fallback if API fails
+            setLocations(locations.map(loc =>
+                loc.id === selectedLocation.id
+                    ? { ...loc, ...newLocation }
+                    : loc
+            ))
+            setNewLocation({ name: "", address: "", postalCode: "", country: "" })
+            setSelectedLocation(null)
+            setIsEditLocationOpen(false)
+            setErrors({})
+        }
+    }
+
+    const handleDeleteLocation = async () => {
+        if (!selectedLocation) return;
+
+        try {
+            // In a real app, make API call to delete location
+            const response = await fetch(`/api/locations/${selectedLocation.id}`, {
+                method: 'DELETE'
+            });
+
+            // Check for error responses
+            if (!response.ok) {
+                const errorData = await response.json();
+
+                if (errorData.code === "BOOKINGS_EXIST" || errorData.code === "CONSTRAINT_ERROR") {
+                    toast.error(errorData.error);
+
+                    // If we have detailed information about which facilities have bookings
+                    if (errorData.details) {
+                        toast.error(errorData.details, { duration: 5000 });
+                    }
+
+                    setIsDeleteLocationOpen(false);
+                    return;
+                }
+
+                throw new Error('Failed to delete location');
+            }
+
+            // Remove the location from our state
+            setLocations(locations.filter(loc => loc.id !== selectedLocation.id));
+            setSelectedLocation(null);
+            setIsDeleteLocationOpen(false);
+
+            toast.success(getTranslation('dashboard.locations.success.delete'));
+        } catch (error) {
+            console.error('Error deleting location:', error);
+            toast.error(getTranslation('dashboard.locations.error.delete'));
+        }
+    }
+
+    const handleOpenEditDialog = (location: Location) => {
+        setSelectedLocation(location)
+        setNewLocation({
+            name: location.name,
+            address: location.address,
+            postalCode: location.postalCode || "",
+            country: location.country || ""
+        })
+        setIsEditLocationOpen(true)
+    }
+
+    const handleOpenDeleteDialog = (location: Location) => {
+        setSelectedLocation(location)
+        setIsDeleteLocationOpen(true)
+    }
+
+    const handleCancelDelete = () => {
+        setIsDeleteLocationOpen(false)
+        setSelectedLocation(null)
+    }
+
     // Reset errors when dialog is closed
     useEffect(() => {
-        if (!isAddLocationOpen) {
+        if (!isAddLocationOpen && !isEditLocationOpen) {
             setErrors({});
         }
-    }, [isAddLocationOpen]);
+    }, [isAddLocationOpen, isEditLocationOpen]);
 
     if (isLoading) {
         return (
@@ -313,10 +426,18 @@ export function LocationsList() {
                                     </Link>
                                 </Button>
                                 <div className="flex gap-2">
-                                    <Button variant="outline" size="icon">
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={() => handleOpenEditDialog(location)}
+                                    >
                                         <Edit className="h-4 w-4" />
                                     </Button>
-                                    <Button variant="outline" size="icon">
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={() => handleOpenDeleteDialog(location)}
+                                    >
                                         <Trash className="h-4 w-4" />
                                     </Button>
                                 </div>
@@ -325,6 +446,117 @@ export function LocationsList() {
                     ))}
                 </div>
             )}
+
+            {/* Edit Location Dialog */}
+            <Dialog open={isEditLocationOpen} onOpenChange={setIsEditLocationOpen}>
+                <DialogContent className="sm:max-w-[550px]">
+                    <DialogHeader>
+                        <DialogTitle>{getTranslation('dashboard.locations.editLocation')}</DialogTitle>
+                        <DialogDescription>
+                            {getTranslation('dashboard.locations.editLocationDescription')}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit-name" className="flex">
+                                {getTranslation('dashboard.locations.locationName')}
+                                <span className="text-red-500 ml-1">*</span>
+                            </Label>
+                            <Input
+                                id="edit-name"
+                                name="name"
+                                value={newLocation.name}
+                                onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
+                                placeholder={getTranslation('dashboard.locations.locationNamePlaceholder')}
+                                required
+                                aria-required="true"
+                                aria-invalid={!!errors.name}
+                                className={errors.name ? "border-red-500" : ""}
+                            />
+                            {errors.name && (
+                                <p className="text-sm text-red-500" role="alert">{errors.name}</p>
+                            )}
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit-address" className="flex">
+                                {getTranslation('dashboard.locations.address')}
+                                <span className="text-red-500 ml-1">*</span>
+                            </Label>
+                            <Input
+                                id="edit-address"
+                                name="address"
+                                value={newLocation.address}
+                                onChange={e => setNewLocation({ ...newLocation, address: e.target.value })}
+                                placeholder={getTranslation('dashboard.locations.addressPlaceholder')}
+                                required
+                                aria-required="true"
+                                aria-invalid={!!errors.address}
+                                className={errors.address ? "border-red-500" : ""}
+                            />
+                            {errors.address && (
+                                <p className="text-sm text-red-500" role="alert">{errors.address}</p>
+                            )}
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="edit-postalCode">{getTranslation('dashboard.locations.postalCode')}</Label>
+                                <Input
+                                    id="edit-postalCode"
+                                    name="postalCode"
+                                    value={newLocation.postalCode}
+                                    onChange={e => setNewLocation({ ...newLocation, postalCode: e.target.value })}
+                                    placeholder={getTranslation('dashboard.locations.postalCodePlaceholder')}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="edit-country">{getTranslation('dashboard.locations.country')}</Label>
+                                <Input
+                                    id="edit-country"
+                                    name="country"
+                                    value={newLocation.country}
+                                    onChange={e => setNewLocation({ ...newLocation, country: e.target.value })}
+                                    placeholder={getTranslation('dashboard.locations.countryPlaceholder')}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsEditLocationOpen(false)}>
+                            {getTranslation('dashboard.locations.cancel')}
+                        </Button>
+                        <Button onClick={handleEditLocation} type="submit">
+                            {getTranslation('dashboard.locations.saveChanges')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Delete Location Dialog */}
+            <DeleteConfirmationDialog
+                open={isDeleteLocationOpen}
+                onOpenChange={setIsDeleteLocationOpen}
+                onConfirm={handleDeleteLocation}
+                onCancel={handleCancelDelete}
+                title={getTranslation('dashboard.locations.deleteLocation')}
+                description={getTranslation('dashboard.locations.deleteLocationConfirmation')}
+                warningMessage={getTranslation('dashboard.locations.deleteFacilitiesWarning')}
+                cancelText={getTranslation('dashboard.locations.cancel')}
+                confirmText={getTranslation('dashboard.locations.deleteConfirm')}
+                showWarningOnConfirm={true}
+                itemDetails={
+                    selectedLocation && (
+                        <>
+                            <p className="font-medium">
+                                {selectedLocation.name}
+                            </p>
+                            <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                                <MapPin className="h-3 w-3" />
+                                {selectedLocation.address}
+                            </p>
+                        </>
+                    )
+                }
+            />
         </div>
     )
 } 

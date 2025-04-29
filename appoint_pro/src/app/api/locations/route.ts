@@ -186,4 +186,90 @@ export async function POST(request: Request) {
             { status: 500 }
         )
     }
+}
+
+export async function DELETE(request: Request) {
+    try {
+        // Get the authenticated user
+        const session = await auth()
+
+        if (!session?.user) {
+            return NextResponse.json(
+                { error: "Niet geautoriseerd" },
+                { status: 401 }
+            )
+        }
+
+        // Get organization directly from session or fetch from DB
+        let organizationId: string | null = null;
+
+        // Try getting organizationId from the session
+        if (session.user.organizationId) {
+            organizationId = session.user.organizationId as string;
+        }
+        // If not found in session, try to get from the database
+        else {
+            const dbUser = await prisma.user.findUnique({
+                where: { id: session.user.id },
+                select: { organizationId: true },
+            });
+            organizationId = dbUser?.organizationId || null;
+        }
+
+        // If we still don't have an organization, return an error
+        if (!organizationId) {
+            return NextResponse.json(
+                { error: "Geen organisatie gevonden" },
+                { status: 400 }
+            );
+        }
+
+        // Extract locationId from the URL
+        const url = new URL(request.url);
+        const pathParts = url.pathname.split('/');
+        const locationId = pathParts[pathParts.length - 1];
+
+        if (!locationId) {
+            return NextResponse.json(
+                { error: "Locatie ID is verplicht" },
+                { status: 400 }
+            );
+        }
+
+        // Verify the location belongs to the user's organization
+        const location = await prisma.location.findUnique({
+            where: { id: locationId },
+            select: { organizationId: true }
+        });
+
+        if (!location) {
+            return NextResponse.json(
+                { error: "Locatie niet gevonden" },
+                { status: 404 }
+            );
+        }
+
+        if (location.organizationId !== organizationId) {
+            return NextResponse.json(
+                { error: "Je hebt geen toegang tot deze locatie" },
+                { status: 403 }
+            );
+        }
+
+        // Delete the location
+        await prisma.location.delete({
+            where: { id: locationId }
+        });
+
+        return NextResponse.json(
+            { success: true, message: "Locatie succesvol verwijderd" },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error("Error deleting location:", error);
+        return NextResponse.json(
+            { error: "Er is een fout opgetreden bij het verwijderen van de locatie" },
+            { status: 500 }
+        );
+    }
 } 

@@ -219,6 +219,10 @@
             "addLocation": "Locatie Toevoegen",
             "editLocation": "Locatie Bewerken",
             "deleteLocation": "Locatie Verwijderen",
+            "deleteLocationConfirmation": "Weet u zeker dat u deze locatie wilt verwijderen?",
+            "warning": "Waarschuwing",
+            "deleteFacilitiesWarning": "Alle faciliteiten in deze locatie worden ook permanent verwijderd.",
+            "deleteConfirm": "Ja, verwijder locatie",
             "locationName": "Locatienaam",
             "address": "Adres",
             "city": "Stad",
@@ -246,14 +250,17 @@
             "loading": "Locaties laden...",
             "error": {
                 "fetch": "Er is een fout opgetreden bij het ophalen van de locaties",
-                "add": "Er is een fout opgetreden bij het toevoegen van de locatie"
+                "add": "Er is een fout opgetreden bij het toevoegen van de locatie",
+                "update": "Er is een fout opgetreden bij het bijwerken van de locatie",
+                "delete": "Er is een fout opgetreden bij het verwijderen van de locatie"
             },
             "success": {
-                "add": "Locatie succesvol toegevoegd"
+                "add": "Locatie succesvol toegevoegd",
+                "update": "Locatie succesvol bijgewerkt",
+                "delete": "Locatie succesvol verwijderd"
             }
         }
     },
-
     "subscription": {
         "manage": {
             "title": "Uw Abbonement",
@@ -266,10 +273,7 @@
             "nextBilling": "Volgende Facturatie",
             "billingHistory": "Facturatiegeschiedenis",
             "loading": "Licentie Checken..."
-
         }
-
-
     },
     "business": {
         "hero": {
@@ -452,7 +456,6 @@
             "title": "Klaar Om Je Volgende Wedstrijd Te Boeken?",
             "subtitle": "Sluit je aan bij duizenden sportliefhebbers die AppointPro gebruiken"
         },
-        
         "search": {
             "facilities": {
                 "filters": {
@@ -550,5 +553,44 @@
             "detailsUnavailable": "Abonnementsgegevens niet beschikbaar",
             "manageButton": "Beheer Abonnement"
         }
+    },
+    "facilities": {
+        "addNew": "Faciliteit Toevoegen",
+        "addNewTitle": "Nieuwe Faciliteit Toevoegen",
+        "addNewDescription": "Voeg een nieuwe sportfaciliteit toe aan deze locatie",
+        "editTitle": "Faciliteit Bewerken",
+        "editDescription": "Bewerk de details van deze sportfaciliteit",
+        "saveChanges": "Wijzigingen Opslaan",
+        "name": "Faciliteitnaam",
+        "namePlaceholder": "bijv. Tennisbaan 1",
+        "description": "Omschrijving",
+        "descriptionPlaceholder": "Beschrijf de faciliteit...",
+        "price": "Prijs per uur",
+        "perHour": "per uur",
+        "features": "Kenmerken",
+        "sportTypes": "Sportsoorten",
+        "indoorOutdoor": "Binnen/Buiten",
+        "surfaceType": "Ondergrond",
+        "amenities": "Voorzieningen",
+        "addFacility": "Faciliteit Toevoegen",
+        "noFacilities": "Geen faciliteiten gevonden",
+        "addFirstFacility": "Voeg uw eerste faciliteit toe",
+        "deleteFacility": "Faciliteit Verwijderen",
+        "deleteFacilityConfirmation": "Weet u zeker dat u deze faciliteit wilt verwijderen?",
+        "deleteBookingsWarning": "Deze faciliteit word permanent verwijderd.",
+        "deleteConfirm": "Ja, verwijder faciliteit",
+        "addSuccess": "Faciliteit succesvol toegevoegd",
+        "updateSuccess": "Faciliteit succesvol bijgewerkt",
+        "deleteSuccess": "Faciliteit succesvol verwijderd"
+    },
+    "errors": {
+        "fetchLocationFailed": "Kan locatiegegevens niet ophalen",
+        "fetchFacilitiesFailed": "Kan faciliteiten niet ophalen",
+        "fetchFeaturesFailed": "Kan kenmerken niet ophalen",
+        "fetchDataFailed": "Kan gegevens niet ophalen",
+        "locationNotFound": "Locatie niet gevonden",
+        "addFacilityFailed": "Kan faciliteit niet toevoegen",
+        "updateFacilityFailed": "Kan faciliteit niet bijwerken",
+        "deleteFacilityFailed": "Kan faciliteit niet verwijderen"
     }
 }

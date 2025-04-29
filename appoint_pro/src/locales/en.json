@@ -221,6 +221,10 @@
             "addLocation": "Add Location",
             "editLocation": "Edit Location",
             "deleteLocation": "Delete Location",
+            "deleteLocationConfirmation": "Are you sure you want to delete this location?",
+            "warning": "Warning",
+            "deleteFacilitiesWarning": "All facilities in this location will also be permanently deleted.",
+            "deleteConfirm": "Yes, delete location",
             "locationName": "Location Name",
             "address": "Address",
             "city": "City",
@@ -248,10 +252,14 @@
             "loading": "Loading locations...",
             "error": {
                 "fetch": "An error occurred while fetching locations",
-                "add": "An error occurred while adding the location"
+                "add": "An error occurred while adding the location",
+                "update": "An error occurred while updating the location",
+                "delete": "An error occurred while deleting the location"
             },
             "success": {
-                "add": "Location added successfully"
+                "add": "Location added successfully",
+                "update": "Location updated successfully",
+                "delete": "Location deleted successfully"
             }
         }
     },
@@ -553,5 +561,44 @@
             "noResults": "No activities found that match your search criteria.",
             "error": "Failed to load activities. Please try again."
         }
+    },
+    "facilities": {
+        "addNew": "Add Facility",
+        "addNewTitle": "Add New Facility",
+        "addNewDescription": "Add a new sports facility to this location",
+        "editTitle": "Edit Facility",
+        "editDescription": "Edit the details of this sports facility",
+        "saveChanges": "Save Changes",
+        "name": "Facility Name",
+        "namePlaceholder": "e.g. Tennis Court 1",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe the facility...",
+        "price": "Price per hour",
+        "perHour": "per hour",
+        "features": "Features",
+        "sportTypes": "Sport Types",
+        "indoorOutdoor": "Indoor/Outdoor",
+        "surfaceType": "Surface Type",
+        "amenities": "Amenities",
+        "addFacility": "Add Facility",
+        "noFacilities": "No facilities found",
+        "addFirstFacility": "Add your first facility",
+        "deleteFacility": "Delete Facility",
+        "deleteFacilityConfirmation": "Are you sure you want to delete this facility?",
+        "deleteBookingsWarning": "This facility will be permanently deleted.",
+        "deleteConfirm": "Yes, delete facility",
+        "addSuccess": "Facility added successfully",
+        "updateSuccess": "Facility updated successfully",
+        "deleteSuccess": "Facility deleted successfully"
+    },
+    "errors": {
+        "fetchLocationFailed": "Failed to fetch location details",
+        "fetchFacilitiesFailed": "Failed to fetch facilities",
+        "fetchFeaturesFailed": "Failed to fetch features",
+        "fetchDataFailed": "Failed to fetch data",
+        "locationNotFound": "Location not found",
+        "addFacilityFailed": "Failed to add facility",
+        "deleteFacilityFailed": "Failed to delete facility",
+        "updateFacilityFailed": "Failed to update facility"
     }
 }

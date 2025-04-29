@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
 
 // Typen voor kenmerken
 type FeatureCategory = 'sport' | 'surface' | 'indoor' | 'amenities'
@@ -44,15 +45,19 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
     const [location, setLocation] = useState<Location | null>(null)
     const [facilities, setFacilities] = useState<Facility[]>([])
     const [isAddFacilityOpen, setIsAddFacilityOpen] = useState(false)
+    const [isEditFacilityOpen, setIsEditFacilityOpen] = useState(false)
     const [newFacility, setNewFacility] = useState<Omit<Facility, "id">>({
         name: "",
         description: "",
         price: 0,
         features: []
     })
+    const [editingFacility, setEditingFacility] = useState<Facility | null>(null)
     const [availableFeatures, setAvailableFeatures] = useState<Feature[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const { getTranslation } = useLanguage();
+    const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
+    const [isDeleteFacilityOpen, setIsDeleteFacilityOpen] = useState(false);
 
     // Fetch data from an API
     useEffect(() => {
@@ -139,6 +144,94 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
     const getFeaturesByCategory = (category: FeatureCategory): Feature[] => {
         return availableFeatures.filter(feature => feature.category === category) as Feature[]
+    }
+
+    const handleDeleteFacility = async () => {
+        if (!selectedFacility) return;
+
+        try {
+            // Make API call to delete facility
+            const response = await fetch(`/api/locations/${locationId}/facilities/${selectedFacility.id}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || getTranslation('errors.deleteFacilityFailed'));
+            }
+
+            // Update local state
+            setFacilities(facilities.filter(f => f.id !== selectedFacility.id));
+            setSelectedFacility(null);
+            setIsDeleteFacilityOpen(false);
+
+            toast.success(getTranslation('facilities.deleteSuccess'));
+        } catch (error) {
+            console.error('Error deleting facility:', error);
+            toast.error(error instanceof Error ? error.message : getTranslation('errors.deleteFacilityFailed'));
+        }
+    }
+
+    const handleOpenDeleteDialog = (facility: Facility) => {
+        setSelectedFacility(facility);
+        setIsDeleteFacilityOpen(true);
+    }
+
+    const handleCancelDelete = () => {
+        setIsDeleteFacilityOpen(false);
+        setSelectedFacility(null);
+    }
+
+    const handleEditFacility = async () => {
+        if (!editingFacility) return;
+
+        try {
+            // Make API call to update facility
+            const response = await fetch(`/api/locations/${locationId}/facilities/${editingFacility.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: newFacility.name,
+                    description: newFacility.description,
+                    price: newFacility.price,
+                    features: newFacility.features
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || getTranslation('errors.updateFacilityFailed'));
+            }
+
+            const result = await response.json();
+            const updatedFacility = result.data || result;
+
+            // Update local state
+            setFacilities(facilities.map(f =>
+                f.id === editingFacility.id ? updatedFacility : f
+            ));
+
+            // Reset form and close dialog
+            setNewFacility({ name: "", description: "", price: 0, features: [] });
+            setEditingFacility(null);
+            setIsEditFacilityOpen(false);
+
+            toast.success(getTranslation('facilities.updateSuccess'));
+        } catch (error) {
+            console.error('Error updating facility:', error);
+            toast.error(error instanceof Error ? error.message : getTranslation('errors.updateFacilityFailed'));
+        }
+    }
+
+    const handleOpenEditDialog = (facility: Facility) => {
+        setEditingFacility(facility);
+        setNewFacility({
+            name: facility.name,
+            description: facility.description,
+            price: facility.price,
+            features: facility.features
+        });
+        setIsEditFacilityOpen(true);
     }
 
     if (isLoading) {
@@ -336,10 +429,18 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                             </div>
                         </CardContent>
                         <CardFooter className="flex justify-end gap-2">
-                            <Button variant="outline" size="icon">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleOpenEditDialog(facility)}
+                            >
                                 <Edit className="h-4 w-4" />
                             </Button>
-                            <Button variant="outline" size="icon">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleOpenDeleteDialog(facility)}
+                            >
                                 <Trash className="h-4 w-4" />
                             </Button>
                         </CardFooter>
@@ -355,6 +456,177 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                     </Button>
                 </div>
             )}
+
+            {/* Edit Facility Dialog */}
+            <Dialog open={isEditFacilityOpen} onOpenChange={setIsEditFacilityOpen}>
+                <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>{getTranslation('facilities.editTitle')}</DialogTitle>
+                        <DialogDescription>
+                            {getTranslation('facilities.editDescription')}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit-name">{getTranslation('facilities.name')}</Label>
+                            <Input
+                                id="edit-name"
+                                value={newFacility.name}
+                                onChange={e => setNewFacility({ ...newFacility, name: e.target.value })}
+                                placeholder={getTranslation('facilities.namePlaceholder')}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit-description">{getTranslation('facilities.description')}</Label>
+                            <Textarea
+                                id="edit-description"
+                                value={newFacility.description}
+                                onChange={e => setNewFacility({ ...newFacility, description: e.target.value })}
+                                placeholder={getTranslation('facilities.descriptionPlaceholder')}
+                                rows={3}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit-price">{getTranslation('facilities.price')}</Label>
+                            <Input
+                                id="edit-price"
+                                type="number"
+                                value={newFacility.price}
+                                onChange={e => setNewFacility({ ...newFacility, price: parseFloat(e.target.value) })}
+                                placeholder="0.00"
+                            />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label className="text-base">{getTranslation('facilities.features')}</Label>
+                            <div className="grid gap-6 sm:grid-cols-2">
+                                {/* Sport Types */}
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium">{getTranslation('facilities.sportTypes')}</Label>
+                                    <div className="grid gap-2">
+                                        {getFeaturesByCategory('sport').map(feature => (
+                                            <div key={feature.id} className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id={`edit-feature-${feature.id}`}
+                                                    checked={newFacility.features.some(f => f.id === feature.id)}
+                                                    onCheckedChange={() => toggleFeature(feature)}
+                                                />
+                                                <label
+                                                    htmlFor={`edit-feature-${feature.id}`}
+                                                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                >
+                                                    {feature.name}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Indoor/Outdoor */}
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium">{getTranslation('facilities.indoorOutdoor')}</Label>
+                                    <div className="grid gap-2">
+                                        {getFeaturesByCategory('indoor').map(feature => (
+                                            <div key={feature.id} className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id={`edit-feature-${feature.id}`}
+                                                    checked={newFacility.features.some(f => f.id === feature.id)}
+                                                    onCheckedChange={() => toggleFeature(feature)}
+                                                />
+                                                <label
+                                                    htmlFor={`edit-feature-${feature.id}`}
+                                                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                >
+                                                    {feature.name}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Surface Type */}
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium">{getTranslation('facilities.surfaceType')}</Label>
+                                    <div className="grid gap-2">
+                                        {getFeaturesByCategory('surface').map(feature => (
+                                            <div key={feature.id} className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id={`edit-feature-${feature.id}`}
+                                                    checked={newFacility.features.some(f => f.id === feature.id)}
+                                                    onCheckedChange={() => toggleFeature(feature)}
+                                                />
+                                                <label
+                                                    htmlFor={`edit-feature-${feature.id}`}
+                                                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                >
+                                                    {feature.name}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Amenities */}
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium">{getTranslation('facilities.amenities')}</Label>
+                                    <div className="grid gap-2">
+                                        {getFeaturesByCategory('amenities').map(feature => (
+                                            <div key={feature.id} className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id={`edit-feature-${feature.id}`}
+                                                    checked={newFacility.features.some(f => f.id === feature.id)}
+                                                    onCheckedChange={() => toggleFeature(feature)}
+                                                />
+                                                <label
+                                                    htmlFor={`edit-feature-${feature.id}`}
+                                                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                >
+                                                    {feature.name}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter className="mt-4 gap-2 sm:gap-0">
+                        <Button variant="outline" onClick={() => setIsEditFacilityOpen(false)}>
+                            {getTranslation('common.cancel')}
+                        </Button>
+                        <Button type="button" onClick={handleEditFacility}>
+                            {getTranslation('facilities.saveChanges')}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Delete Facility Dialog */}
+            <DeleteConfirmationDialog
+                open={isDeleteFacilityOpen}
+                onOpenChange={setIsDeleteFacilityOpen}
+                onConfirm={handleDeleteFacility}
+                onCancel={handleCancelDelete}
+                title={getTranslation('facilities.deleteFacility')}
+                description={getTranslation('facilities.deleteFacilityConfirmation')}
+                warningMessage={getTranslation('facilities.deleteBookingsWarning')}
+                cancelText={getTranslation('common.cancel')}
+                confirmText={getTranslation('facilities.deleteConfirm')}
+                showWarningOnConfirm={true}
+                itemDetails={
+                    selectedFacility && (
+                        <>
+                            <p className="font-medium">
+                                {selectedFacility.name}
+                            </p>
+                            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                <Euro className="h-3 w-3" />
+                                <span>{selectedFacility.price.toFixed(2)} {getTranslation('facilities.perHour')}</span>
+                            </div>
+                        </>
+                    )
+                }
+            />
         </div>
     )
 } 
