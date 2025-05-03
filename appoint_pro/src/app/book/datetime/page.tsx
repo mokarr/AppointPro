@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { format, addDays, addMinutes, isAfter, isBefore, setHours, setMinutes } from 'date-fns';
+import { format, addDays, addMinutes, isAfter, isBefore, isSameDay, setHours, setMinutes, parseISO } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Available duration options in minutes
 const DURATION_OPTIONS = [
@@ -34,6 +35,13 @@ const DURATION_OPTIONS = [
     { value: 240, label: '4 uur' },
 ];
 
+// Interface matching the API response
+interface TimeSlot {
+    startTime: string;
+    endTime: string;
+    isAvailable: boolean;
+}
+
 export default function DateTimePage() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -44,8 +52,9 @@ export default function DateTimePage() {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [selectedDuration, setSelectedDuration] = useState<number>(60); // Default: 1 hour (60 minutes)
-    const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+    const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingTimeSlots, setIsLoadingTimeSlots] = useState(false);
 
     // UI state for accordion sections
     const [dateExpanded, setDateExpanded] = useState(true);
@@ -58,94 +67,60 @@ export default function DateTimePage() {
         }
     }, [locationId, facilityId, router]);
 
-    // Generate available time slots when date changes
+    // Fetch available time slots when date or duration changes
     useEffect(() => {
-        if (!selectedDate) {
-            setAvailableTimes([]);
+        if (!selectedDate || !facilityId) {
+            setAvailableTimeSlots([]);
             return;
         }
 
-        // Generate time slots from 9:00 to 17:00
-        const times: string[] = [];
-        const now = new Date();
-        const isToday = format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
+        const fetchAvailableTimeSlots = async () => {
+            setIsLoadingTimeSlots(true);
+            try {
+                const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+                const url = `/api/timeslots?facilityId=${facilityId}&date=${formattedDate}&duration=${selectedDuration}`;
 
-        // Start times at 9:00 AM
-        let startHour = 9;
-        let startMinute = 0;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch available time slots');
+                }
 
-        // If today, only show future time slots
-        if (isToday) {
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
+                const data = await response.json();
+                setAvailableTimeSlots(data);
 
-            if (currentHour >= 17) {
-                // No slots available for today
-                setAvailableTimes([]);
-                return;
+                // Reset selected time when available slots change
+                setSelectedTime(null);
+
+                // Auto expand time section when date is selected and slots are loaded
+                setTimeExpanded(true);
+                setDateExpanded(false);
+            } catch (error) {
+                console.error('Error fetching available time slots:', error);
+                setAvailableTimeSlots([]);
+            } finally {
+                setIsLoadingTimeSlots(false);
             }
+        };
 
-            if (currentHour >= 9) {
-                startHour = currentHour;
-                startMinute = currentMinute < 30 ? 30 : 0;
-                if (startMinute === 0) startHour += 1;
-            }
-        }
-
-        // Calculate the last possible starting time based on selected duration
-        // For example, if duration is 2 hours (120 min), last starting time should be 15:00
-        const durationHours = selectedDuration / 60;
-        const lastPossibleHour = 17 - durationHours;
-
-        // Generate 30-minute slots until the last possible starting time
-        for (let hour = startHour; hour < lastPossibleHour; hour++) {
-            for (let minute = hour === startHour ? startMinute : 0; minute < 60; minute += 30) {
-                times.push(format(setHours(setMinutes(new Date(), minute), hour), 'HH:mm'));
-            }
-        }
-
-        // Add the final slot if it fits exactly
-        if (Number.isInteger(lastPossibleHour) && lastPossibleHour >= startHour) {
-            times.push(format(setHours(setMinutes(new Date(), 0), Math.floor(lastPossibleHour)), 'HH:mm'));
-        }
-
-        // Simulate some slots being unavailable (remove random slots)
-        const availableSlots = times.filter(() => Math.random() > 0.3);
-
-        setAvailableTimes(availableSlots);
-        setSelectedTime(null); // Reset selection when date changes
-
-        // Auto expand time section when date is selected
-        setTimeExpanded(true);
-        setDateExpanded(false);
-    }, [selectedDate, selectedDuration]);
-
-    // Calculate end time based on selected time and duration
-    const calculateEndTime = (startTime: string, durationMinutes: number) => {
-        if (!selectedDate || !startTime) return null;
-
-        // Parse the start time
-        const [hours, minutes] = startTime.split(':').map(Number);
-        const startDateTime = new Date(selectedDate);
-        startDateTime.setHours(hours, minutes, 0, 0);
-
-        // Calculate end time by adding duration
-        const endDateTime = addMinutes(startDateTime, durationMinutes);
-        return format(endDateTime, 'HH:mm');
-    };
+        fetchAvailableTimeSlots();
+    }, [selectedDate, selectedDuration, facilityId]);
 
     const handleSubmit = () => {
-        if (!selectedDate || !selectedTime) return;
+        if (!selectedDate || !selectedTime || !facilityId || !locationId) return;
 
         setIsLoading(true);
 
-        // Format date and time for passing as parameters
+        // Find the selected time slot to get the end time
+        const selectedSlot = availableTimeSlots.find(slot => slot.startTime === selectedTime);
+        if (!selectedSlot) {
+            setIsLoading(false);
+            return;
+        }
+
+        // Format date and times for passing as parameters
         const formattedDate = format(selectedDate, 'yyyy-MM-dd');
         const startDateTime = `${formattedDate}T${selectedTime}`;
-
-        // Calculate end time
-        const endTime = calculateEndTime(selectedTime, selectedDuration);
-        const endDateTime = `${formattedDate}T${endTime}`;
+        const endDateTime = `${formattedDate}T${selectedSlot.endTime}`;
 
         // Create URL with all necessary parameters
         const confirmationUrl = `/book/confirmation?locationId=${locationId}&facilityId=${facilityId}&dateTime=${startDateTime}&endDateTime=${endDateTime}&duration=${selectedDuration}`;
@@ -186,6 +161,9 @@ export default function DateTimePage() {
         // Collapse time section after selection
         setTimeExpanded(false);
     };
+
+    // Filter only available time slots
+    const availableTimes = availableTimeSlots.filter(slot => slot.isAvailable);
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -318,7 +296,7 @@ export default function DateTimePage() {
                                 </CardTitle>
                                 {selectedTime && !timeExpanded && (
                                     <CardDescription className="mt-1">
-                                        {selectedTime} - {calculateEndTime(selectedTime, selectedDuration)}
+                                        {selectedTime} - {availableTimeSlots.find(slot => slot.startTime === selectedTime)?.endTime}
                                     </CardDescription>
                                 )}
                             </div>
@@ -343,22 +321,25 @@ export default function DateTimePage() {
                                         Selecteer een tijdslot voor {formatDateHeader(selectedDate)}
                                     </p>
 
-                                    {availableTimes.length > 0 ? (
+                                    {isLoadingTimeSlots ? (
                                         <div className="grid grid-cols-3 gap-2">
-                                            {availableTimes.map((time) => {
-                                                const endTime = calculateEndTime(time, selectedDuration);
-                                                return (
-                                                    <Button
-                                                        key={time}
-                                                        variant={selectedTime === time ? "default" : "outline"}
-                                                        className={`${selectedTime === time ? "bg-blue-600" : ""} text-sm flex-col h-auto py-2`}
-                                                        onClick={() => handleTimeSelect(time)}
-                                                    >
-                                                        <span>{time}</span>
-                                                        <span className="text-xs opacity-70">- {endTime}</span>
-                                                    </Button>
-                                                );
-                                            })}
+                                            {[...Array(6)].map((_, index) => (
+                                                <Skeleton key={index} className="h-14 w-full" />
+                                            ))}
+                                        </div>
+                                    ) : availableTimes.length > 0 ? (
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {availableTimes.map((slot) => (
+                                                <Button
+                                                    key={slot.startTime}
+                                                    variant={selectedTime === slot.startTime ? "default" : "outline"}
+                                                    className={`${selectedTime === slot.startTime ? "bg-blue-600" : ""} text-sm flex-col h-auto py-2`}
+                                                    onClick={() => handleTimeSelect(slot.startTime)}
+                                                >
+                                                    <span>{slot.startTime}</span>
+                                                    <span className="text-xs opacity-70">- {slot.endTime}</span>
+                                                </Button>
+                                            ))}
                                         </div>
                                     ) : (
                                         <div className="text-center py-6">
@@ -371,7 +352,6 @@ export default function DateTimePage() {
                         </CardContent>
                     )}
                 </Card>
-
 
                 <Button
                     variant="default"

@@ -2,16 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { format, parseISO, addHours } from 'date-fns';
+import { format, parseISO, addHours, addMinutes } from 'date-fns';
 
 interface BookingFormProps {
     facilityId: string;
     locationId: string;
     bookingNumber: number;
     dateTime: string;
+    endDateTime?: string;
+    duration?: number;
 }
 
-export default function BookingForm({ facilityId, locationId, bookingNumber, dateTime }: BookingFormProps) {
+export default function BookingForm({ facilityId, locationId, bookingNumber, dateTime, endDateTime, duration }: BookingFormProps) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -19,10 +21,18 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
 
     const parsedDateTime = parseISO(dateTime);
 
+    // Calculate end time based on provided endDateTime or duration or default to 1 hour
+    let endTime;
+    if (endDateTime) {
+        endTime = parseISO(endDateTime);
+    } else if (duration) {
+        endTime = addMinutes(parsedDateTime, duration);
+    } else {
+        endTime = addHours(parsedDateTime, 1); // Fallback to 1 hour
+    }
+
     const formattedDate = format(parsedDateTime, 'yyyy-MM-dd');
     const formattedTime = format(parsedDateTime, 'HH:mm');
-
-    const endTime = addHours(parsedDateTime, 1);
 
     const [formData, setFormData] = useState({
         firstName: '',

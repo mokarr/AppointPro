@@ -41,6 +41,8 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
     const locationId = typeof resolvedSearchParams.locationId === 'string' ? resolvedSearchParams.locationId : '';
     const facilityId = typeof resolvedSearchParams.facilityId === 'string' ? resolvedSearchParams.facilityId : '';
     const dateTime = typeof resolvedSearchParams.dateTime === 'string' ? resolvedSearchParams.dateTime : '';
+    const endDateTime = typeof resolvedSearchParams.endDateTime === 'string' ? resolvedSearchParams.endDateTime : '';
+    const duration = typeof resolvedSearchParams.duration === 'string' ? parseInt(resolvedSearchParams.duration) : undefined;
 
     if (!locationId || !facilityId || !dateTime) {
         redirect('/book');
@@ -50,6 +52,13 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
     const appointmentDate = new Date(dateTime);
     const formattedDate = format(appointmentDate, 'EEEE d MMMM yyyy', { locale: nl });
     const formattedTime = format(appointmentDate, 'HH:mm');
+
+    // Format end time for display if available
+    let formattedEndTime = '';
+    if (endDateTime) {
+        const endDate = new Date(endDateTime);
+        formattedEndTime = format(endDate, 'HH:mm');
+    }
 
     // Read the organization ID from the custom header set by middleware
     const headersList = await headers();
@@ -201,17 +210,22 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                                 </div>
                                 <div>
                                     <p className="font-medium text-gray-800">{formattedDate}</p>
-                                    <p className="text-gray-600">{formattedTime} uur</p>
+                                    <p className="text-gray-600">{formattedTime} - {formattedEndTime} uur</p>
+                                    {duration && (
+                                        <p className="text-gray-600 text-sm">Duur: {duration} minuten</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        {/* Use BookingForm component with the dateTime parameter */}
+                        {/* Use BookingForm component with the updated parameters */}
                         <BookingForm
                             facilityId={facilityId}
                             locationId={locationId}
                             bookingNumber={bookingNumber}
                             dateTime={dateTime}
+                            endDateTime={endDateTime}
+                            duration={duration}
                         />
                     </div>
                 </div>
