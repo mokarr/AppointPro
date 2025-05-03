@@ -1,29 +1,50 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { format, parseISO, addHours, addMinutes } from 'date-fns';
 
 interface BookingFormProps {
     facilityId: string;
     locationId: string;
     bookingNumber: number;
+    dateTime: string;
+    endDateTime?: string;
+    duration?: number;
 }
 
-export default function BookingForm({ facilityId, locationId, bookingNumber }: BookingFormProps) {
+export default function BookingForm({ facilityId, locationId, bookingNumber, dateTime, endDateTime, duration }: BookingFormProps) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+
+    const parsedDateTime = parseISO(dateTime);
+
+    // Calculate end time based on provided endDateTime or duration or default to 1 hour
+    let endTime;
+    if (endDateTime) {
+        endTime = parseISO(endDateTime);
+    } else if (duration) {
+        endTime = addMinutes(parsedDateTime, duration);
+    } else {
+        endTime = addHours(parsedDateTime, 1); // Fallback to 1 hour
+    }
+
+    const formattedDate = format(parsedDateTime, 'yyyy-MM-dd');
+    const formattedTime = format(parsedDateTime, 'HH:mm');
 
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
         phone: '',
-        date: '',
-        time: '',
+        date: formattedDate,
+        time: formattedTime,
         notes: '',
     });
+
+    const [dateTimeReadOnly] = useState(true);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
@@ -36,11 +57,6 @@ export default function BookingForm({ facilityId, locationId, bookingNumber }: B
         setError('');
 
         try {
-            // Create date object from date and time inputs
-            const bookingDate = new Date(`${formData.date}T${formData.time}`);
-            // End time is 1 hour after start time (you can adjust this as needed)
-            const endTime = new Date(bookingDate.getTime() + 60 * 60 * 1000);
-
             const response = await fetch('/api/bookings', {
                 method: 'POST',
                 headers: {
@@ -49,13 +65,12 @@ export default function BookingForm({ facilityId, locationId, bookingNumber }: B
                 body: JSON.stringify({
                     facilityId,
                     locationId,
-                    startTime: bookingDate.toISOString(),
+                    startTime: parsedDateTime.toISOString(),
                     endTime: endTime.toISOString(),
                     customerName: `${formData.firstName} ${formData.lastName}`,
                     customerEmail: formData.email,
                     customerPhone: formData.phone,
                     notes: formData.notes,
-                    // No userId provided for guest bookings
                 }),
             });
 
@@ -65,10 +80,8 @@ export default function BookingForm({ facilityId, locationId, bookingNumber }: B
                 throw new Error(data.error || 'Er is iets misgegaan bij het maken van de boeking');
             }
 
-            // Show success state
             setSuccess(true);
 
-            // Redirect after a short delay (optional)
             setTimeout(() => {
                 router.push(`/book/confirmation/success?bookingId=${data.data.id}`);
             }, 2000);
@@ -155,33 +168,6 @@ export default function BookingForm({ facilityId, locationId, bookingNumber }: B
                 />
             </div>
 
-            <h3 className="text-lg font-semibold mb-4">Gewenste datum en tijd</h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div>
-                    <label className="block text-gray-700 mb-1" htmlFor="date">Datum</label>
-                    <input
-                        type="date"
-                        id="date"
-                        value={formData.date}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-                <div>
-                    <label className="block text-gray-700 mb-1" htmlFor="time">Tijd</label>
-                    <input
-                        type="time"
-                        id="time"
-                        value={formData.time}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-            </div>
-
             <div className="mb-8">
                 <label className="block text-gray-700 mb-1" htmlFor="notes">Opmerkingen (optioneel)</label>
                 <textarea
@@ -195,10 +181,10 @@ export default function BookingForm({ facilityId, locationId, bookingNumber }: B
 
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <a
-                    href={`/book/facilities?locationId=${locationId}`}
+                    href={`/book/datetime?locationId=${locationId}&facilityId=${facilityId}`}
                     className="text-blue-600 hover:text-blue-800 mb-4 md:mb-0"
                 >
-                    ← Terug naar faciliteiten
+                    ← Terug naar tijd selectie
                 </a>
 
                 <button

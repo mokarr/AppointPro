@@ -1,6 +1,7 @@
 import { getBookingById } from '@/services/booking';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { differenceInMinutes } from 'date-fns';
 
 export default async function BookingSuccessPage({
     searchParams,
@@ -39,15 +40,39 @@ export default async function BookingSuccessPage({
     }
 
     // Format the booking details for display
-    const bookingDate = new Date(booking.startTime);
-    const formattedDate = bookingDate.toLocaleDateString('nl-NL', {
+    const startTime = new Date(booking.startTime);
+    const endTime = new Date(booking.endTime);
+
+    // Calculate duration in minutes
+    const durationMinutes = differenceInMinutes(endTime, startTime);
+
+    // Format duration for display
+    let durationText = '';
+    if (durationMinutes === 60) {
+        durationText = '1 uur';
+    } else if (durationMinutes > 60 && durationMinutes % 60 === 0) {
+        durationText = `${durationMinutes / 60} uur`;
+    } else if (durationMinutes < 60) {
+        durationText = `${durationMinutes} minuten`;
+    } else {
+        const hours = Math.floor(durationMinutes / 60);
+        const minutes = durationMinutes % 60;
+        durationText = `${hours} uur ${minutes > 0 ? `en ${minutes} minuten` : ''}`;
+    }
+
+    const formattedDate = startTime.toLocaleDateString('nl-NL', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
     });
 
-    const formattedTime = bookingDate.toLocaleTimeString('nl-NL', {
+    const formattedStartTime = startTime.toLocaleTimeString('nl-NL', {
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+
+    const formattedEndTime = endTime.toLocaleTimeString('nl-NL', {
         hour: '2-digit',
         minute: '2-digit',
     });
@@ -86,8 +111,9 @@ export default async function BookingSuccessPage({
                             </div>
 
                             <div>
-                                <p className="text-gray-500">Tijd</p>
-                                <p className="text-lg font-medium">{formattedTime}</p>
+                                <p className="text-gray-500">Tijdslot</p>
+                                <p className="text-lg font-medium">{formattedStartTime} - {formattedEndTime}</p>
+                                <p className="text-gray-600 text-sm">Duur: {durationText}</p>
                             </div>
 
                             {booking.customerName && (

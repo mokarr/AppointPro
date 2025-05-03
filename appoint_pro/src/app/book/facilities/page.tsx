@@ -122,6 +122,11 @@ export default async function FacilitiesPage({
                         <div className="h-1 flex-1 bg-gray-300 mx-4"></div>
                         <div className="flex flex-col items-center">
                             <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">3</div>
+                            <span className="mt-2 text-gray-600">Tijdslot</span>
+                        </div>
+                        <div className="h-1 flex-1 bg-gray-300 mx-4"></div>
+                        <div className="flex flex-col items-center">
+                            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">4</div>
                             <span className="mt-2 text-gray-600">Bevestiging</span>
                         </div>
                     </div>
@@ -164,7 +169,7 @@ export default async function FacilitiesPage({
                                     )}
 
                                     <a
-                                        href={`/book/confirmation?locationId=${locationId}&facilityId=${facility.id}`}
+                                        href={`/book/datetime?locationId=${locationId}&facilityId=${facility.id}`}
                                         className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
                                     >
                                         Kies deze faciliteit
