@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { toast } from "sonner"
-import { useLanguage } from "@/contexts/LanguageContext"
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog"
+import { useTranslations } from "next-intl"
 
 type Location = {
     id: string
@@ -33,7 +33,7 @@ type ApiLocation = {
 }
 
 export function LocationsList() {
-    const { getTranslation } = useLanguage();
+    const t = useTranslations('dashboard.locations');
     const [locations, setLocations] = useState<Location[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [isAddLocationOpen, setIsAddLocationOpen] = useState(false)
@@ -74,7 +74,7 @@ export function LocationsList() {
                 setLocations(formattedLocations)
             } catch (error) {
                 console.error('Error fetching locations:', error)
-                toast.error(getTranslation('dashboard.locations.error.fetch'))
+                toast.error(t('error.fetch'))
                 // Set mock data for demo purposes if API fails
                 setMockData()
             } finally {
@@ -83,7 +83,7 @@ export function LocationsList() {
         }
 
         fetchLocations()
-    }, [getTranslation])
+    }, [t])
 
     // Mock data fallback for demo purposes
     const setMockData = () => {
@@ -112,12 +112,12 @@ export function LocationsList() {
         let isValid = true;
 
         if (!newLocation.name.trim()) {
-            newErrors.name = getTranslation('dashboard.locations.error.nameRequired') || 'Name is required';
+            newErrors.name = t('error.nameRequired') || 'Name is required';
             isValid = false;
         }
 
         if (!newLocation.address.trim()) {
-            newErrors.address = getTranslation('dashboard.locations.error.addressRequired') || 'Address is required';
+            newErrors.address = t('error.addressRequired') || 'Address is required';
             isValid = false;
         }
 
@@ -153,10 +153,10 @@ export function LocationsList() {
             setIsAddLocationOpen(false)
             setErrors({})
 
-            toast.success(getTranslation('dashboard.locations.success.add'))
+            toast.success(t('success.add'))
         } catch (error) {
             console.error('Error adding location:', error)
-            toast.error(getTranslation('dashboard.locations.error.add'))
+            toast.error(t('error.add'))
 
             // For demo fallback if API fails
             const newLocationWithId: Location = {
@@ -201,10 +201,10 @@ export function LocationsList() {
             setIsEditLocationOpen(false)
             setErrors({})
 
-            toast.success(getTranslation('dashboard.locations.success.update'))
+            toast.success(t('success.update'))
         } catch (error) {
             console.error('Error updating location:', error)
-            toast.error(getTranslation('dashboard.locations.error.update'))
+            toast.error(t('error.update'))
 
             // For demo fallback if API fails
             setLocations(locations.map(loc =>
@@ -252,10 +252,10 @@ export function LocationsList() {
             setSelectedLocation(null);
             setIsDeleteLocationOpen(false);
 
-            toast.success(getTranslation('dashboard.locations.success.delete'));
+            toast.success(t('success.delete'));
         } catch (error) {
             console.error('Error deleting location:', error);
-            toast.error(getTranslation('dashboard.locations.error.delete'));
+            toast.error(t('error.delete'));
         }
     }
 
@@ -291,7 +291,7 @@ export function LocationsList() {
         return (
             <div className="flex justify-center items-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                <span className="ml-2 text-muted-foreground">{getTranslation('dashboard.locations.loading')}</span>
+                <span className="ml-2 text-muted-foreground">{t('loading')}</span>
             </div>
         )
     }
@@ -299,25 +299,25 @@ export function LocationsList() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold">{getTranslation('dashboard.locations.yourLocations')}</h2>
+                <h2 className="text-2xl font-semibold">{t('yourLocations')}</h2>
                 <Dialog open={isAddLocationOpen} onOpenChange={setIsAddLocationOpen}>
                     <DialogTrigger asChild>
                         <Button className="flex items-center gap-2">
                             <PlusCircle className="h-4 w-4" />
-                            {getTranslation('dashboard.locations.addLocation')}
+                            {t('addLocation')}
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[550px]">
                         <DialogHeader>
-                            <DialogTitle>{getTranslation('dashboard.locations.addNewLocation')}</DialogTitle>
+                            <DialogTitle>{t('addNewLocation')}</DialogTitle>
                             <DialogDescription>
-                                {getTranslation('dashboard.locations.addNewLocationDescription')}
+                                {t('addNewLocationDescription')}
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
                                 <Label htmlFor="name" className="flex">
-                                    {getTranslation('dashboard.locations.locationName')}
+                                    {t('locationName')}
                                     <span className="text-red-500 ml-1">*</span>
                                 </Label>
                                 <Input
@@ -325,7 +325,7 @@ export function LocationsList() {
                                     name="name"
                                     value={newLocation.name}
                                     onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
-                                    placeholder={getTranslation('dashboard.locations.locationNamePlaceholder')}
+                                    placeholder={t('locationNamePlaceholder')}
                                     required
                                     aria-required="true"
                                     aria-invalid={!!errors.name}
@@ -337,7 +337,7 @@ export function LocationsList() {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="address" className="flex">
-                                    {getTranslation('dashboard.locations.address')}
+                                    {t('address')}
                                     <span className="text-red-500 ml-1">*</span>
                                 </Label>
                                 <Input
@@ -345,7 +345,7 @@ export function LocationsList() {
                                     name="address"
                                     value={newLocation.address}
                                     onChange={e => setNewLocation({ ...newLocation, address: e.target.value })}
-                                    placeholder={getTranslation('dashboard.locations.addressPlaceholder')}
+                                    placeholder={t('addressPlaceholder')}
                                     required
                                     aria-required="true"
                                     aria-invalid={!!errors.address}
@@ -357,33 +357,33 @@ export function LocationsList() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="postalCode">{getTranslation('dashboard.locations.postalCode')}</Label>
+                                    <Label htmlFor="postalCode">{t('postalCode')}</Label>
                                     <Input
                                         id="postalCode"
                                         name="postalCode"
                                         value={newLocation.postalCode}
                                         onChange={e => setNewLocation({ ...newLocation, postalCode: e.target.value })}
-                                        placeholder={getTranslation('dashboard.locations.postalCodePlaceholder')}
+                                        placeholder={t('postalCodePlaceholder')}
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="country">{getTranslation('dashboard.locations.country')}</Label>
+                                    <Label htmlFor="country">{t('country')}</Label>
                                     <Input
                                         id="country"
                                         name="country"
                                         value={newLocation.country}
                                         onChange={e => setNewLocation({ ...newLocation, country: e.target.value })}
-                                        placeholder={getTranslation('dashboard.locations.countryPlaceholder')}
+                                        placeholder={t('countryPlaceholder')}
                                     />
                                 </div>
                             </div>
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsAddLocationOpen(false)}>
-                                {getTranslation('dashboard.locations.cancel')}
+                                {t('cancel')}
                             </Button>
                             <Button onClick={handleAddLocation} type="submit">
-                                {getTranslation('dashboard.locations.addLocation')}
+                                {t('addLocation')}
                             </Button>
                         </DialogFooter>
                     </DialogContent>
@@ -392,9 +392,9 @@ export function LocationsList() {
 
             {locations.length === 0 ? (
                 <div className="text-center py-10">
-                    <p className="text-lg text-muted-foreground">{getTranslation('dashboard.locations.noLocations')}</p>
+                    <p className="text-lg text-muted-foreground">{t('noLocations')}</p>
                     <Button onClick={() => setIsAddLocationOpen(true)} variant="link" className="mt-2">
-                        {getTranslation('dashboard.locations.createFirstLocation')}
+                        {t('createFirstLocation')}
                     </Button>
                 </div>
             ) : (
@@ -415,14 +415,14 @@ export function LocationsList() {
                             <CardContent>
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <Building className="h-4 w-4" />
-                                    <span>{location.facilitiesCount} {getTranslation('dashboard.locations.facilities')}</span>
+                                    <span>{location.facilitiesCount} {t('facilities')}</span>
                                 </div>
                             </CardContent>
                             <CardFooter className="flex justify-between mt-auto">
                                 <Button variant="outline" className="flex items-center gap-1" asChild>
                                     <Link href={`/dashboard/locations/${location.id}/facilities`}>
                                         <Plus className="h-4 w-4" />
-                                        {getTranslation('dashboard.locations.facilities')}
+                                        {t('facilities')}
                                     </Link>
                                 </Button>
                                 <div className="flex gap-2">
@@ -451,15 +451,15 @@ export function LocationsList() {
             <Dialog open={isEditLocationOpen} onOpenChange={setIsEditLocationOpen}>
                 <DialogContent className="sm:max-w-[550px]">
                     <DialogHeader>
-                        <DialogTitle>{getTranslation('dashboard.locations.editLocation')}</DialogTitle>
+                        <DialogTitle>{t('editLocation')}</DialogTitle>
                         <DialogDescription>
-                            {getTranslation('dashboard.locations.editLocationDescription')}
+                            {t('editLocationDescription')}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
                             <Label htmlFor="edit-name" className="flex">
-                                {getTranslation('dashboard.locations.locationName')}
+                                {t('locationName')}
                                 <span className="text-red-500 ml-1">*</span>
                             </Label>
                             <Input
@@ -467,7 +467,7 @@ export function LocationsList() {
                                 name="name"
                                 value={newLocation.name}
                                 onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
-                                placeholder={getTranslation('dashboard.locations.locationNamePlaceholder')}
+                                placeholder={t('locationNamePlaceholder')}
                                 required
                                 aria-required="true"
                                 aria-invalid={!!errors.name}
@@ -479,7 +479,7 @@ export function LocationsList() {
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit-address" className="flex">
-                                {getTranslation('dashboard.locations.address')}
+                                {t('address')}
                                 <span className="text-red-500 ml-1">*</span>
                             </Label>
                             <Input
@@ -487,7 +487,7 @@ export function LocationsList() {
                                 name="address"
                                 value={newLocation.address}
                                 onChange={e => setNewLocation({ ...newLocation, address: e.target.value })}
-                                placeholder={getTranslation('dashboard.locations.addressPlaceholder')}
+                                placeholder={t('addressPlaceholder')}
                                 required
                                 aria-required="true"
                                 aria-invalid={!!errors.address}
@@ -499,33 +499,33 @@ export function LocationsList() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="edit-postalCode">{getTranslation('dashboard.locations.postalCode')}</Label>
+                                <Label htmlFor="edit-postalCode">{t('postalCode')}</Label>
                                 <Input
                                     id="edit-postalCode"
                                     name="postalCode"
                                     value={newLocation.postalCode}
                                     onChange={e => setNewLocation({ ...newLocation, postalCode: e.target.value })}
-                                    placeholder={getTranslation('dashboard.locations.postalCodePlaceholder')}
+                                    placeholder={t('postalCodePlaceholder')}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="edit-country">{getTranslation('dashboard.locations.country')}</Label>
+                                <Label htmlFor="edit-country">{t('country')}</Label>
                                 <Input
                                     id="edit-country"
                                     name="country"
                                     value={newLocation.country}
                                     onChange={e => setNewLocation({ ...newLocation, country: e.target.value })}
-                                    placeholder={getTranslation('dashboard.locations.countryPlaceholder')}
+                                    placeholder={t('countryPlaceholder')}
                                 />
                             </div>
                         </div>
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsEditLocationOpen(false)}>
-                            {getTranslation('dashboard.locations.cancel')}
+                            {t('cancel')}
                         </Button>
                         <Button onClick={handleEditLocation} type="submit">
-                            {getTranslation('dashboard.locations.saveChanges')}
+                            {t('saveChanges')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -537,11 +537,11 @@ export function LocationsList() {
                 onOpenChange={setIsDeleteLocationOpen}
                 onConfirm={handleDeleteLocation}
                 onCancel={handleCancelDelete}
-                title={getTranslation('dashboard.locations.deleteLocation')}
-                description={getTranslation('dashboard.locations.deleteLocationConfirmation')}
-                warningMessage={getTranslation('dashboard.locations.deleteFacilitiesWarning')}
-                cancelText={getTranslation('dashboard.locations.cancel')}
-                confirmText={getTranslation('dashboard.locations.deleteConfirm')}
+                title={t('deleteLocation')}
+                description={t('deleteLocationConfirmation')}
+                warningMessage={t('deleteFacilitiesWarning')}
+                cancelText={t('cancel')}
+                confirmText={t('deleteConfirm')}
                 showWarningOnConfirm={true}
                 itemDetails={
                     selectedLocation && (

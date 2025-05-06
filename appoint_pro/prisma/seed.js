@@ -43,6 +43,8 @@ async function main() {
                 name: organizationName,
                 branche: 'SPORTS',
                 description: 'A modern sports center with various facilities',
+                phone: '0612345678',
+                email: 'test@example.com',
                 subdomain: generateSubdomainFromName(organizationName)
             },
         });

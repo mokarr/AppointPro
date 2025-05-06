@@ -1,9 +1,7 @@
 'use client';
 
 import { SessionProvider } from 'next-auth/react';
-import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from 'sonner';
-import { TranslationLoader } from '@/components/TranslationLoader';
 
 interface ProvidersProps {
     children: React.ReactNode;
@@ -12,12 +10,8 @@ interface ProvidersProps {
 export default function Providers({ children }: ProvidersProps) {
     return (
         <SessionProvider>
-            <LanguageProvider>
-                <TranslationLoader>
-                    {children}
-                    <Toaster />
-                </TranslationLoader>
-            </LanguageProvider>
+            {children}
+            <Toaster />
         </SessionProvider>
     );
 } 

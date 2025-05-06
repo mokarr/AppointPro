@@ -1,10 +1,8 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { Link } from '@/i18n/navigation';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import {
@@ -24,21 +22,19 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/lib/auth-client";
+import LocaleSwitcher from './localeSwitcher';
+import { useTranslations } from 'next-intl';
 
 interface LayoutProps {
     children: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
-    const { getTranslation } = useLanguage();
+    const t = useTranslations('common');
     const { data: session, status } = useSession();
     const pathname = usePathname();
 
-    // Helper function to safely convert TranslationValue to string
-    const getString = (key: string): string => {
-        const value = getTranslation(key);
-        return typeof value === 'string' ? value : '';
-    };
+
 
     // Check if we're in the dashboard section
     const isDashboard = pathname?.startsWith('/dashboard');
@@ -63,7 +59,7 @@ export default function Layout({ children }: LayoutProps) {
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center gap-6">
                             <Link href={session ? "/dashboard" : "/"} className="text-xl font-bold text-gray-900 dark:text-white">
-                                {getString('common.appName')}
+                                {t('appName')}
                             </Link>
 
                             {session && (
@@ -74,7 +70,7 @@ export default function Layout({ children }: LayoutProps) {
                                                 <NavigationMenuItem>
                                                     <Link href={isDashboard ? "/dashboard/appointments" : "/portal/calendar"} legacyBehavior passHref>
                                                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                                            {getString('common.appointments')}
+                                                            {t('appointments')}
                                                         </NavigationMenuLink>
                                                     </Link>
                                                 </NavigationMenuItem>
@@ -82,7 +78,7 @@ export default function Layout({ children }: LayoutProps) {
                                                 <NavigationMenuItem>
                                                     <Link href="/dashboard/customers" legacyBehavior passHref>
                                                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                                            {getString('common.clients')}
+                                                            {t('clients')}
                                                         </NavigationMenuLink>
                                                     </Link>
                                                 </NavigationMenuItem>
@@ -90,7 +86,7 @@ export default function Layout({ children }: LayoutProps) {
                                                 <NavigationMenuItem>
                                                     <Link href="/dashboard/organizations" legacyBehavior passHref>
                                                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                                            {getString('common.organizations')}
+                                                            {t('organizations')}
                                                         </NavigationMenuLink>
                                                     </Link>
                                                 </NavigationMenuItem>
@@ -98,7 +94,7 @@ export default function Layout({ children }: LayoutProps) {
                                                 <NavigationMenuItem>
                                                     <Link href={isDashboard ? "/dashboard/services" : "/portal/services"} legacyBehavior passHref>
                                                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                                            {getString('common.services')}
+                                                            {t('services')}
                                                         </NavigationMenuLink>
                                                     </Link>
                                                 </NavigationMenuItem>
@@ -110,7 +106,7 @@ export default function Layout({ children }: LayoutProps) {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <LanguageSwitcher />
+                            <LocaleSwitcher />
                             {!isLoading && (
                                 <>
                                     {session ? (
@@ -119,7 +115,7 @@ export default function Layout({ children }: LayoutProps) {
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                                                         <Avatar className="h-8 w-8">
-                                                            <AvatarImage src={session.user?.image || ""} alt={session.user?.name || getString('common.user')} />
+                                                            <AvatarImage src={session.user?.image || ""} alt={session.user?.name || t('user')} />
                                                             <AvatarFallback>{getInitials(session.user?.name)}</AvatarFallback>
                                                         </Avatar>
                                                     </Button>
@@ -135,10 +131,10 @@ export default function Layout({ children }: LayoutProps) {
                                                     </DropdownMenuLabel>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem asChild>
-                                                        <Link href="/dashboard/profile">{getString('common.profile')}</Link>
+                                                        <Link href="/dashboard/profile">{t('profile')}</Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
-                                                        <Link href="/dashboard/settings">{getString('common.settings')}</Link>
+                                                        <Link href="/dashboard/settings">{t('settings')}</Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
@@ -148,7 +144,7 @@ export default function Layout({ children }: LayoutProps) {
                                                             signOut();
                                                         }}
                                                     >
-                                                        {getString('common.logout')}
+                                                        {t('logout')}
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -156,10 +152,10 @@ export default function Layout({ children }: LayoutProps) {
                                     ) : (
                                         <div className="flex gap-2">
                                             <Button asChild variant="outline">
-                                                <Link href="/sign-in">{getString('common.login')}</Link>
+                                                <Link href="/sign-in">{t('login')}</Link>
                                             </Button>
                                             <Button asChild>
-                                                <Link href="/sign-up">{getString('common.register')}</Link>
+                                                <Link href="/sign-up">{t('register')}</Link>
                                             </Button>
                                         </div>
                                     )}
