@@ -21,42 +21,42 @@ export default function DashboardSidebar() {
         {
             href: '/dashboard',
             icon: LayoutDashboard,
-            label: 'dashboard.navigation.dashboard'
+            label: 'navigation.dashboard'
         },
         {
             href: '/dashboard/organizations',
             icon: Building,
-            label: 'dashboard.navigation.organizations'
+            label: 'navigation.organizations'
         },
         {
             href: '/dashboard/locations',
             icon: MapPin,
-            label: 'dashboard.navigation.locations'
+            label: 'navigation.locations'
         },
         {
             href: '/dashboard/customers',
             icon: Users,
-            label: 'dashboard.navigation.customers'
+            label: 'navigation.customers'
         },
         {
             href: '/dashboard/appointments',
             icon: Calendar,
-            label: 'dashboard.navigation.appointments'
+            label: 'navigation.appointments'
         },
         {
             href: '/dashboard/analytics',
             icon: BarChart,
-            label: 'dashboard.navigation.analytics'
+            label: 'navigation.analytics'
         },
         {
             href: '/subscription/plans',
             icon: CreditCard,
-            label: 'dashboard.navigation.subscription'
+            label: 'navigation.subscription'
         },
         {
             href: '/dashboard/settings',
             icon: Settings,
-            label: 'dashboard.navigation.settings'
+            label: 'navigation.settings'
         }
     ];
 

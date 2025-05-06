@@ -55,7 +55,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
     const [editingFacility, setEditingFacility] = useState<Facility | null>(null)
     const [availableFeatures, setAvailableFeatures] = useState<Feature[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const t = useTranslations('common');
+    const t = useTranslations('facilities');
     const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
     const [isDeleteFacilityOpen, setIsDeleteFacilityOpen] = useState(false);
 
@@ -117,7 +117,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
             setNewFacility({ name: "", description: "", price: 0, features: [] });
             setIsAddFacilityOpen(false);
 
-            toast.success(t('facilities.addSuccess'));
+            toast.success(t('addSuccess'));
         } catch (error) {
             console.error('Error adding facility:', error);
             toast.error(error instanceof Error ? error.message : t('errors.addFacilityFailed'));
@@ -165,7 +165,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
             setSelectedFacility(null);
             setIsDeleteFacilityOpen(false);
 
-            toast.success(t('facilities.deleteSuccess'));
+            toast.success(t('deleteSuccess'));
         } catch (error) {
             console.error('Error deleting facility:', error);
             toast.error(error instanceof Error ? error.message : t('errors.deleteFacilityFailed'));
@@ -216,7 +216,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
             setEditingFacility(null);
             setIsEditFacilityOpen(false);
 
-            toast.success(t('facilities.updateSuccess'));
+            toast.success(t('updateSuccess'));
         } catch (error) {
             console.error('Error updating facility:', error);
             toast.error(error instanceof Error ? error.message : t('errors.updateFacilityFailed'));
@@ -235,7 +235,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
     }
 
     if (isLoading) {
-        return <div className="flex justify-center py-8">{t('common.loading')}</div>
+        return <div className="flex justify-center py-8">{t('loading')}</div>
     }
 
     if (!location) {
@@ -253,38 +253,38 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                     <DialogTrigger asChild>
                         <Button id="add-facility-button" className="flex items-center gap-2">
                             <PlusCircle className="h-4 w-4" />
-                            {t('facilities.addNew')}
+                            {t('addNew')}
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>{t('facilities.addNewTitle')}</DialogTitle>
+                            <DialogTitle>{t('addNewTitle')}</DialogTitle>
                             <DialogDescription>
-                                {t('facilities.addNewDescription')}
+                                {t('addNewDescription')}
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">{t('facilities.name')}</Label>
+                                <Label htmlFor="name">{t('name')}</Label>
                                 <Input
                                     id="name"
                                     value={newFacility.name}
                                     onChange={e => setNewFacility({ ...newFacility, name: e.target.value })}
-                                    placeholder={t('facilities.namePlaceholder')}
+                                    placeholder={t('namePlaceholder')}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="description">{t('facilities.description')}</Label>
+                                <Label htmlFor="description">{t('description')}</Label>
                                 <Textarea
                                     id="description"
                                     value={newFacility.description}
                                     onChange={e => setNewFacility({ ...newFacility, description: e.target.value })}
-                                    placeholder={t('facilities.descriptionPlaceholder')}
+                                    placeholder={t('descriptionPlaceholder')}
                                     rows={3}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="price">{t('facilities.price')}</Label>
+                                <Label htmlFor="price">{t('price')}</Label>
                                 <Input
                                     id="price"
                                     type="number"
@@ -295,11 +295,11 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label className="text-base">{t('facilities.features')}</Label>
+                                <Label className="text-base">{t('features')}</Label>
                                 <div className="grid gap-6 sm:grid-cols-2">
                                     {/* Sport Types */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">{t('facilities.sportTypes')}</Label>
+                                        <Label className="text-sm font-medium">{t('sportTypes')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('sport').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -321,7 +321,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                     {/* Indoor/Outdoor */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">{t('facilities.indoorOutdoor')}</Label>
+                                        <Label className="text-sm font-medium">{t('indoorOutdoor')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('indoor').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -343,7 +343,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                     {/* Surface Type */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">{t('facilities.surfaceType')}</Label>
+                                        <Label className="text-sm font-medium">{t('surfaceType')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('surface').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -365,7 +365,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                     {/* Amenities */}
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">{t('facilities.amenities')}</Label>
+                                        <Label className="text-sm font-medium">{t('amenities')}</Label>
                                         <div className="grid gap-2">
                                             {getFeaturesByCategory('amenities').map(feature => (
                                                 <div key={feature.id} className="flex items-center space-x-2">
@@ -389,10 +389,10 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                         </div>
                         <DialogFooter className="mt-4 gap-2 sm:gap-0">
                             <Button variant="outline" onClick={() => setIsAddFacilityOpen(false)}>
-                                {t('common.cancel')}
+                                {t('cancel')}
                             </Button>
                             <Button id="submit-add-facility" type="button" onClick={handleAddFacility}>
-                                {t('facilities.addFacility')}
+                                {t('addFacility')}
                             </Button>
                         </DialogFooter>
                     </DialogContent>
@@ -410,14 +410,14 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                             <div className="flex items-center gap-1 text-sm font-medium">
                                 <Euro className="h-4 w-4" />
-                                <span>{facility.price.toFixed(2)} {t('facilities.perHour')}</span>
+                                <span>{facility.price.toFixed(2)} {t('perHour')}</span>
                             </div>
 
                             {/* Kenmerken weergeven */}
                             <div className="space-y-2">
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <Tag className="h-4 w-4" />
-                                    <span>{t('facilities.features')}</span>
+                                    <span>{t('features')}</span>
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                     {facility.features.map(feature => (
@@ -450,9 +450,9 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
             {facilities.length === 0 && (
                 <div className="text-center py-10">
-                    <p className="text-lg text-muted-foreground">{t('facilities.noFacilities')}</p>
+                    <p className="text-lg text-muted-foreground">{t('noFacilities')}</p>
                     <Button onClick={() => setIsAddFacilityOpen(true)} variant="link" className="mt-2">
-                        {t('facilities.addFirstFacility')}
+                        {t('addFirstFacility')}
                     </Button>
                 </div>
             )}
@@ -461,33 +461,33 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
             <Dialog open={isEditFacilityOpen} onOpenChange={setIsEditFacilityOpen}>
                 <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>{t('facilities.editTitle')}</DialogTitle>
+                        <DialogTitle>{t('editTitle')}</DialogTitle>
                         <DialogDescription>
-                            {t('facilities.editDescription')}
+                            {t('editDescription')}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="edit-name">{t('facilities.name')}</Label>
+                            <Label htmlFor="edit-name">{t('name')}</Label>
                             <Input
                                 id="edit-name"
                                 value={newFacility.name}
                                 onChange={e => setNewFacility({ ...newFacility, name: e.target.value })}
-                                placeholder={t('facilities.namePlaceholder')}
+                                placeholder={t('namePlaceholder')}
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="edit-description">{t('facilities.description')}</Label>
+                            <Label htmlFor="edit-description">{t('description')}</Label>
                             <Textarea
                                 id="edit-description"
                                 value={newFacility.description}
                                 onChange={e => setNewFacility({ ...newFacility, description: e.target.value })}
-                                placeholder={t('facilities.descriptionPlaceholder')}
+                                placeholder={t('descriptionPlaceholder')}
                                 rows={3}
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="edit-price">{t('facilities.price')}</Label>
+                            <Label htmlFor="edit-price">{t('price')}</Label>
                             <Input
                                 id="edit-price"
                                 type="number"
@@ -498,11 +498,11 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label className="text-base">{t('facilities.features')}</Label>
+                            <Label className="text-base">{t('features')}</Label>
                             <div className="grid gap-6 sm:grid-cols-2">
                                 {/* Sport Types */}
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium">{t('facilities.sportTypes')}</Label>
+                                    <Label className="text-sm font-medium">{t('sportTypes')}</Label>
                                     <div className="grid gap-2">
                                         {getFeaturesByCategory('sport').map(feature => (
                                             <div key={feature.id} className="flex items-center space-x-2">
@@ -524,7 +524,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                 {/* Indoor/Outdoor */}
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium">{t('facilities.indoorOutdoor')}</Label>
+                                    <Label className="text-sm font-medium">{t('indoorOutdoor')}</Label>
                                     <div className="grid gap-2">
                                         {getFeaturesByCategory('indoor').map(feature => (
                                             <div key={feature.id} className="flex items-center space-x-2">
@@ -546,7 +546,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                 {/* Surface Type */}
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium">{t('facilities.surfaceType')}</Label>
+                                    <Label className="text-sm font-medium">{t('surfaceType')}</Label>
                                     <div className="grid gap-2">
                                         {getFeaturesByCategory('surface').map(feature => (
                                             <div key={feature.id} className="flex items-center space-x-2">
@@ -568,7 +568,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
 
                                 {/* Amenities */}
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium">{t('facilities.amenities')}</Label>
+                                    <Label className="text-sm font-medium">{t('amenities')}</Label>
                                     <div className="grid gap-2">
                                         {getFeaturesByCategory('amenities').map(feature => (
                                             <div key={feature.id} className="flex items-center space-x-2">
@@ -592,10 +592,10 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                     </div>
                     <DialogFooter className="mt-4 gap-2 sm:gap-0">
                         <Button variant="outline" onClick={() => setIsEditFacilityOpen(false)}>
-                            {t('common.cancel')}
+                            {t('cancel')}
                         </Button>
                         <Button type="button" onClick={handleEditFacility}>
-                            {t('facilities.saveChanges')}
+                            {t('saveChanges')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -607,11 +607,11 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                 onOpenChange={setIsDeleteFacilityOpen}
                 onConfirm={handleDeleteFacility}
                 onCancel={handleCancelDelete}
-                title={t('facilities.deleteFacility')}
-                description={t('facilities.deleteFacilityConfirmation')}
-                warningMessage={t('facilities.deleteBookingsWarning')}
-                cancelText={t('common.cancel')}
-                confirmText={t('facilities.deleteConfirm')}
+                title={t('deleteFacility')}
+                description={t('deleteFacilityConfirmation')}
+                warningMessage={t('deleteBookingsWarning')}
+                cancelText={t('cancel')}
+                confirmText={t('deleteConfirm')}
                 showWarningOnConfirm={true}
                 itemDetails={
                     selectedFacility && (
@@ -621,7 +621,7 @@ export function FacilitiesList({ locationId }: FacilitiesListProps) {
                             </p>
                             <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                                 <Euro className="h-3 w-3" />
-                                <span>{selectedFacility.price.toFixed(2)} {t('facilities.perHour')}</span>
+                                <span>{selectedFacility.price.toFixed(2)} {t('perHour')}</span>
                             </div>
                         </>
                     )

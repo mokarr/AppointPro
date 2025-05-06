@@ -131,7 +131,7 @@ export default function Layout({ children }: LayoutProps) {
                                                     </DropdownMenuLabel>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem asChild>
-                                                        <Link href="/dashboard/profile">{t('profile')}</Link>
+                                                        <Link href="/dashboard">{t('dashboard')}</Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                         <Link href="/dashboard/settings">{t('settings')}</Link>

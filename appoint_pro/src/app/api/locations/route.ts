@@ -14,6 +14,7 @@ export async function GET() {
             )
         }
 
+
         // Get organization directly from session or fetch from DB
         let organizationId: string | null = null;
 
@@ -76,7 +77,6 @@ export async function GET() {
         const formattedLocations = locations.map(location => ({
             ...location,
             facilitiesCount: location._count.facilities,
-            _count: undefined
         }));
 
         return NextResponse.json(formattedLocations);

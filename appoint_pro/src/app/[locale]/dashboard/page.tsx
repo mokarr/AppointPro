@@ -10,9 +10,7 @@ export default async function DashboardPage() {
         redirect('/sign-in');
     }
 
-    if (!session.user.organizationId) {
-        redirect('/onboarding');
-    }
+
 
     // Fetch organization details including subscription data
     const organization = await db.organization.findUnique({
@@ -35,8 +33,8 @@ export default async function DashboardPage() {
         }
     });
 
-    if (!organization) {
-        redirect('/onboarding');
+    if (!organization?.hasActiveSubscription) {
+        redirect('/subscription/plans');
     }
 
     // Get the current active subscription if any

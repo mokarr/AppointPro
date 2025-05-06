@@ -51,6 +51,8 @@ export function LocationsList() {
         address?: string;
     }>({})
 
+
+
     // Fetch locations from the API
     useEffect(() => {
         const fetchLocations = async () => {
@@ -71,41 +73,23 @@ export function LocationsList() {
                     facilitiesCount: location._count?.facilities || 0
                 }))
 
+                // Log the formatted locations for debugging
+                console.log('[LocationsList] formattedLocations:', formattedLocations);
+
                 setLocations(formattedLocations)
+
             } catch (error) {
                 console.error('Error fetching locations:', error)
                 toast.error(t('error.fetch'))
-                // Set mock data for demo purposes if API fails
-                setMockData()
+
             } finally {
                 setIsLoading(false)
+
             }
         }
 
         fetchLocations()
     }, [t])
-
-    // Mock data fallback for demo purposes
-    const setMockData = () => {
-        setLocations([
-            {
-                id: "1",
-                name: "SportCenter Pro - Amsterdam",
-                address: "Sportlaan 123, 1234 AB, Amsterdam",
-                postalCode: "1234 AB",
-                country: "Netherlands",
-                facilitiesCount: 4,
-            },
-            {
-                id: "2",
-                name: "SportCenter Pro - Utrecht",
-                address: "Olympialaan 45, 3543 CC, Utrecht",
-                postalCode: "3543 CC",
-                country: "Netherlands",
-                facilitiesCount: 3,
-            },
-        ])
-    }
 
     const validateForm = () => {
         const newErrors: { name?: string; address?: string } = {};
