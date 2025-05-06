@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
+
 import {
     LayoutDashboard,
     Building,
@@ -12,9 +12,10 @@ import {
     CreditCard,
     MapPin
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function DashboardSidebar() {
-    const { getTranslation } = useLanguage();
+    const t = useTranslations('dashboard');
 
     const navItems = [
         {
@@ -72,7 +73,7 @@ export default function DashboardSidebar() {
                         >
                             <Icon className="h-4 w-4" />
                             <span className="text-sm font-medium">
-                                {getTranslation(item.label)}
+                                {t(item.label)}
                             </span>
                         </Link>
                     );

@@ -18,6 +18,8 @@ model Organization {
   branche               String
   description           String
   locations             Location[]
+  phone                 String?
+  email                 String?
   updatedAt             DateTime       @updatedAt
   createdAt             DateTime       @default(now())
   User                  User[]
@@ -110,6 +112,7 @@ model Booking {
   customerName  String?
   customerPhone String?
   notes         String?
+  emailSent     Boolean  @default(false)
 }
 
 //REGION USER AUTHENTICATION and AUTHORIZATION

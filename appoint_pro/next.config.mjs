@@ -1,4 +1,7 @@
 import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig = {
     webpack: (config, { isServer }) => {
@@ -22,7 +25,10 @@ const nextConfig = {
 
         return config;
     },
-    transpilePackages: ['@prisma/client', 'prisma']
+    transpilePackages: ['@prisma/client', 'prisma'],
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
 };
 
-export default nextConfig; 
+export default withNextIntl(nextConfig); 

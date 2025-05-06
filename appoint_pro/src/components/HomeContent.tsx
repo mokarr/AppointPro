@@ -1,17 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function HomeContent() {
-    const { getTranslation } = useLanguage();
-
-    // Helper function to safely convert TranslationValue to string
-    const getString = (key: string): string => {
-        const value = getTranslation(key);
-        return typeof value === 'string' ? value : '';
-    };
+    const t = useTranslations('common');
 
     return (
         <div className="min-h-screen">
@@ -21,19 +15,19 @@ export default function HomeContent() {
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="text-center md:text-left">
                             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                                {getString('home.heroTitle')}
+                                {t('home.heroTitle')}
                                 <br />
-                                <span className="text-blue-600">{getString('home.heroSubtitle')}</span>
+                                <span className="text-blue-600">{t('home.heroSubtitle')}</span>
                             </h1>
                             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-                                {getString('home.heroDescription')}
+                                {t('home.heroDescription')}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                                 <Button asChild size="lg" className="text-lg">
-                                    <Link href="/sign-up">{getString('common.getStarted')}</Link>
+                                    <Link href="/sign-up">{t('common.getStarted')}</Link>
                                 </Button>
                                 <Button asChild variant="outline" size="lg" className="text-lg">
-                                    <Link href="#features">{getString('common.learnMore')}</Link>
+                                    <Link href="#features">{t('common.learnMore')}</Link>
                                 </Button>
                             </div>
                         </div>
@@ -53,7 +47,7 @@ export default function HomeContent() {
             <section className="py-20 bg-gray-50 dark:bg-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-                        {getString('home.featuresTitle')}
+                        {t('home.featuresTitle')}
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -63,10 +57,10 @@ export default function HomeContent() {
                                 </svg>
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                                {getString('home.feature1Title')}
+                                {t('home.feature1Title')}
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                                {getString('home.feature1Description')}
+                                {t('home.feature1Description')}
                             </p>
                         </div>
                         <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -76,10 +70,10 @@ export default function HomeContent() {
                                 </svg>
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                                {getString('home.feature2Title')}
+                                {t('home.feature2Title')}
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                                {getString('home.feature2Description')}
+                                {t('home.feature2Description')}
                             </p>
                         </div>
                         <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -89,10 +83,10 @@ export default function HomeContent() {
                                 </svg>
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                                {getString('home.feature3Title')}
+                                {t('home.feature3Title')}
                             </h3>
                             <p className="text-gray-600 dark:text-gray-300">
-                                {getString('home.feature3Description')}
+                                {t('home.feature3Description')}
                             </p>
                         </div>
                     </div>
@@ -103,19 +97,19 @@ export default function HomeContent() {
             <section className="py-16 bg-gray-50 dark:bg-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-2">
-                        {getString('common.pricingPlans')}
+                        {t('common.pricingPlans')}
                     </h2>
                     <p className="text-center text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
-                        {getString('common.choosePlan')}
+                        {t('common.choosePlan')}
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
                             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{getString('pricing.basic.title')}</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('pricing.basic.title')}</h3>
                                 <p className="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">
-                                    {getString('pricing.basic.price')}
-                                    <span className="text-base font-medium text-gray-500 dark:text-gray-400">/{getString('common.month')}</span>
+                                    {t('pricing.basic.price')}
+                                    <span className="text-base font-medium text-gray-500 dark:text-gray-400">/{t('common.month')}</span>
                                 </p>
                             </div>
                             <div className="p-6">
@@ -124,42 +118,42 @@ export default function HomeContent() {
                                         <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{getString('pricing.basic.feature1')}</span>
+                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{t('pricing.basic.feature1')}</span>
                                     </li>
                                     <li className="flex items-center">
                                         <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{getString('pricing.basic.feature2')}</span>
+                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{t('pricing.basic.feature2')}</span>
                                     </li>
                                     <li className="flex items-center">
                                         <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{getString('pricing.basic.feature3')}</span>
+                                        <span className="ml-3 text-gray-600 dark:text-gray-300">{t('pricing.basic.feature3')}</span>
                                     </li>
                                 </ul>
                                 <div className="mt-8">
                                     <Button asChild className="w-full">
-                                        <Link href="/sign-up">{getString('common.getStarted')}</Link>
+                                        <Link href="/sign-up">{t('common.getStarted')}</Link>
                                     </Button>
                                 </div>
                             </div>
                         </div>
 
                         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden relative">
-                            <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">{getString('common.popular')}</div>
+                            <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">{t('common.popular')}</div>
                             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{getString('pricing.pro.title')}</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('pricing.pro.title')}</h3>
                                 <p className="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">
-                                    {getString('pricing.pro.price')}
-                                    <span className="text-base font-medium text-gray-500 dark:text-gray-400">/{getString('common.month')}</span>
+                                    {t('pricing.pro.price')}
+                                    <span className="text-base font-medium text-gray-500 dark:text-gray-400">/{t('common.month')}</span>
                                 </p>
                             </div>
                             <div className="p-6">
                                 <ul className="space-y-4">
-                                    {Array.isArray(getTranslation('pricing.pro.features')) &&
-                                        ((getTranslation('pricing.pro.features') as unknown) as string[]).map((feature, index) => (
+                                    {Array.isArray(t('pricing.pro.features')) &&
+                                        ((t('pricing.pro.features') as unknown) as string[]).map((feature, index) => (
                                             <li key={index} className="flex items-start">
                                                 <svg className="h-5 w-5 text-green-500 shrink-0 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -169,23 +163,23 @@ export default function HomeContent() {
                                         ))}
                                 </ul>
                                 <Button className="w-full mt-6" asChild>
-                                    <Link href="/subscription/plans">{getString('common.subscribe')}</Link>
+                                    <Link href="/subscription/plans">{t('common.subscribe')}</Link>
                                 </Button>
                             </div>
                         </div>
 
                         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
                             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{getString('pricing.enterprise.title')}</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('pricing.enterprise.title')}</h3>
                                 <p className="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">
-                                    {getString('pricing.enterprise.price')}
-                                    <span className="text-base font-medium text-gray-500 dark:text-gray-400">/{getString('common.month')}</span>
+                                    {t('pricing.enterprise.price')}
+                                    <span className="text-base font-medium text-gray-500 dark:text-gray-400">/{t('common.month')}</span>
                                 </p>
                             </div>
                             <div className="p-6">
                                 <ul className="space-y-4">
-                                    {Array.isArray(getTranslation('pricing.enterprise.features')) &&
-                                        ((getTranslation('pricing.enterprise.features') as unknown) as string[]).map((feature, index) => (
+                                    {Array.isArray(t('pricing.enterprise.features')) &&
+                                        ((t('pricing.enterprise.features') as unknown) as string[]).map((feature, index) => (
                                             <li key={index} className="flex items-start">
                                                 <svg className="h-5 w-5 text-green-500 shrink-0 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -195,7 +189,7 @@ export default function HomeContent() {
                                         ))}
                                 </ul>
                                 <Button className="w-full mt-6" asChild>
-                                    <Link href="/subscription/plans">{getString('common.subscribe')}</Link>
+                                    <Link href="/subscription/plans">{t('common.subscribe')}</Link>
                                 </Button>
                             </div>
                         </div>
@@ -208,17 +202,17 @@ export default function HomeContent() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div>
-                            <h4 className="text-white font-semibold mb-4">{getString('common.appName')}</h4>
+                            <h4 className="text-white font-semibold mb-4">{t('common.appName')}</h4>
                             <p className="text-sm">
-                                {getString('footer.description')}
+                                {t('footer.description')}
                             </p>
                         </div>
                         <div>
-                            <h4 className="text-white font-semibold mb-4">{getString('common.product')}</h4>
+                            <h4 className="text-white font-semibold mb-4">{t('common.product')}</h4>
                             <ul className="space-y-2">
-                                <li><Link href="#features" className="hover:text-white transition-colors">{getString('footer.features')}</Link></li>
-                                <li><Link href="#" className="hover:text-white transition-colors">{getString('footer.pricing')}</Link></li>
-                                <li><Link href="/sign-up" className="hover:text-white transition-colors">{getString('common.signUp')}</Link></li>
+                                <li><Link href="#features" className="hover:text-white transition-colors">{t('footer.features')}</Link></li>
+                                <li><Link href="#" className="hover:text-white transition-colors">{t('footer.pricing')}</Link></li>
+                                <li><Link href="/sign-up" className="hover:text-white transition-colors">{t('common.signUp')}</Link></li>
                             </ul>
                         </div>
                     </div>

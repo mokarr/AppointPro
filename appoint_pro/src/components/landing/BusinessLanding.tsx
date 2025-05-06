@@ -1,31 +1,18 @@
 'use client';
 
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ChevronRight, BarChart, Calendar, Users, Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 type TranslationValue = string | string[] | { [key: string]: TranslationValue } | { title: string; description: string }[];
 
-const getString = (value: TranslationValue): string => {
-    if (typeof value === 'string') return value;
-    if (Array.isArray(value)) {
-        if (value.length > 0 && typeof value[0] === 'object' && 'title' in value[0]) {
-            return value.map(item => (item as { title: string; description: string }).title).join(', ');
-        }
-        return (value as unknown as string[]).join(', ');
-    }
-    if (typeof value === 'object' && value !== null) {
-        return Object.values(value).map(v => getString(v as TranslationValue)).join(', ');
-    }
-    return '';
-};
 
 export const BusinessLanding = () => {
-    const { getTranslation } = useLanguage();
+    const t = useTranslations('business');
 
-    const benefits = (getTranslation('business.benefits.items') as unknown) as string[];
+    const benefits = (t('benefits.items') as unknown) as string[];
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -34,10 +21,10 @@ export const BusinessLanding = () => {
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between">
                         <p className="text-sm text-blue-700 dark:text-blue-300">
-                            {getString(getTranslation('common.banner.customer'))}
+                            {t('banner.customer')}
                         </p>
                         <Link href="/landing/user" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
-                            {getString(getTranslation('common.banner.customerLink'))}
+                            {t('banner.customerLink')}
                         </Link>
                     </div>
                 </div>
@@ -49,20 +36,20 @@ export const BusinessLanding = () => {
                 <div className="container mx-auto px-4 z-10">
                     <div className="max-w-3xl text-white">
                         <h1 className="text-5xl font-bold mb-6">
-                            {getString(getTranslation('business.hero.title'))}
+                            {t('hero.title')}
                         </h1>
                         <p className="text-xl mb-4">
-                            {getString(getTranslation('business.hero.subtitle'))}
+                            {t('hero.subtitle')}
                         </p>
                         <p className="text-lg mb-8">
-                            {getString(getTranslation('business.hero.description'))}
+                            {t('hero.description')}
                         </p>
                         <div className="flex gap-4">
                             <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-                                {getString(getTranslation('business.hero.cta'))}
+                                {t('hero.cta')}
                             </Button>
                             <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
-                                {getString(getTranslation('business.hero.secondaryCta'))}
+                                {t('hero.secondaryCta')}
                             </Button>
                         </div>
                     </div>
@@ -74,38 +61,38 @@ export const BusinessLanding = () => {
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl font-bold mb-4">
-                            {getString(getTranslation('business.features.title'))}
+                            {t('features.title')}
                         </h2>
                         <p className="text-gray-600">
-                            {getString(getTranslation('business.features.subtitle'))}
+                            {t('features.subtitle')}
                         </p>
                     </div>
                     <div className="grid md:grid-cols-3 gap-8">
                         <Card className="p-6">
                             <Calendar className="w-12 h-12 text-blue-600 mb-4" />
                             <h3 className="text-xl font-semibold mb-2">
-                                {getString(getTranslation('business.features.feature1.title'))}
+                                {t('features.feature1.title')}
                             </h3>
                             <p className="text-gray-600">
-                                {getString(getTranslation('business.features.feature1.description'))}
+                                {t('features.feature1.description')}
                             </p>
                         </Card>
                         <Card className="p-6">
                             <BarChart className="w-12 h-12 text-blue-600 mb-4" />
                             <h3 className="text-xl font-semibold mb-2">
-                                {getString(getTranslation('business.features.feature2.title'))}
+                                {t('features.feature2.title')}
                             </h3>
                             <p className="text-gray-600">
-                                {getString(getTranslation('business.features.feature2.description'))}
+                                {t('features.feature2.description')}
                             </p>
                         </Card>
                         <Card className="p-6">
                             <Users className="w-12 h-12 text-blue-600 mb-4" />
                             <h3 className="text-xl font-semibold mb-2">
-                                {getString(getTranslation('business.features.feature3.title'))}
+                                {t('features.feature3.title')}
                             </h3>
                             <p className="text-gray-600">
-                                {getString(getTranslation('business.features.feature3.description'))}
+                                {t('features.feature3.description')}
                             </p>
                         </Card>
                     </div>
@@ -117,7 +104,7 @@ export const BusinessLanding = () => {
                 <div className="container mx-auto px-4">
                     <div className="max-w-3xl mx-auto">
                         <h2 className="text-3xl font-bold text-center mb-12">
-                            {getString(getTranslation('business.benefits.title'))}
+                            {t('benefits.title')}
                         </h2>
                         <div className="grid gap-4">
                             {benefits?.map((benefit, index) => (
@@ -137,21 +124,21 @@ export const BusinessLanding = () => {
             <section className="py-20 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-12">
-                        {getString(getTranslation('business.testimonials.title'))}
+                        {t('testimonials.title')}
                     </h2>
                     <div className="max-w-3xl mx-auto">
                         <Card className="p-8">
                             <p className="text-lg italic mb-6">
-                                {getString(getTranslation('business.testimonials.testimonial1.quote'))}
+                                {t('testimonials.testimonial1.quote')}
                             </p>
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-full bg-gray-200" />
                                 <div>
                                     <p className="font-semibold">
-                                        {getString(getTranslation('business.testimonials.testimonial1.author'))}
+                                        {t('testimonials.testimonial1.author')}
                                     </p>
                                     <p className="text-gray-600">
-                                        {getString(getTranslation('business.testimonials.testimonial1.position'))}
+                                        {t('testimonials.testimonial1.position')}
                                     </p>
                                 </div>
                             </div>
@@ -164,13 +151,13 @@ export const BusinessLanding = () => {
             <section className="py-20">
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-3xl font-bold mb-4">
-                        {getString(getTranslation('business.pricing.title'))}
+                        {t('pricing.title')}
                     </h2>
                     <p className="text-gray-600 mb-8">
-                        {getString(getTranslation('business.pricing.subtitle'))}
+                        {t('pricing.subtitle')}
                     </p>
                     <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
-                        {getString(getTranslation('business.hero.cta'))}
+                        {t('hero.cta')}
                         <ChevronRight className="ml-2 w-4 h-4" />
                     </Button>
                 </div>
