@@ -5,6 +5,10 @@ import { Card } from '@/components/ui/card';
 import { ChevronRight, Building2, Wallet, BarChart, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+
+// Define the keys for benefits
+const benefitKeys = ['benefit1', 'benefit2', 'benefit3', 'benefit4', 'benefit5', 'benefit6'] as const;
+
 export default function CompanyLandingPage() {
     const t = useTranslations('companyLanding');
 
@@ -25,10 +29,6 @@ export default function CompanyLandingPage() {
             description: t('features.feature3.description')
         }
     ];
-
-    // Ensure benefits is always an array with proper type checking
-    const benefitsFromTranslation = t('benefits.items');
-    const benefits = Array.isArray(benefitsFromTranslation) ? benefitsFromTranslation : [];
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -105,13 +105,15 @@ export default function CompanyLandingPage() {
                         <h2 className="text-3xl font-bold text-center mb-12">
                             {t('benefits.title')}
                         </h2>
-                        <div className="grid gap-4">
-                            {benefits.map((benefit, index) => (
-                                <div key={index} className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
-                                    <div className="flex-shrink-0">
-                                        <Check className="w-6 h-6 text-green-500" />
-                                    </div>
-                                    <p className="text-lg">{benefit}</p>
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {benefitKeys.map((key) => (
+                                <div key={key} className="bg-white p-6 rounded-lg shadow-sm text-center">
+                                    <h3 className="text-2xl font-bold text-blue-600 mb-2">
+                                        {t(`benefits.${key}.value`)}
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        {t(`benefits.${key}.title`)}
+                                    </p>
                                 </div>
                             ))}
                         </div>

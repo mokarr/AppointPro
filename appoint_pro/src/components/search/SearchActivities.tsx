@@ -438,12 +438,12 @@ export function SearchActivities() {
                                         )}
                                         <div className="flex items-start gap-2">
                                             <Euro className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                            <span>{t('search.facilities.card.price')?.replace('{price}', String(facility.price)) || `€${facility.price} per hour`}</span>
+                                            <span>{t('search.facilities.card.price', { price: facility.price })}</span>
                                         </div>
                                         {facility.availableSpots !== undefined && (
                                             <div className="flex items-start gap-2">
                                                 <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                                <span>{t('search.facilities.card.spots')?.replace('{spots}', String(facility.availableSpots)) || `${facility.availableSpots} spots available`}</span>
+                                                <span>{t('search.facilities.card.spots', { spots: facility.availableSpots })}</span>
                                             </div>
                                         )}
 

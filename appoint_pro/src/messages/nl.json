@@ -219,7 +219,6 @@
             "subscription": "Abonnement",
             "settings": "Instellingen"
         },
-        "subscriptionSection": "Abbonement",
         "welcome": "Welkom",
         "description": "Beheer uw afspraken en bedrijf vanaf één plek.",
         "newAppointment": "Nieuwe Afspraak",
@@ -439,6 +438,10 @@
         }
     },
     "user": {
+        "banner": {
+            "business": "Bent u een sportorganisatie?",
+            "businessLink": "Ga naar de sportorganisatiepagina"
+        },
         "welcome": "Welkom bij",
         "hero": {
             "title": "Boek Sportlocaties Met Gemak",
@@ -465,14 +468,30 @@
         },
         "benefits": {
             "title": "Voordelen Voor Jou",
-            "items": [
-                "Boek sportlocaties wanneer en waar je maar wilt",
-                "Vind de perfecte baan voor jouw spel",
-                "Vergelijk prijzen van verschillende locaties",
-                "Beheer al je boekingen op één plek",
-                "Ontvang direct bevestigingen en herinneringen",
-                "Krijg routebeschrijvingen en toegangsinformatie"
-            ]
+            "benefit1": {
+                "title": "Online boeken",
+                "value": "24/7"
+            },
+            "benefit2": {
+                "title": "Perfecte locatie",
+                "value": "Altijd"
+            },
+            "benefit3": {
+                "title": "Prijsvergelijking",
+                "value": "Eenvoudig"
+            },
+            "benefit4": {
+                "title": "Boekingsbeheer",
+                "value": "Centraal"
+            },
+            "benefit5": {
+                "title": "Bevestigingen",
+                "value": "Direct"
+            },
+            "benefit6": {
+                "title": "Locatie-informatie",
+                "value": "Compleet"
+            }
         },
         "testimonials": {
             "title": "Wat Onze Gebruikers Zeggen",
@@ -599,14 +618,30 @@
         },
         "benefits": {
             "title": "Voordelen voor Uw Sportfaciliteit",
-            "items": [
-                "Verhoog baanboekingen met 40% door online beschikbaarheid",
-                "Verminder no-shows met automatische herinneringen",
-                "Bespaar 15+ uur per week op baanbeheer",
-                "Maximaliseer inkomsten met slimme prijzen",
-                "Toegang tot real-time faciliteit inzichten",
-                "Veilig en betrouwbaar boekingsplatform"
-            ]
+            "benefit1": {
+                "title": "Baanboekingen",
+                "value": "+40%"
+            },
+            "benefit2": {
+                "title": "No-shows",
+                "value": "Minder"
+            },
+            "benefit3": {
+                "title": "Tijdbesparing",
+                "value": "15+ uur"
+            },
+            "benefit4": {
+                "title": "Inkomsten",
+                "value": "Maximaal"
+            },
+            "benefit5": {
+                "title": "Inzichten",
+                "value": "Real-time"
+            },
+            "benefit6": {
+                "title": "Boekingsplatform",
+                "value": "Veilig"
+            }
         },
         "cta": {
             "title": "Klaar om Uw Sportfaciliteit te Transformeren?",

@@ -18,10 +18,7 @@
         "pricing": "Pricing",
         "contact": "Contact",
         "help": "Help",
-        "language": {
-            "dutch": "NL",
-            "english": "EN"
-        },
+        "language": "Language",
         "getStarted": "Get Started",
         "learnMore": "Learn More",
         "features": "Features",
@@ -44,16 +41,6 @@
         "viewLocations": "View Locations",
         "totalEmployees": "Total Employees",
         "totalLocations": "Total Locations",
-        "user": "User",
-        "loggedInAs": "You are logged in as",
-        "organization": "Organization",
-        "employees": "Employees",
-        "locations": "Locations",
-        "location": "",
-        "facilities": "",
-        "facility": "",
-        "subscription": "Subscription",
-        "plan": "",
         "switchToDutch": "Switch to Dutch",
         "switchToEnglish": "Switch to English",
         "appName": "AppointPro",
@@ -62,7 +49,7 @@
         "organizations": "Organizations",
         "customers": "Customers",
         "analytics": "Analytics",
-        "noAppointmentsFound": "",
+        "subscription": "Subscription",
         "banner": {
             "business": "Are you a business owner?",
             "businessLink": "Visit Business Page",
@@ -71,13 +58,17 @@
             "customer": "Are you a customer?",
             "customerLink": "Visit Customer Page"
         },
+        "user": "User",
+        "loggedInAs": "You are logged in as",
+        "organization": "Organization",
+        "employees": "Employees",
+        "locations": "Locations",
         "header": {
             "appointments": {
                 "incoming": "Incoming appointments",
                 "outgoing": "Outgoing appointments",
                 "history": "History",
-                "description": "View and manage your calendar and appointments",
-                "new": ""
+                "description": "View and manage your calendar and appointments"
             },
             "clients": {
                 "overview": "Client overview",
@@ -95,15 +86,11 @@
                 "locations": "locations",
                 "created": "Created",
                 "viewOrganization": "View Organization"
-            },
-            "timetable": {
-                "description": "",
-                "details": ""
-            },
-            "upcomingAppointments": {
-                "description": "",
-                "details": ""
             }
+        },
+        "language": {
+            "dutch": "NL",
+            "english": "EN"
         },
         "save": "Save",
         "cancel": "Cancel",
@@ -113,6 +100,9 @@
         "search": "Search",
         "loading": "Loading...",
         "retry": "Try Again",
+        "appointments": "Appointments",
+        "clients": "Clients",
+        "organizations": "Organizations",
         "createNew": "Create New",
         "submitError": "Error submitting form",
         "submitSuccess": "Form submitted successfully",
@@ -120,16 +110,12 @@
         "confirmAction": "Are you sure you want to perform this action?",
         "yes": "Yes",
         "no": "No",
+        "dashboard": "Dashboard",
         "signIn": "Sign In",
         "signOut": "Sign Out",
         "next": "Next",
         "back": "Back",
-        "done": "Done",
-        "timetable": "",
-        "upcomingAppointments": "",
-        "totalCustomers": "",
-        "revenue": "",
-        "view": ""
+        "done": "Done"
     },
     "auth": {
         "email": "Email",
@@ -238,8 +224,6 @@
             "description": "Manage all your sports locations and facilities in one place",
             "addLocation": "Add Location",
             "editLocation": "Edit Location",
-            "editLocationDescription": "",
-            "saveChanges": "",
             "deleteLocation": "Delete Location",
             "deleteLocationConfirmation": "Are you sure you want to delete this location?",
             "warning": "Warning",
@@ -281,27 +265,6 @@
                 "update": "Location updated successfully",
                 "delete": "Location deleted successfully"
             }
-        }
-    },
-    "subscription": {
-        "manage": {
-            "title": "Subscription",
-            "noActiveSubscription": "No active subscription found for {organizationName}",
-            "noActiveSubscriptionMessage": "Your organization doesn't have an active subscription. Subscribe to access all features.",
-            "loading": "Loading...",
-            "viewPlans": "View Subscription Plans",
-            "currentSubscription": "Current subscription for {organizationName}",
-            "activeSubscription": "Active Subscription",
-            "activeSubscriptionMessage": "Your {planName} subscription is active and will renew automatically.",
-            "plan": "Plan",
-            "status": "Status",
-            "currentPeriodEnds": "Current period ends",
-            "cancelAtPeriodEnd": "Cancel at period end",
-            "yes": "Yes",
-            "no": "No",
-            "detailsUnavailable": "Subscription details unavailable",
-            "manageButton": "Manage Subscription",
-            "manageSubscription": ""
         }
     },
     "business": {
@@ -412,29 +375,9 @@
             "description": "Download our mobile app to book venues anywhere, anytime",
             "android": "Get it on Google Play",
             "ios": "Download on App Store"
-        },
-        "benefits": {
-            "title": "",
-            "items": ""
-        },
-        "testimonials": {
-            "title": "",
-            "testimonial1": {
-                "quote": "",
-                "author": "",
-                "position": ""
-            }
-        },
-        "cta": {
-            "title": "",
-            "subtitle": ""
         }
     },
     "user": {
-        "banner": {
-            "business": "",
-            "businessLink": ""
-        },
         "welcome": "Welcome to",
         "hero": {
             "title": "Book Sports Venues With Ease",
@@ -461,30 +404,14 @@
         },
         "benefits": {
             "title": "Benefits for You",
-            "benefit1": {
-                "title": "Online booking",
-                "value": "24/7"
-            },
-            "benefit2": {
-                "title": "Perfect location",
-                "value": "Always"
-            },
-            "benefit3": {
-                "title": "Price comparison",
-                "value": "Simple"
-            },
-            "benefit4": {
-                "title": "Booking management",
-                "value": "Central"
-            },
-            "benefit5": {
-                "title": "Confirmations",
-                "value": "Instant"
-            },
-            "benefit6": {
-                "title": "Location information",
-                "value": "Complete"
-            }
+            "items": [
+                "Book sports venues anytime, anywhere",
+                "Find the perfect court for your game",
+                "Compare prices across different venues",
+                "Manage all your bookings in one place",
+                "Receive instant confirmations and reminders",
+                "Get directions and venue access information"
+            ]
         },
         "testimonials": {
             "title": "What Our Users Say",
@@ -538,13 +465,7 @@
                     "description": "Failed to load facilities",
                     "message": "Failed to load facilities. Please try again.",
                     "retry": "Retry"
-                },
-                "cancel": "",
-                "loading": "",
-                "selectLocation": "",
-                "selectDate": "",
-                "selectTime": "",
-                "selectSpots": ""
+                }
             }
         }
     },
@@ -616,30 +537,14 @@
         },
         "benefits": {
             "title": "Benefits for Your Sports Facility",
-            "benefit1": {
-                "title": "",
-                "value": ""
-            },
-            "benefit2": {
-                "title": "",
-                "value": ""
-            },
-            "benefit3": {
-                "title": "",
-                "value": ""
-            },
-            "benefit4": {
-                "title": "",
-                "value": ""
-            },
-            "benefit5": {
-                "title": "",
-                "value": ""
-            },
-            "benefit6": {
-                "title": "",
-                "value": ""
-            }
+            "items": [
+                "Increase court bookings by 40% with online availability",
+                "Reduce no-shows with automated reminders",
+                "Save 15+ hours weekly on court management",
+                "Maximize revenue with smart pricing",
+                "Access real-time facility insights",
+                "Secure and reliable booking platform"
+            ]
         },
         "cta": {
             "title": "Ready to Transform Your Sports Facility?",
@@ -658,6 +563,64 @@
             "social": {
                 "title": "Follow Us"
             }
+        }
+    },
+    "subscription": {
+        "manage": {
+            "title": "Subscription",
+            "noActiveSubscription": "No active subscription found for {organizationName}",
+            "noActiveSubscriptionMessage": "Your organization doesn't have an active subscription. Subscribe to access all features.",
+            "loading": "Loading...",
+            "viewPlans": "View Subscription Plans",
+            "currentSubscription": "Current subscription for {organizationName}",
+            "activeSubscription": "Active Subscription",
+            "activeSubscriptionMessage": "Your {planName} subscription is active and will renew automatically.",
+            "plan": "Plan",
+            "status": "Status",
+            "currentPeriodEnds": "Current period ends",
+            "cancelAtPeriodEnd": "Cancel at period end",
+            "yes": "Yes",
+            "no": "No",
+            "detailsUnavailable": "Subscription details unavailable",
+            "manageButton": "Manage Subscription"
+        }
+    },
+    "search": {
+        "activities": {
+            "filters": {
+                "button": "Filters",
+                "title": "Filters",
+                "description": "Filter sports activities by features",
+                "price": {
+                    "label": "Price",
+                    "placeholder": "Price range",
+                    "all": "All prices",
+                    "low": "€0 - €25",
+                    "medium": "€26 - €50",
+                    "high": "€51+"
+                },
+                "categories": {
+                    "sport": "Sport",
+                    "indoorOutdoor": "Indoor/Outdoor",
+                    "surface": "Surface",
+                    "amenities": "Amenities"
+                },
+                "actions": {
+                    "clear": "Clear filters",
+                    "apply": "Apply"
+                }
+            },
+            "card": {
+                "location": "Location",
+                "date": "Date",
+                "time": "Time",
+                "price": "€{price} per hour",
+                "spots": "{spots} available spots",
+                "features": "Features",
+                "reserve": "Reserve now"
+            },
+            "noResults": "No activities found that match your search criteria.",
+            "error": "Failed to load activities. Please try again."
         }
     },
     "facilities": {
@@ -679,7 +642,6 @@
         "surfaceType": "Surface Type",
         "amenities": "Amenities",
         "addFacility": "Add Facility",
-        "cancel": "",
         "noFacilities": "No facilities found",
         "addFirstFacility": "Add your first facility",
         "deleteFacility": "Delete Facility",
@@ -688,8 +650,7 @@
         "deleteConfirm": "Yes, delete facility",
         "addSuccess": "Facility added successfully",
         "updateSuccess": "Facility updated successfully",
-        "deleteSuccess": "Facility deleted successfully",
-        "loading": ""
+        "deleteSuccess": "Facility deleted successfully"
     },
     "errors": {
         "fetchLocationFailed": "Failed to fetch location details",
@@ -698,7 +659,7 @@
         "fetchDataFailed": "Failed to fetch data",
         "locationNotFound": "Location not found",
         "addFacilityFailed": "Failed to add facility",
-        "updateFacilityFailed": "Failed to update facility",
-        "deleteFacilityFailed": "Failed to delete facility"
+        "deleteFacilityFailed": "Failed to delete facility",
+        "updateFacilityFailed": "Failed to update facility"
     }
 }
