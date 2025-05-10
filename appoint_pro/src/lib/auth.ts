@@ -102,6 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // @ts-expect-error - TypeScript doesn't understand our custom user type
             authorize: async (credentials, _request) => {
                 try {
+                    //dont need to validate the credentials here, because the zod schema is already validating the credentials in the auth-actions.ts file
                     const { email, password } = await signInSchema.parseAsync(credentials)
 
                     const user = await db.user.findFirst({
@@ -134,6 +135,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         organization: user.organization,
                     };
                 } catch (error) {
+                    console.log("😘😘😘😘😘ik ben hierrrr");
                     throw new Error(error instanceof Error ? error.message : "Er is een fout opgetreden bij het inloggen");
                 }
             },
