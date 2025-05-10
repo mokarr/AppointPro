@@ -31,7 +31,9 @@ export function LoginForm({
         const formData = new FormData(e.currentTarget);
         
         // Use server action for authentication
+        console.log(formData);
         const result = await authenticate(formData);
+        console.log(result);
 
         // The authenticate function will handle the redirect on success
         // We only need to handle errors here
@@ -40,9 +42,9 @@ export function LoginForm({
         }
     } catch (error) {
         console.error('Sign-in error:', error);
-        setError(t('error'));
     } finally {
         setIsLoading(false);
+        console.log('finally');
     }
   };
 

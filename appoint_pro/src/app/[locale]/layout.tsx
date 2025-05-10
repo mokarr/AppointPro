@@ -6,6 +6,7 @@ import Providers from "@/components/Providers";
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import ServerLayout from "@/components/ServerLayout";
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', adjustFontFallback: false })
 
@@ -37,9 +38,9 @@ export default async function RootLayout({
       <body className={inter.className}>
         <NextIntlClientProvider locale={locale}>
           <Providers>
-            <Layout>
+            <ServerLayout>
               {children}
-            </Layout>
+            </ServerLayout>
           </Providers>
         </NextIntlClientProvider>
       </body>
