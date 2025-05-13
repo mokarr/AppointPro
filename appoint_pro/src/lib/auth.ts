@@ -86,7 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     trustHost: true,
     adapter: customAdapter as Adapter,
     pages: {
-        signIn: '/sign-in',
+        signIn: '/sign-in', //TODO: change to /sign-in?emailconfirmed=true when the email is confirmed
         error: '/sign-in',
     },
     session: {
@@ -124,6 +124,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         throw new Error("E-mailadres of wachtwoord is onjuist");
                     }
 
+                    if (!user.active) {
+                        throw new Error("Account is nog niet geactiveerd");
+                    }
+
                     // Return the user with the correct shape
                     return {
                         id: user.id,
@@ -135,7 +139,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         organization: user.organization,
                     };
                 } catch (error) {
-                    console.log("😘😘😘😘😘ik ben hierrrr");
                     throw new Error(error instanceof Error ? error.message : "Er is een fout opgetreden bij het inloggen");
                 }
             },

@@ -2,16 +2,7 @@
 
 import { executeAction } from "@/lib/executeAction";
 import { prisma } from "@/lib/prisma";
-
-export interface Facility {
-    id: string;
-    name: string;
-    description: string;
-    price: number | null;
-    locationId: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
+import { Facility, FacilityType } from "@prisma/client";
 
 /**
  * Haal faciliteiten op voor een specifieke locatie
@@ -124,3 +115,17 @@ export const deleteFacility = async (facilityId: string) => {
         successMessage: "Faciliteit verwijderd",
     });
 }; 
+
+export const updateFacilityType = async (facilityId: string, type: FacilityType) => {
+    return executeAction({
+        actionFn: async () => {
+            const facility = await prisma.facility.update({
+                where: { id: facilityId },
+                data: { type }
+            });
+            return facility;
+        },
+        successMessage: "Faciliteit bijgewerkt",
+    });
+}; 
+

@@ -5,20 +5,43 @@ import {
     DashboardLayout
 } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
-import type { User } from "@prisma/client";
+import { User } from "next-auth";
 import { useTranslations } from "next-intl";
-interface Organization {
-    id: string;
-    name: string;
-}
+import { useState } from 'react';
+
 
 interface SettingsPageContentProps {
     _user: User;
-    _organization: Organization;
 }
 
-export default function SettingsPageContent({ _user, _organization }: SettingsPageContentProps) {
+interface OpeningHours {
+    day: string;
+    open: string;
+    close: string;
+}
+
+export default function SettingsPageContent({ _user }: SettingsPageContentProps) {
     const t = useTranslations('common');
+    const [openingHours, setOpeningHours] = useState<OpeningHours[]>([
+        { day: 'Monday', open: '', close: '' },
+        { day: 'Tuesday', open: '', close: '' },
+        { day: 'Wednesday', open: '', close: '' },
+        { day: 'Thursday', open: '', close: '' },
+        { day: 'Friday', open: '', close: '' },
+        { day: 'Saturday', open: '', close: '' },
+        { day: 'Sunday', open: '', close: '' },
+    ]);
+
+    const handleOpeningHoursChange = (index: number, field: 'open' | 'close', value: string) => {
+        const updatedHours = [...openingHours];
+        updatedHours[index][field] = value;
+        setOpeningHours(updatedHours);
+    };
+
+    const saveOpeningHours = () => {
+        // Implement save logic here
+        console.log('Opening hours saved:', openingHours);
+    };
 
     return (
         <DashboardLayout>
@@ -26,7 +49,7 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
                 heading={t('settings')}
                 description={t('header.settings.description')}
                 action={
-                    <Button>
+                    <Button onClick={saveOpeningHours}>
                         {t('header.settings.save')}
                     </Button>
                 }
@@ -42,12 +65,25 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
                             {t('header.settings.description')}
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                            {/* Settings will be implemented here */}
-                            <div className="text-center">
-                                <p className="text-gray-500 dark:text-gray-400">
-                                    {t('header.settings.description')}
-                                </p>
-                            </div>
+                            {openingHours.map((hour, index) => (
+                                <div key={index} className="text-center">
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        {hour.day}
+                                    </p>
+                                    <input
+                                        type="time"
+                                        value={hour.open}
+                                        onChange={(e) => handleOpeningHoursChange(index, 'open', e.target.value)}
+                                        className="mt-2 mb-2"
+                                    />
+                                    <input
+                                        type="time"
+                                        value={hour.close}
+                                        onChange={(e) => handleOpeningHoursChange(index, 'close', e.target.value)}
+                                        className="mt-2 mb-2"
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

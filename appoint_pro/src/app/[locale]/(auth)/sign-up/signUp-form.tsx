@@ -5,24 +5,50 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import padel from "../../../../../public/images/padel.jpg"
+import { SignUpData } from "@/models/SignUpData";
 
-export function SignUpForm() {
+interface SignUpFormProps {
+  onSubmit: (data: SignUpData) => Promise<void>;
+}
+
+export function SignUpForm({ onSubmit }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations('signup');
   const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState<SignUpData>({
+    name: '',
+    branche: '',
+    address: '',
+    postalcode: '',
+    country: 'Nederland',
+    email: '',
+    password: ''
+  });
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
-    // Add your form submission logic here
-
-    setIsLoading(false);
+    try {
+      await onSubmit(formData);
+    } catch (err) {
+      setError('An error occurred during sign up');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,6 +78,8 @@ export function SignUpForm() {
                   required
                   autoComplete="organization"
                   aria-label="Bedrijfsnaam"
+                  value={formData.name}
+                  onChange={handleInputChange}
                 />
                 <Input
                   name="branche"
@@ -59,6 +87,8 @@ export function SignUpForm() {
                   type="text"
                   required
                   aria-label="Branche"
+                  value={formData.branche}
+                  onChange={handleInputChange}
                 />
               </>
             )}
@@ -71,6 +101,8 @@ export function SignUpForm() {
                   required
                   autoComplete="address-line1"
                   aria-label="Adres"
+                  value={formData.address}
+                  onChange={handleInputChange}
                 />
                 <Input
                   name="postalcode"
@@ -81,6 +113,8 @@ export function SignUpForm() {
                   pattern="[1-9][0-9]{3}\s?[a-zA-Z]{2}"
                   title="Vul een geldige postcode in (bijv. 1234 AB)"
                   aria-label="Postcode"
+                  value={formData.postalcode}
+                  onChange={handleInputChange}
                 />
                 <Input
                   name="country"
@@ -90,6 +124,8 @@ export function SignUpForm() {
                   autoComplete="country"
                   defaultValue="Nederland"
                   aria-label="Land"
+                  value={formData.country}
+                  onChange={handleInputChange}
                 />
               </>
             )}
@@ -102,6 +138,8 @@ export function SignUpForm() {
                   required
                   autoComplete="email"
                   aria-label="E-mailadres"
+                  value={formData.email}
+                  onChange={handleInputChange}
                 />
                 <Input
                   name="password"
@@ -111,6 +149,8 @@ export function SignUpForm() {
                   autoComplete="new-password"
                   minLength={8}
                   aria-label="Wachtwoord"
+                  value={formData.password}
+                  onChange={handleInputChange}
                 />
               </>
             )}
