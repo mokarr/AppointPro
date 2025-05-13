@@ -389,19 +389,21 @@ export function LocationsList() {
                             className="flex flex-col"
                             data-location-id={location.id}
                         >
-                            <CardHeader>
-                                <CardTitle>{location.name}</CardTitle>
-                                <CardDescription className="flex items-center gap-1">
-                                    <MapPin className="h-4 w-4" />
-                                    {location.address}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                    <Building className="h-4 w-4" />
-                                    <span>{location.facilitiesCount} {t('facilities')}</span>
-                                </div>
-                            </CardContent>
+                            <Link href={`/dashboard/facilities/${location.id}`} passHref>
+                                <CardHeader>
+                                    <CardTitle>{location.name}</CardTitle>
+                                    <CardDescription className="flex items-center gap-1">
+                                        <MapPin className="h-4 w-4" />
+                                        {location.address}
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                        <Building className="h-4 w-4" />
+                                        <span>{location.facilitiesCount} {t('facilities')}</span>
+                                    </div>
+                                </CardContent>
+                            </Link>
                             <CardFooter className="flex justify-between mt-auto">
                                 <Button variant="outline" className="flex items-center gap-1" asChild>
                                     <Link href={`/dashboard/locations/${location.id}/facilities`}>

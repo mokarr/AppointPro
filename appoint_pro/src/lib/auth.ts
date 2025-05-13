@@ -86,7 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     trustHost: true,
     adapter: customAdapter as Adapter,
     pages: {
-        signIn: '/sign-in',
+        signIn: '/sign-in', //TODO: change to /sign-in?emailconfirmed=true when the email is confirmed
         error: '/sign-in',
     },
     session: {
@@ -102,6 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // @ts-expect-error - TypeScript doesn't understand our custom user type
             authorize: async (credentials, _request) => {
                 try {
+                    //dont need to validate the credentials here, because the zod schema is already validating the credentials in the auth-actions.ts file
                     const { email, password } = await signInSchema.parseAsync(credentials)
 
                     const user = await db.user.findFirst({
@@ -121,6 +122,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                     if (!isPasswordValid) {
                         throw new Error("E-mailadres of wachtwoord is onjuist");
+                    }
+
+                    if (!user.active) {
+                        throw new Error("Account is nog niet geactiveerd");
                     }
 
                     // Return the user with the correct shape

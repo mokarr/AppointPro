@@ -702,5 +702,19 @@
         "addFacilityFailed": "Kan faciliteit niet toevoegen",
         "updateFacilityFailed": "Kan faciliteit niet bijwerken",
         "deleteFacilityFailed": "Kan faciliteit niet verwijderen"
+    },
+    "login": {
+        "email": "E-mailadres",
+        "password": "Wachtwoord",
+        "login": "Inloggen",
+        "forgotPassword": "Wachtwoord vergeten?",
+        "noAccount": "Geen account?",
+        "signUp": "Registreer",
+        "welcome": "Inloggen bij Appoint Pro",
+        "welcomeBack": "Welkom terug",
+        "loading": "Inloggen...",
+        "error": "Er is een fout opgetreden tijdens het inloggen",
+        "passwordOrEmailIncorrect": "Wachtwoord of e-mailadres incorrect",
+        "termsOfService": "Door door te gaan, gaat u akkoord met onze <termsLink>Algemene Voorwaarden</termsLink> en <privacyLink>Privacybeleid</privacyLink>."
     }
 }

@@ -18,6 +18,7 @@ const publicPaths = [
     '/favicon.ico',
     '/landing/company',
     '/landing/user',
+    '/activate',
 ];
 
 // Pages that are allowed to be accessed via subdomain
@@ -93,6 +94,11 @@ export async function middleware(request: NextRequest) {
     // 1. If API route (except subdomain check), skip all subdomain/i18n logic
     if (isApiRoute(pathname)) {
         console.log('🔍 Skipping middleware for API route:', pathname);
+        return NextResponse.next();
+    }
+
+    if (pathname === '/activate') {
+        console.log('🔍 Skipping middleware for activate route:', pathname);
         return NextResponse.next();
     }
 

@@ -3,37 +3,44 @@
 import { auth, signIn, signOut } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
+import { signInSchema } from "@/lib/zod";
 
 /**
  * Server action to authenticate a user
  */
 export async function authenticate(formData: FormData) {
     try {
-        const email = formData.get('email') as string;
-        const password = formData.get('password') as string;
+        const loginObject = {
+            email: formData.get('email') as string,
+            password: formData.get('password') as string,
+        };
 
-        if (!email || !password) {
-            return { success: false, message: 'Email and password are required' };
-        }
+        const { email, password } = await signInSchema.parseAsync(loginObject);
+        console.log(email, password);
 
         await signIn('credentials', {
-            email,
-            password,
+            email: email,
+            password: password,
             redirect: false
         });
-
-        // After successful sign-in, redirect to dashboard
-        redirect('/dashboard');
-
-        // This return is technically not reached due to the redirect
-        return { success: true };
+    
     } catch (error) {
-        console.error('Authentication error:', error);
+        console.log(error);
+
         if (error instanceof AuthError) {
             return { success: false, message: error.message };
         }
-        return { success: false, message: 'Er is een fout opgetreden bij het inloggen' };
+        
+        // Check if it's a validation error (ZodError)
+        if (error instanceof Error && error.message.includes("Password must be more than 8 characters")) {
+            return { success: false, message: 'Password must be at least 8 characters' };
+        }
+        
+        return { success: false, message: 'Invalid email or password' };
     }
+
+     // After successful sign-in, redirect to dashboard
+     redirect('/dashboard');
 }
 
 /**
