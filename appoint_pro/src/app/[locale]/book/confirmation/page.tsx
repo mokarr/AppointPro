@@ -2,11 +2,12 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
-import { getFacilityById, Facility } from '@/services/facility';
+import { getFacilityById } from '@/services/facility';
 import BookingForm from '@/app/[locale]/book/confirmation/BookingForm';
 import type { OrganizationWithLocations, Location } from '@/types/organization';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
+import { Facility } from "@prisma/client";
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {

@@ -2,8 +2,9 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
-import { getFacilitiesByLocationId, Facility } from '@/services/facility';
+import { getFacilitiesByLocationId } from '@/services/facility';
 import type { OrganizationWithLocations, Location } from '@/types/organization';
+import { Facility } from '@prisma/client';
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {

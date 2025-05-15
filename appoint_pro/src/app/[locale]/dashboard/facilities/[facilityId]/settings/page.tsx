@@ -6,7 +6,7 @@ export const metadata = {
     description: "Beheer de instellingen van uw faciliteiten",
 };
 
-export default async function FacilitiesSettingsPage({ params }: { params: { facilityId: string } }) {
+export default async function FacilitiesSettingsPage({ params }: { params: Promise<{ facilityId: string }> }) {
     const { facilityId } = await params;
 
     const facility = await getFacilityById(facilityId);

@@ -6,8 +6,8 @@ export const metadata = {
     description: "Beheer de faciliteit van uw sportlocatie",
 };
 
-export default async function FacilityPage({ params }: { params: { facilityId: string } }) {
-    const { facilityId } = params;
+export default async function FacilityPage({ params }: { params: Promise<{ facilityId: string }> }) {
+    const { facilityId } = await params;
 
     const facility = await getFacilityById(facilityId);
 

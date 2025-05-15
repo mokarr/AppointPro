@@ -5,8 +5,8 @@ export const metadata = {
     description: "Beheer de instellingen van uw locatie",
 };
 
-export default function LocationSettingsPage({ params }: { params: { locationId: string } }) {
-    const { locationId } = params;
+export default async function LocationSettingsPage({ params }: { params: Promise<{ locationId: string }> }) {
+    const { locationId } = await params;
 
     return (
         <div className="container mx-auto py-8 px-4">
