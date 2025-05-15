@@ -27,6 +27,8 @@ model Organization {
   stripeCustomerId      String?        @unique
   hasActiveSubscription Boolean        @default(false)
   subscriptions         Subscription[]
+
+  Settings Settings?
 }
 
 // Subscription model
@@ -71,6 +73,8 @@ model Location {
   bookings       Booking[]
   updatedAt      DateTime     @updatedAt
   createdAt      DateTime     @default(now())
+
+  Settings Settings?
 }
 
 model Facility {
@@ -82,8 +86,37 @@ model Facility {
   location    Location  @relation(fields: [locationId], references: [id])
   bookings    Booking[]
   features    Feature[]
+  type        FacilityType @default(PRIVATE)
   updatedAt   DateTime  @updatedAt
   createdAt   DateTime  @default(now())
+  Settings Settings?
+}
+
+enum FacilityType {
+  PRIVATE
+  PUBLIC
+  CLASSES
+}
+
+
+model Settings {
+  id             String         @id @default(cuid())
+  type           SettingScope   // Enum om aan te geven op welk niveau de settings gelden
+  organizationId String?        @unique
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  locationId     String?        @unique
+  location       Location?      @relation(fields: [locationId], references: [id])
+  facilityId     String?        @unique
+  facility       Facility?      @relation(fields: [facilityId], references: [id])
+  data           Json           //settingspayload
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+enum SettingScope {
+  ORGANIZATION
+  LOCATION
+  FACILITY
 }
 
 model Feature {
@@ -131,10 +164,24 @@ model User {
   bookings                    Booking[]
   // Subscription-related fields
   lastActiveSubscriptionCheck DateTime?
+  active                      Boolean         @default(false)
   createdAt                   DateTime        @default(now())
   updatedAt                   DateTime        @updatedAt
   organizationId              String?
   organization                Organization?   @relation(fields: [organizationId], references: [id])
+  activateToken               ActivateToken[]
+}
+
+model ActivateToken{
+  id Int @id @default(autoincrement())
+  token String @unique
+  activatedAt DateTime?
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Account {
@@ -188,3 +235,4 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
+

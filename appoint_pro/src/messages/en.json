@@ -700,5 +700,19 @@
         "addFacilityFailed": "Failed to add facility",
         "updateFacilityFailed": "Failed to update facility",
         "deleteFacilityFailed": "Failed to delete facility"
+    },
+    "login": {
+        "email": "Email",
+        "password": "Password",
+        "login": "Login",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign Up",
+        "welcome": "Welcome to",
+        "welcomeBack": "Welcome back",
+        "loading": "Loading...",
+        "error": "An error occurred during sign in",
+        "passwordOrEmailIncorrect": "Password or email incorrect",
+        "termsOfService": "By continuing, you agree to our <termsLink>Terms of Service</termsLink> and <privacyLink>Privacy Policy</privacyLink>."
     }
 }

@@ -5,7 +5,7 @@ import {
     DashboardLayout
 } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
-import type { User } from "@prisma/client";
+import { User } from "next-auth";
 import { useTranslations } from "next-intl";
 interface Organization {
     id: string;
