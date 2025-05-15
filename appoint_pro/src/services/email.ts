@@ -7,6 +7,9 @@ import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import AppointProBookingConfirmationEmail from '../../emails/confirmedBooking';
+import { ActivateAccountEmailData } from '@/models/ActivateAccountEmailData';
+import { AppointProActivateAccountEmail } from '../../emails/AppointProActivateAccountEmail';
+
 
 
 export const sendBookingConfirmationEmailServer = async (
@@ -50,12 +53,13 @@ export const sendBookingConfirmationEmailServer = async (
     };
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const emailFrom = 'AppointPro <appointpro@gmail.com>';
-    const testEmailFrom = 'Acme <onboarding@resend.dev>';
+    // const emailFrom = 'AppointPro <appointpro@gmail.com>'; 
+    // const testEmailFrom = 'Acme <onboarding@resend.dev>';
 
+    const emailFrom = process.env.emailFrom ? process.env.emailFrom : 'Acme <onboarding@resend.dev>';
     try {
         const { error } = await resend.emails.send({
-            from: process.env.NODE_ENV === 'production' ? emailFrom : testEmailFrom,
+            from:emailFrom,
             to: [emailData.customerEmail],
             subject: 'Uw boeking is bevestigd!',
             html: await render(AppointProBookingConfirmationEmail({ bookingData: emailData })),
@@ -79,3 +83,30 @@ export const sendBookingConfirmationEmailServer = async (
         return { success: false, message: err?.message || 'Unknown error' };
     }
 }; 
+
+export const sendActivateAccountEmail = async (email: string, token: string, organizationName: string) => {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const emailFrom = process.env.EMAIL_FROM ? process.env.EMAIL_FROM : 'Acme <onboarding@resend.dev>';
+
+    const emailData: ActivateAccountEmailData = {
+        token: token,
+        email: email,
+        organizationName: organizationName,
+    };
+
+    try {
+        const { error } = await resend.emails.send({
+            from: emailFrom,
+            to: [emailData.email],
+            subject: 'Activeer uw account',
+            html: await render(AppointProActivateAccountEmail({ emailData: emailData })),
+        });
+        if (error) {
+            console.log('Error sending email:', error);
+            return { success: false, message: error.message };
+        }
+        return { success: true, message: 'Email sent successfully' };
+    } catch (err: any) {
+        return { success: false, message: err?.message || 'Unknown error' };
+    }
+}
