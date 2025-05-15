@@ -98,7 +98,7 @@ const ColorPicker = ({ value, onChange, label }: ColorPickerProps) => {
     );
 };
 
-export default function SettingsPageContent({ _user }: SettingsPageContentProps) {
+export default function SettingsPageContent({ _user, _organization }: SettingsPageContentProps) {
     const t = useTranslations('common');
     const { toast } = useToast();
     const [settings, setSettings] = useState<OrganizationSettings>(defaultSettings);
