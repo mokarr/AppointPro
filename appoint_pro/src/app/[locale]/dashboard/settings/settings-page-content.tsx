@@ -7,13 +7,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { User } from "next-auth";
 import { useTranslations } from "next-intl";
+import { useState, useEffect } from 'react';
+import { OrganizationSettings, SettingsPayload } from '@/types/settings';
+import { useToast } from "@/components/ui/use-toast";
+import { BrandingSection } from './components/branding-section';
+import { BusinessHoursSection } from './components/business-hours-section';
+import { SaveButton } from './components/save-button';
+
+declare global {
+    interface Window {
+        beforeUnloadHandler: (event: BeforeUnloadEvent) => void;
+    }
+}
+// this must be done to be able to remove the beforeunload handler
+window.beforeUnloadHandler = (event: BeforeUnloadEvent) => {
+    event.preventDefault();
+    event.returnValue = 'Je hebt nog niet-opgeslagen wijzigingen in de openingstijden. Weet je zeker dat je de pagina wilt verlaten?';
+    return event.returnValue;
+};
+
 interface Organization {
     id: string;
     name: string;
 }
-import { useState, useEffect, useCallback } from 'react';
-import { OrganizationSettings, SettingsPayload } from '@/types/settings';
-import { useToast } from "@/components/ui/use-toast";
 
 interface SettingsPageContentProps {
     _user: User;
@@ -27,75 +43,14 @@ const defaultSettings: OrganizationSettings = {
         logo: null
     },
     openingHours: [
-        { day: 'Maandag', open: '', close: '' },
-        { day: 'Dinsdag', open: '', close: '' },
-        { day: 'Woensdag', open: '', close: '' },
-        { day: 'Donderdag', open: '', close: '' },
-        { day: 'Vrijdag', open: '', close: '' },
-        { day: 'Zaterdag', open: '', close: '' },
-        { day: 'Zondag', open: '', close: '' },
+        { day: 'Maandag', open: '', close: '', isClosed: false },
+        { day: 'Dinsdag', open: '', close: '', isClosed: false },
+        { day: 'Woensdag', open: '', close: '', isClosed: false },
+        { day: 'Donderdag', open: '', close: '', isClosed: false },
+        { day: 'Vrijdag', open: '', close: '', isClosed: false },
+        { day: 'Zaterdag', open: '', close: '', isClosed: false },
+        { day: 'Zondag', open: '', close: '', isClosed: false },
     ]
-};
-
-interface ColorPickerProps {
-    value: string;
-    onChange: (color: string) => void;
-    label: string;
-}
-
-const ColorPicker = ({ value, onChange, label }: ColorPickerProps) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [tempColor, setTempColor] = useState(value);
-
-    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setTempColor(e.target.value);
-    }, []);
-
-    const handleClose = useCallback(() => {
-        onChange(tempColor);
-        setIsOpen(false);
-    }, [tempColor, onChange]);
-
-    return (
-        <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {label}
-            </label>
-            <div className="flex items-center space-x-2">
-                <div 
-                    className="w-12 h-12 border rounded cursor-pointer"
-                    style={{ backgroundColor: value }}
-                    onClick={() => setIsOpen(true)}
-                />
-                <input
-                    type="text"
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="w-32 p-2 border rounded text-sm"
-                />
-                {isOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-4 rounded-lg shadow-lg">
-                            <input
-                                type="color"
-                                value={tempColor}
-                                onChange={handleChange}
-                                className="w-64 h-64"
-                            />
-                            <div className="mt-4 flex justify-end space-x-2">
-                                <Button onClick={() => setIsOpen(false)} variant="outline">
-                                    Annuleren
-                                </Button>
-                                <Button onClick={handleClose}>
-                                    Toepassen
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
 };
 
 export default function SettingsPageContent({ _user, _organization }: SettingsPageContentProps) {
@@ -105,6 +60,7 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
     const [originalSettings, setOriginalSettings] = useState<OrganizationSettings>(defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [notFilled, setNotFilled] = useState(false);
 
     useEffect(() => {
         fetchSettings();
@@ -132,19 +88,32 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
         }
     };
 
-    const handleOpeningHoursChange = (index: number, field: 'open' | 'close', value: string) => {
+    const handleOpeningHoursChange = (index: number, field: 'open' | 'close' | 'isClosed', value: string | boolean) => {
         setSettings(prev => {
-            const updatedHours = [...prev.openingHours];
-            updatedHours[index][field] = value;
+            const updatedHours = prev.openingHours.map((hour, i) => {
+                if (i === index) {
+                    if (field === 'isClosed') {
+                        // If marking as closed, clear the times
+                        return { 
+                            ...hour, 
+                            isClosed: value as boolean,
+                            open: value ? '' : hour.open,
+                            close: value ? '' : hour.close
+                        };
+                    }
+                    return { ...hour, [field]: value };
+                }
+                return { ...hour };
+            });
             return {
                 ...prev,
                 openingHours: updatedHours
             };
         });
-        checkForChanges();
     };
 
-    const handleBrandingChange = (field: keyof typeof settings.branding, value: any) => {
+    const handleBrandingChange = (field: keyof OrganizationSettings['branding'], value: any) => {
+        console.log('handleBrandingChange', field, value);
         setSettings(prev => ({
             ...prev,
             branding: {
@@ -152,7 +121,6 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
                 [field]: value
             }
         }));
-        checkForChanges();
     };
 
     const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,16 +170,36 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
     };
 
     const checkForChanges = () => {
-        const hasBrandingChanges = JSON.stringify(settings.branding) !== JSON.stringify(originalSettings.branding);
-        const hasOpeningHoursChanges = JSON.stringify(settings.openingHours) !== JSON.stringify(originalSettings.openingHours);
-        setHasChanges(hasBrandingChanges || hasOpeningHoursChanges);
+        console.log('checkForChanges', notFilled);
+        if (notFilled) {
+            setHasChanges(false);
+            window.removeEventListener('beforeunload', window.beforeUnloadHandler);
+            return;
+        }
+
+        const hasChangesValue = JSON.stringify(settings.branding) !== JSON.stringify(originalSettings.branding) ||
+            JSON.stringify(settings.openingHours) !== JSON.stringify(originalSettings.openingHours);
+
+        setHasChanges(hasChangesValue);
+
+        // Add or remove beforeunload handler based on changes
+        if (hasChangesValue) {
+            console.log('hasChangesValue', hasChangesValue);
+            window.addEventListener('beforeunload', window.beforeUnloadHandler);
+        } else {
+            window.removeEventListener('beforeunload', window.beforeUnloadHandler);
+        }
     };
+
+
+    useEffect(() => {
+        checkForChanges();
+    }, [settings, notFilled]);
 
     const saveSettings = async () => {
         try {
             const payload: SettingsPayload = {};
 
-            // Only include changed branding properties
             if (JSON.stringify(settings.branding) !== JSON.stringify(originalSettings.branding)) {
                 payload.branding = {};
                 if (settings.branding.primaryColor !== originalSettings.branding.primaryColor) {
@@ -221,11 +209,19 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
                     payload.branding.secondaryColor = settings.branding.secondaryColor;
                 }
                 if (JSON.stringify(settings.branding.logo) !== JSON.stringify(originalSettings.branding.logo)) {
-                    payload.branding.logo = settings.branding.logo;
+                    if (settings.branding.logo && 'base64Data' in settings.branding.logo) {
+                        payload.branding.logo = {
+                            base64Data: settings.branding.logo.base64Data,
+                            originalName: settings.branding.logo.originalName
+                        };
+                    } else if (settings.branding.logo && 'url' in settings.branding.logo) {
+                        payload.branding.logo = null;
+                    } else {
+                        payload.branding.logo = null;
+                    }
                 }
             }
 
-            // Only include changed opening hours
             if (JSON.stringify(settings.openingHours) !== JSON.stringify(originalSettings.openingHours)) {
                 payload.openingHours = settings.openingHours;
             }
@@ -273,130 +269,21 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
 
             <DashboardContent>
                 <div className="space-y-8">
-                    {/* Branding Section */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
-                            Organisatie Stijl
-                        </h2>
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                                    Kleuren
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md">
-                                    <ColorPicker
-                                        value={settings.branding.primaryColor}
-                                        onChange={(color) => handleBrandingChange('primaryColor', color)}
-                                        label="Primaire Kleur"
-                                    />
-                                    <ColorPicker
-                                        value={settings.branding.secondaryColor}
-                                        onChange={(color) => handleBrandingChange('secondaryColor', color)}
-                                        label="Secundaire Kleur"
-                                    />
-                                </div>
-                            </div>
+                    <BrandingSection
+                        settings={settings}
+                        onBrandingChange={handleBrandingChange}
+                        onLogoUpload={handleLogoUpload}
+                        onLogoDelete={handleLogoDelete}
+                    />
 
-                            <div>
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                                    Logo
-                                </h3>
-                                <div className="max-w-md">
-                                    <div className="flex items-center space-x-4">
-                                        {settings.branding.logo ? (
-                                            <div className="relative w-32 h-32">
-                                                <img
-                                                    src={'path' in settings.branding.logo 
-                                                        ? settings.branding.logo.path 
-                                                        : settings.branding.logo.base64Data}
-                                                    alt="Organization logo"
-                                                    className="w-full h-full object-contain border rounded"
-                                                />
-                                                <button
-                                                    onClick={handleLogoDelete}
-                                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
-                                                <span className="text-gray-400">Geen logo</span>
-                                            </div>
-                                        )}
-                                        <div>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleLogoUpload}
-                                                className="hidden"
-                                                id="logo-upload"
-                                            />
-                                            <label
-                                                htmlFor="logo-upload"
-                                                className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
-                                            >
-                                                Logo Uploaden
-                                            </label>
-                                            <p className="mt-2 text-sm text-gray-500">
-                                                Aanbevolen formaat: 200x200px
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Business Hours Section */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
-                            Openingstijden
-                        </h2>
-                        <div className="space-y-6">
-                            <div>
-                                <div className="grid grid-cols-1 gap-2 max-w-md">
-                                    {settings.openingHours.map((hour, index) => (
-                                        <div key={index} className="flex items-center space-x-4 p-2 border-b last:border-b-0">
-                                            <span className="w-24 text-gray-600 dark:text-gray-400">
-                                                {hour.day}
-                                            </span>
-                                            <div className="flex items-center space-x-2">
-                                                <input
-                                                    type="time"
-                                                    value={hour.open}
-                                                    onChange={(e) => handleOpeningHoursChange(index, 'open', e.target.value)}
-                                                    className="w-24 p-1 border rounded text-sm"
-                                                />
-                                                <span className="text-gray-400">-</span>
-                                                <input
-                                                    type="time"
-                                                    value={hour.close}
-                                                    onChange={(e) => handleOpeningHoursChange(index, 'close', e.target.value)}
-                                                    className="w-24 p-1 border rounded text-sm"
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <BusinessHoursSection
+                        settings={settings}
+                        onOpeningHoursChange={handleOpeningHoursChange}
+                        onNotFilledChange={setNotFilled}
+                    />
                 </div>
 
-                {/* Sticky Save Button */}
-                {hasChanges && (
-                    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t p-4 shadow-lg">
-                        <div className="max-w-7xl mx-auto flex justify-end">
-                            <Button 
-                                onClick={saveSettings}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
-                            >
-                                Opslaan
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                {hasChanges && <SaveButton onSave={saveSettings} />}
             </DashboardContent>
         </DashboardLayout>
     );

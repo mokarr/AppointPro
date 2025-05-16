@@ -17,13 +17,41 @@ export interface OpeningHours {
 }
 
 export interface OrganizationSettings {
-    branding: BrandingSettings;
-    openingHours: OpeningHours[];
+    branding: {
+        primaryColor: string;
+        secondaryColor: string;
+        logo: {
+            key: string;
+            url: string;
+        } |
+        {
+            base64Data: string;
+            originalName: string;
+        } | null;
+    };
+    openingHours: Array<{
+        day: string;
+        open: string;
+        close: string;
+        isClosed: boolean;
+    }>;
 }
 
 export interface SettingsPayload {
-    branding?: Partial<BrandingSettings>;
-    openingHours?: OpeningHours[];
+    branding?: {
+        primaryColor?: string;
+        secondaryColor?: string;
+        logo?: {
+            base64Data: string;
+            originalName: string;
+        } | null;
+    };
+    openingHours?: Array<{
+        day: string;
+        open: string;
+        close: string;
+        isClosed: boolean;
+    }>;
 }
 
 export interface SettingsResponse {

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { SettingsPayload, OrganizationSettings } from '@/types/settings';
-import { saveLogo, deleteLogo } from '@/data/logo-storage';
+import { uploadFileToS3 } from '@/lib/s3';
 
 const defaultSettings = {
     branding: {
@@ -95,22 +95,29 @@ export async function PATCH(request: Request) {
             if (payload.branding.logo !== undefined) {
                 // If there's a new logo (base64 data)
                 if (payload.branding.logo && 'base64Data' in payload.branding.logo) {
-                    const logoMetadata = await saveLogo(
-                        payload.branding.logo.base64Data as string,
-                        payload.branding.logo.originalName as string
+                    // Convert base64 to buffer
+                    const base64Data = payload.branding.logo.base64Data.replace(/^data:image\/\w+;base64,/, '');
+                    const buffer = Buffer.from(base64Data, 'base64');
+                    
+                    // Get file extension from base64 data
+                    const contentType = payload.branding.logo.base64Data.split(';')[0].split('/')[1];
+                    
+                    // Upload to S3
+                    const { key, url } = await uploadFileToS3(
+                        buffer,
+                        payload.branding.logo.originalName,
+                        contentType
                     );
+
                     updatedData.branding = {
                         ...updatedData.branding,
                         logo: {
-                            path: logoMetadata.path,
-                            filename: logoMetadata.filename,
+                            key,
+                            url
                         },
                     };
                 } else if (payload.branding.logo === null) {
                     // If logo is being removed
-                    if (currentData.branding?.logo?.filename) {
-                        await deleteLogo(currentData.branding.logo.filename);
-                    }
                     updatedData.branding = {
                         ...updatedData.branding,
                         logo: null,
