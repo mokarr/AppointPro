@@ -4,18 +4,18 @@ import { NextResponse } from "next/server";
 
 export async function GET(
     request: Request,
-    { params }: { params: { locationId: string } }
+    { params }: { params: Promise<{ locationId: string }> }
 ) {
     try {
         const session = await auth();
-
+        const resolvedParams = await params;
         if (!session) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const settings = await prisma.settings.findUnique({
             where: {
-                locationId: params.locationId,
+                locationId: resolvedParams.locationId,
             },
         });
 
@@ -44,11 +44,11 @@ export async function GET(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { locationId: string } }
+    { params }: { params: Promise<{ locationId: string }> }
 ) {
     try {
         const session = await auth();
-
+        const resolvedParams = await params;
         if (!session) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
@@ -57,13 +57,13 @@ export async function PATCH(
 
         const settings = await prisma.settings.upsert({
             where: {
-                locationId: params.locationId,
+                locationId: resolvedParams.locationId,
             },
             update: {
                 data: body,
             },
             create: {
-                locationId: params.locationId,
+                locationId: resolvedParams.locationId,
                 type: "LOCATION",
                 data: body,
             },

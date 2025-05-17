@@ -8,14 +8,16 @@ export const metadata = {
     description: "Beheer de instellingen van uw faciliteiten",
 };
 
-export default async function FacilitiesSettingsPage({ params }: { params: { facilityId: string } }) {
+export default async function FacilitiesSettingsPage({ params }: { params: Promise<{ facilityId: string }> }) {
     const session = await auth();
+    const resolvedParams = await params;
+
 
     if (!session) {
         redirect("/sign-in");
     }
 
-    const facility = await getFacilityById(params.facilityId);
+    const facility = await getFacilityById(resolvedParams.facilityId);
 
     if (!facility) {
         redirect("/dashboard/facilities");

@@ -5,18 +5,18 @@ import { FacilityType } from "@prisma/client";
 
 export async function GET(
     request: Request,
-    { params }: { params: { facilityId: string } }
+    { params }: { params: Promise<{ facilityId: string }> }
 ) {
     try {
         const session = await auth();
-
+        const resolvedParams = await params;
         if (!session) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const settings = await prisma.settings.findUnique({
             where: {
-                facilityId: params.facilityId,
+                facilityId: resolvedParams.facilityId,
             },
         });
 
@@ -37,11 +37,11 @@ export async function GET(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { facilityId: string } }
+    { params }: { params: Promise<{ facilityId: string }> }
 ) {
     try {
         const session = await auth();
-
+        const resolvedParams = await params;
         if (!session) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
@@ -50,13 +50,13 @@ export async function PATCH(
 
         const settings = await prisma.settings.upsert({
             where: {
-                facilityId: params.facilityId,
+                facilityId: resolvedParams.facilityId,
             },
             update: {
                 data: body,
             },
             create: {
-                facilityId: params.facilityId,
+                facilityId: resolvedParams.facilityId,
                 type: "FACILITY",
                 data: body,
             },

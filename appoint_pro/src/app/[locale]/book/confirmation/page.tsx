@@ -8,6 +8,26 @@ import type { OrganizationWithLocations, Location } from '@/types/organization';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { Facility } from "@prisma/client";
+import { OrganizationSettings } from '@/types/settings';
+
+interface OrganizationWithSettings {
+    id: string;
+    name: string;
+    subdomain: string | null;
+    branche: string;
+    description: string;
+    locations: any[];
+    phone: string | null;
+    email: string | null;
+    updatedAt: Date;
+    createdAt: Date;
+    stripeCustomerId: string | null;
+    hasActiveSubscription: boolean;
+    Settings: {
+        data: OrganizationSettings;
+    } | null;
+}
+
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {
@@ -17,7 +37,7 @@ const getOrganizationData = cache(async (organizationId: string) => {
 
     try {
         const organization = await getOrganizationById(organizationId);
-        return organization as OrganizationWithLocations;
+        return organization as OrganizationWithSettings;
     } catch (error) {
         console.error('Error fetching organization:', error);
         return null;
@@ -25,7 +45,7 @@ const getOrganizationData = cache(async (organizationId: string) => {
 });
 
 // Find a location by ID in an organization
-const findLocationById = (organization: OrganizationWithLocations, locationId: string): Location | null => {
+const findLocationById = (organization: OrganizationWithSettings, locationId: string): Location | null => {
     if (!organization || !organization.locations) return null;
     return organization.locations.find((loc: Location) => loc.id === locationId) || null;
 };

@@ -10,18 +10,26 @@ import { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { BusinessHoursSection } from '@/app/[locale]/dashboard/settings/components/business-hours-section';
 import { SaveButton } from '@/app/[locale]/dashboard/settings/components/save-button';
+import { OrganizationSettings } from '@/types/settings';
+import { Location } from "@prisma/client";
 
-interface Location {
+interface OrganizationWithSettings {
     id: string;
     name: string;
-    address: string;
-    postalCode?: string;
-    country?: string;
+    subdomain: string | null;
+    branche: string;
+    description: string;
+    locations: any[];
+    phone: string | null;
+    email: string | null;
+    updatedAt: Date;
+    createdAt: Date;
+    stripeCustomerId: string | null;
 }
 
 interface LocationSettingsContentProps {
     _user: User;
-    _location: Location;
+    _location: Location; //TODO: fix this
 }
 
 interface LocationSettings {

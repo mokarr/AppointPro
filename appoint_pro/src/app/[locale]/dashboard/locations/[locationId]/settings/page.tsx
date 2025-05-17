@@ -8,14 +8,15 @@ export const metadata = {
     description: "Beheer de instellingen van uw locatie",
 };
 
-export default async function LocationSettingsPage({ params }: { params: { locationId: string } }) {
+export default async function LocationSettingsPage({ params }: { params: Promise<{ locationId: string }> }) {
     const session = await auth();
+    const resolvedParams = await params;
 
     if (!session) {
         redirect("/sign-in");
     }
 
-    const location = await getLocationById(params.locationId);
+    const location = await getLocationById(resolvedParams.locationId);
 
     if (!location) {
         redirect("/dashboard/locations");
@@ -24,7 +25,7 @@ export default async function LocationSettingsPage({ params }: { params: { locat
     return (
         <LocationSettingsContent
             _user={session.user as any}
-            _location={location}
+            _location={location as any}//TODO: fix this
         />
     );
 } 
