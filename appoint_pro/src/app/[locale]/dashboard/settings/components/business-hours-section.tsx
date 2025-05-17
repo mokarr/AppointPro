@@ -127,7 +127,7 @@ export const BusinessHoursSection = ({
                             Vul voor alle dagen de openingstijden in of markeer ze als gesloten
                         </div>
                     )}
-                    <div className="flex gap-4 mb-4">
+                    <div className="flex flex-col sm:flex-row gap-4 mb-4">
                         <Button
                             onClick={copyToWorkWeek}
                             disabled={!isMondayFilled}
@@ -152,63 +152,69 @@ export const BusinessHoursSection = ({
                             Verwijder alle tijden
                         </Button>
                     </div>
-                    <div className="grid grid-cols-[120px_1fr] gap-4 max-w-md">
-                        {settings.openingHours.map((hour, index) => (
-                            <>
-                                <div className="flex items-center">
-                                    <span className="text-gray-600 dark:text-gray-400">
-                                        {hour.day}
-                                    </span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <input
-                                        type="time"
-                                        value={hour.open}
-                                        onChange={(e) => onOpeningHoursChange(index, 'open', e.target.value)}
-                                        disabled={hour.isClosed}
-                                        className={`w-40 p-1 border rounded text-sm ${
-                                            emptyFields[index] 
-                                                ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
-                                                : 'focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                                        } ${hour.isClosed ? 'bg-gray-100 cursor-not-allowed' : ''}`}
-                                    />
-                                    <span className="text-gray-400">-</span>
-                                    <input
-                                        type="time"
-                                        value={hour.close}
-                                        onChange={(e) => onOpeningHoursChange(index, 'close', e.target.value)}
-                                        disabled={hour.isClosed}
-                                        className={`w-40 p-1 border rounded text-sm ${
-                                            emptyFields[index] 
-                                                ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
-                                                : 'focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                                        } ${hour.isClosed ? 'bg-gray-100 cursor-not-allowed' : ''}`}
-                                    />
-                                    <div className="flex items-center space-x-2">
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id={`closed-${index}`}
-                                                checked={hour.isClosed}
-                                                onCheckedChange={(checked) => handleClosedChange(index, checked as boolean)}
-                                            />
-                                            <label
-                                                htmlFor={`closed-${index}`}
-                                                className="text-sm text-gray-600 dark:text-gray-400"
-                                            >
-                                                Gesloten
-                                            </label>
-                                        </div>
-                                        <button
-                                            onClick={() => removeDayTimes(index)}
-                                            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                                            title="Verwijder tijden voor deze dag"
-                                        >
-                                            <X className="h-4 w-4" />
-                                        </button>
+                    <div className="w-full max-w-3xl">
+                        <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-4">
+                            {settings.openingHours.map((hour, index) => (
+                                <>
+                                    <div className="flex items-center">
+                                        <span className="text-gray-600 dark:text-gray-400">
+                                            {hour.day}
+                                        </span>
                                     </div>
-                                </div>
-                            </>
-                        ))}
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="time"
+                                                    value={hour.open}
+                                                    onChange={(e) => onOpeningHoursChange(index, 'open', e.target.value)}
+                                                    disabled={hour.isClosed}
+                                                    className={`w-40 p-1 border rounded text-sm ${
+                                                        emptyFields[index] 
+                                                            ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                                                            : 'focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                                                    } ${hour.isClosed ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                                                />
+                                                <span className="text-gray-400">-</span>
+                                                <input
+                                                    type="time"
+                                                    value={hour.close}
+                                                    onChange={(e) => onOpeningHoursChange(index, 'close', e.target.value)}
+                                                    disabled={hour.isClosed}
+                                                    className={`w-40 p-1 border rounded text-sm ${
+                                                        emptyFields[index] 
+                                                            ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                                                            : 'focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                                                    } ${hour.isClosed ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-2">
+                                                    <Checkbox
+                                                        id={`closed-${index}`}
+                                                        checked={hour.isClosed}
+                                                        onCheckedChange={(checked) => handleClosedChange(index, checked as boolean)}
+                                                    />
+                                                    <label
+                                                        htmlFor={`closed-${index}`}
+                                                        className="text-sm text-gray-600 dark:text-gray-400"
+                                                    >
+                                                        Gesloten
+                                                    </label>
+                                                </div>
+                                                <button
+                                                    onClick={() => removeDayTimes(index)}
+                                                    className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                                    title="Verwijder tijden voor deze dag"
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

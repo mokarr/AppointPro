@@ -9,7 +9,7 @@ import { User } from "next-auth";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from 'react';
 import { OrganizationSettings, SettingsPayload } from '@/types/settings';
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner"
 import { BrandingSection } from './components/branding-section';
 import { BusinessHoursSection } from './components/business-hours-section';
 import { SaveButton } from './components/save-button';
@@ -55,7 +55,6 @@ const defaultSettings: OrganizationSettings = {
 
 export default function SettingsPageContent({ _user, _organization }: SettingsPageContentProps) {
     const t = useTranslations('common');
-    const { toast } = useToast();
     const [settings, setSettings] = useState<OrganizationSettings>(defaultSettings);
     const [originalSettings, setOriginalSettings] = useState<OrganizationSettings>(defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
@@ -78,11 +77,7 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
             setOriginalSettings(settingsData);
         } catch (error) {
             console.error('Error fetching settings:', error);
-            toast({
-                title: "Error",
-                description: "Failed to load settings",
-                variant: "destructive",
-            });
+            toast.error("Failed to load settings");
         } finally {
             setIsLoading(false);
         }
@@ -158,11 +153,7 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
                 handleBrandingChange('logo', null);
             } catch (error) {
                 console.error('Error deleting logo:', error);
-                toast({
-                    title: "Error",
-                    description: "Failed to delete logo",
-                    variant: "destructive",
-                });
+                toast.error("Failed to delete logo");
             }
         } else {
             handleBrandingChange('logo', null);
@@ -242,17 +233,10 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
             setSettings(updatedSettings.data);
             setOriginalSettings(updatedSettings.data);
             setHasChanges(false);
-            toast({
-                title: "Success",
-                description: "Settings saved successfully",
-            });
+            toast.success("Settings saved successfully");
         } catch (error) {
             console.error('Error saving settings:', error);
-            toast({
-                title: "Error",
-                description: "Failed to save settings",
-                variant: "destructive",
-            });
+            toast.error("Failed to save settings");
         }
     };
 
@@ -268,7 +252,7 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
             />
 
             <DashboardContent>
-                <div className="space-y-8">
+                <div className="space-y-8 w-full max-w-3xl mx-auto">
                     <BrandingSection
                         settings={settings}
                         onBrandingChange={handleBrandingChange}

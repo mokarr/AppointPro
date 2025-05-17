@@ -18,7 +18,7 @@ export function DashboardLayout({
         <div className={cn("min-h-screen bg-background", className)} {...props}>
             <div className="flex flex-col md:flex-row">
                 {sidebar && (
-                    <aside className="w-full md:w-64 border-r bg-card md:min-h-[calc(100vh-4rem)]">
+                    <aside className="w-full border-b bg-card md:border-r md:w-64 md:min-h-[calc(100vh-4rem)]">
                         {sidebar}
                     </aside>
                 )}

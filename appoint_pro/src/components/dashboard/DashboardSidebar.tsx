@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-
+import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import {
     LayoutDashboard,
     Building,
@@ -10,12 +11,26 @@ import {
     Settings,
     BarChart,
     CreditCard,
-    MapPin
+    MapPin,
+    ChevronDown,
+    ChevronUp
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 export default function DashboardSidebar() {
     const t = useTranslations('dashboard');
+    const pathname = usePathname();
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 768px)');
+        setIsMobile(mediaQuery.matches);
+
+        const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+        mediaQuery.addEventListener('change', handler);
+        return () => mediaQuery.removeEventListener('change', handler);
+    }, []);
 
     const navItems = [
         {
@@ -60,25 +75,54 @@ export default function DashboardSidebar() {
         }
     ];
 
+    const currentItem = navItems.find(item => pathname === item.href);
+    const filteredNavItems = navItems.filter(item => item.href !== pathname);
+
     return (
-        <div className="p-4">
-            <nav className="space-y-2">
-                {navItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className="flex items-center gap-2 p-2 rounded-md hover:bg-accent transition-colors"
-                        >
-                            <Icon className="h-4 w-4" />
-                            <span className="text-sm font-medium">
-                                {t(item.label)}
-                            </span>
-                        </Link>
-                    );
-                })}
-            </nav>
+        <div className="p-2 md:p-4 flex items-center md:items-start justify-center md:justify-start">
+            <div className="w-full max-w-xs">
+                {/* Mobile Collapsible Header */}
+                <div className="md:hidden">
+                    <button
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className="w-full flex items-center justify-center gap-2 p-2 rounded-md hover:bg-accent transition-colors mb-2"
+                    >
+                        {currentItem && (
+                            <>
+                                <div className="flex items-center gap-2">
+                                    <currentItem.icon className="h-4 w-4" />
+                                    <span className="text-sm font-medium">
+                                        {t(currentItem.label)}
+                                    </span>
+                                </div>
+                                {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+                            </>
+                        )}
+                    </button>
+                </div>
+
+                {/* Navigation Items */}
+                <nav className={`flex flex-col space-y-2 transition-all duration-300 ${isCollapsed ? 'hidden md:block' : 'block'}`}>
+                    {(!isCollapsed && isMobile ? filteredNavItems : navItems).map((item) => {
+                        const Icon = item.icon;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className="flex items-center justify-center md:justify-start gap-2 p-2 rounded-md hover:bg-accent transition-colors"
+                                onClick={() => setIsCollapsed(true)}
+                            >
+                                <div className="flex items-center gap-2 w-[120px]">
+                                    <Icon className="h-4 w-4" />
+                                    <span className="text-sm font-medium">
+                                        {t(item.label)}
+                                    </span>
+                                </div>
+                            </Link>
+                        );
+                    })}
+                </nav>
+            </div>
         </div>
     );
 } 

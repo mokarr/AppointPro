@@ -1,24 +1,30 @@
-import LocationSettings from '@/components/dashboard/locations/LocationSettings';
+import { auth } from "@/lib/auth";
+import { getLocationById } from "@/services/location";
+import { redirect } from "next/navigation";
+import LocationSettingsContent from "@/app/[locale]/dashboard/locations/[locationId]/settings/location-settings-content"
 
 export const metadata = {
     title: "Locatie-instellingen | AppointPro",
     description: "Beheer de instellingen van uw locatie",
 };
 
-export default async function LocationSettingsPage({ params }: { params: Promise<{ locationId: string }> }) {
-    const { locationId } = await params;
+export default async function LocationSettingsPage({ params }: { params: { locationId: string } }) {
+    const session = await auth();
+
+    if (!session) {
+        redirect("/sign-in");
+    }
+
+    const location = await getLocationById(params.locationId);
+
+    if (!location) {
+        redirect("/dashboard/locations");
+    }
 
     return (
-        <div className="container mx-auto py-8 px-4">
-            <div className="space-y-8">
-                <div className="space-y-2">
-                    <h1 className="text-3xl font-bold tracking-tight">Locatie-instellingen</h1>
-                    <p className="text-muted-foreground">
-                        Beheer de instellingen van uw locatie
-                    </p>
-                </div>
-                <LocationSettings locationId={locationId} />
-            </div>
-        </div>
+        <LocationSettingsContent
+            _user={session.user as any}
+            _location={location}
+        />
     );
 } 
