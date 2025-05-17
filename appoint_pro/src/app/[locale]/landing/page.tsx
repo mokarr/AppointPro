@@ -3,6 +3,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getOrganizationById } from '@/services/organization';
 import { cache } from 'react';
+import { Settings } from "@prisma/client";
+import { OrganizationSettings } from "@/types/settings";
 
 interface Location {
     id: string;
@@ -15,17 +17,22 @@ interface Location {
     updatedAt?: Date;
 }
 
-interface OrganizationWithLocations {
+interface OrganizationWithSettings {
     id: string;
     name: string;
-    description: string;
-    branche: string;
     subdomain: string | null;
+    branche: string;
+    description: string;
+    locations: any[];
+    phone: string | null;
+    email: string | null;
+    updatedAt: Date;
+    createdAt: Date;
+    stripeCustomerId: string | null;
     hasActiveSubscription: boolean;
-    locations: Location[];
-    createdAt?: Date;
-    updatedAt?: Date;
-    [key: string]: string | string[] | boolean | null | Location[] | Date | undefined; // Added Date type
+    Settings: {
+        data: OrganizationSettings;
+    } | null;
 }
 
 // Cached function to get organization data - will only run once per request
@@ -36,7 +43,9 @@ const getOrganizationData = cache(async (organizationId: string) => {
 
     try {
         const organization = await getOrganizationById(organizationId);
-        return organization as OrganizationWithLocations;
+
+        console.log('🔍 organization', organization);
+        return organization as OrganizationWithSettings;
     } catch (error) {
         console.error('Error fetching organization:', error);
         return null;
@@ -113,6 +122,10 @@ export default async function LandingPage() {
         );
     }
 
+    // Define brand colors with fallbacks
+    const primaryColor = organization.Settings?.data.branding.primaryColor || '#2563eb';
+    const secondaryColor = organization.Settings?.data.branding.secondaryColor || '#1d4ed8';
+
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Voeg nav toe voor subdomain paginas */}
@@ -131,15 +144,30 @@ export default async function LandingPage() {
             </header> */}
 
             {/* Hero Section */}
-            <div className="bg-blue-600 text-white py-16">
+            <div 
+                className="text-white py-16 relative"
+                style={{ backgroundColor: primaryColor }}
+            >
                 <div className="container mx-auto px-4 text-center">
+                    {organization.Settings?.data.branding.logo && (
+                        <div className="mb-8 flex justify-center">
+                            <img
+                                src={'url' in organization.Settings.data.branding.logo 
+                                    ? organization.Settings.data.branding.logo.url 
+                                    : organization.Settings.data.branding.logo.base64Data}
+                                alt={`${organization.name} logo`}
+                                className="h-24 w-auto object-contain"
+                            />
+                        </div>
+                    )}
                     <h2 className="text-4xl font-bold mb-4">Welcome to {organization.name}</h2>
                     <p className="text-xl max-w-2xl mx-auto">
                         {organization.description || 'Book your facilities and services easily with our online platform.'}
                     </p>
                     <a
                         href="/book"
-                        className="mt-8 inline-block bg-white text-blue-600 font-medium py-3 px-8 rounded-md hover:bg-gray-100 transition-colors"
+                        className="mt-8 inline-block bg-white font-medium py-3 px-8 rounded-md hover:bg-gray-100 transition-colors"
+                        style={{ color: primaryColor }}
                     >
                         Book Now
                     </a>
@@ -150,31 +178,53 @@ export default async function LandingPage() {
             <main className="container mx-auto px-4 py-12">
                 {/* About Section */}
                 <section className="mb-16">
-                    <h3 className="text-2xl font-bold mb-6 text-gray-800">About Us</h3>
+                    <h3 className="text-2xl font-bold mb-6" style={{ color: primaryColor }}>About Us</h3>
                     <div className="bg-white rounded-lg shadow-md p-8">
                         <p className="text-gray-700 mb-4">{organization.description || 'Welcome to our booking platform.'}</p>
                         {organization.branche && (
-                            <p className="text-gray-600">Industry: <span className="font-medium">{organization.branche}</span></p>
+                            <p className="text-gray-600">Industry: <span className="font-medium" style={{ color: primaryColor }}>{organization.branche}</span></p>
                         )}
                     </div>
                 </section>
 
+                {/* Opening Hours Section */}
+                {organization.Settings?.data.openingHours && (
+                    <section className="mb-16">
+                        <h3 className="text-2xl font-bold mb-6" style={{ color: primaryColor }}>Opening Hours</h3>
+                        <div className="bg-white rounded-lg shadow-md p-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {organization.Settings.data.openingHours.map((hours, index) => (
+                                    <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
+                                        <span className="font-medium text-gray-700">{hours.day}</span>
+                                        {hours.isClosed ? (
+                                            <span className="text-red-500">Closed</span>
+                                        ) : (
+                                            <span className="text-gray-600">{hours.open} - {hours.close}</span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 {/* Locations Section */}
                 <section className="mb-16">
-                    <h3 className="text-2xl font-bold mb-6 text-gray-800">Our Locations</h3>
+                    <h3 className="text-2xl font-bold mb-6" style={{ color: primaryColor }}>Our Locations</h3>
                     {organization.locations && organization.locations.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {organization.locations.map((location: Location) => (
                                 <div key={location.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                                     <div className="p-6">
-                                        <h4 className="text-xl font-semibold mb-2">{location.name}</h4>
+                                        <h4 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>{location.name}</h4>
                                         <p className="text-gray-600 mb-4">{location.address}</p>
                                         {location.postalCode && (
                                             <p className="text-gray-500 text-sm">{location.postalCode}, {location.country || ''}</p>
                                         )}
                                         <a
                                             href={`/book?location=${location.id}`}
-                                            className="mt-4 inline-block text-blue-600 font-medium hover:text-blue-800"
+                                            className="mt-4 inline-block font-medium hover:opacity-80 transition-opacity"
+                                            style={{ color: primaryColor }}
                                         >
                                             Book at this location →
                                         </a>
@@ -191,7 +241,7 @@ export default async function LandingPage() {
 
                 {/* Contact Section */}
                 <section id="contact" className="mb-16">
-                    <h3 className="text-2xl font-bold mb-6 text-gray-800">Contact Us</h3>
+                    <h3 className="text-2xl font-bold mb-6" style={{ color: primaryColor }}>Contact Us</h3>
                     <div className="bg-white rounded-lg shadow-md p-8">
                         <p className="text-gray-700 mb-6">
                             Have questions or need assistance? Feel free to reach out to us.
@@ -199,7 +249,8 @@ export default async function LandingPage() {
                         <div className="flex justify-center">
                             <a
                                 href="/contact"
-                                className="inline-block bg-blue-600 text-white font-medium py-2 px-6 rounded-md hover:bg-blue-700 transition-colors"
+                                className="inline-block text-white font-medium py-2 px-6 rounded-md hover:opacity-90 transition-opacity"
+                                style={{ backgroundColor: primaryColor }}
                             >
                                 Contact Us
                             </a>

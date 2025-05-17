@@ -19,12 +19,6 @@ declare global {
         beforeUnloadHandler: (event: BeforeUnloadEvent) => void;
     }
 }
-// this must be done to be able to remove the beforeunload handler
-window.beforeUnloadHandler = (event: BeforeUnloadEvent) => {
-    event.preventDefault();
-    event.returnValue = 'Je hebt nog niet-opgeslagen wijzigingen in de openingstijden. Weet je zeker dat je de pagina wilt verlaten?';
-    return event.returnValue;
-};
 
 interface Organization {
     id: string;
@@ -61,9 +55,20 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
     const [isLoading, setIsLoading] = useState(true);
     const [notFilled, setNotFilled] = useState(false);
 
+  
     useEffect(() => {
         fetchSettings();
+
+      
+        // this must be done to be able to remove the beforeunload handler
+        window.beforeUnloadHandler = (event: BeforeUnloadEvent) => {
+            event.preventDefault();
+            event.returnValue = 'Je hebt nog niet-opgeslagen wijzigingen in de openingstijden. Weet je zeker dat je de pagina wilt verlaten?';
+            return event.returnValue;
+        };
     }, []);
+
+
 
     const fetchSettings = async () => {
         try {

@@ -28,10 +28,12 @@ interface FacilitySettingsContentProps {
 
 interface FacilitySettings {
     type: FacilityType;
+    maxParticipants: number;
 }
 
 const defaultSettings: FacilitySettings = {
-    type: FacilityType.PRIVATE
+    type: FacilityType.PRIVATE,
+    maxParticipants: 10,
 };
 
 export default function FacilitySettingsContent({ _user, _facility }: FacilitySettingsContentProps) {
