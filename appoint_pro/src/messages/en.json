@@ -218,7 +218,8 @@
             "appointments": "Appointments",
             "analytics": "Analytics",
             "subscription": "Subscription",
-            "settings": "Settings"
+            "settings": "Settings",
+            "classes": "Classes"
         },
         "welcome": "Welcome",
         "description": "Manage your appointments and business from one place.",
@@ -282,6 +283,38 @@
                 "update": "Location updated successfully",
                 "delete": "Location deleted successfully"
             }
+        },
+        "classes": {
+            "addClass": "Add Class",
+            "addClassDescription": "Add a new class to this location",
+            "name": "Class Name",
+            "instructor": "Instructor",
+            "maxParticipants": "Maximum Participants",
+            "startTime": "Start Time",
+            "duration": "Duration (minutes)",
+            "recurring": "Recurring Class",
+            "recurringDescription": "Set up a recurring schedule for this class",
+            "recurrencePattern": "Recurrence Pattern",
+            "selectPattern": "Select pattern",
+            "daily": "Daily",
+            "weekly": "Weekly",
+            "biweekly": "Bi-weekly",
+            "triweekly": "Tri-weekly",
+            "monthly": "Monthly",
+            "bimonthly": "Bi-monthly",
+            "trimonthly": "Tri-monthly",
+            "skipDay": "Skip Day",
+            "selectSkipDay": "Select day to skip",
+            "monday": "Monday",
+            "tuesday": "Tuesday",
+            "wednesday": "Wednesday",
+            "thursday": "Thursday",
+            "friday": "Friday",
+            "saturday": "Saturday",
+            "sunday": "Sunday",
+            "endDate": "End Date",
+            "pickEndDate": "Pick an end date",
+            "previewSessions": "Preview Sessions"
         }
     },
     "subscription": {

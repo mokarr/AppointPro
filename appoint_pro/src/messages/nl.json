@@ -218,7 +218,8 @@
             "analytics": "Analyses",
             "subscription": "Abonnement",
             "settings": "Instellingen",
-            "facilities": "Faciliteiten"
+            "facilities": "Faciliteiten",
+            "classes": "Lessen"
         },
         "welcome": "Welkom",
         "description": "Beheer uw afspraken en bedrijf vanaf één plek.",
@@ -282,6 +283,38 @@
                 "update": "Locatie succesvol bijgewerkt",
                 "delete": "Locatie succesvol verwijderd"
             }
+        },
+        "classes": {
+            "addClass": "Les Toevoegen",
+            "addClassDescription": "Voeg een nieuwe les toe aan deze locatie",
+            "name": "Lesnaam",
+            "instructor": "Instructeur",
+            "maxParticipants": "Maximum Deelnemers",
+            "startTime": "Starttijd",
+            "duration": "Duur (minuten)",
+            "recurring": "Terugkerende Les",
+            "recurringDescription": "Stel een terugkerend schema in voor deze les",
+            "recurrencePattern": "Terugkeerpatroon",
+            "selectPattern": "Selecteer patroon",
+            "daily": "Dagelijks",
+            "weekly": "Wekelijks",
+            "biweekly": "Tweewekelijks",
+            "triweekly": "Driewekelijks",
+            "monthly": "Maandelijks",
+            "bimonthly": "Tweemaandelijks",
+            "trimonthly": "Driemaandelijks",
+            "skipDay": "Dag Overslaan",
+            "selectSkipDay": "Selecteer dag om over te slaan",
+            "monday": "Maandag",
+            "tuesday": "Dinsdag",
+            "wednesday": "Woensdag",
+            "thursday": "Donderdag",
+            "friday": "Vrijdag",
+            "saturday": "Zaterdag",
+            "sunday": "Zondag",
+            "endDate": "Einddatum",
+            "pickEndDate": "Kies een einddatum",
+            "previewSessions": "Voorbeeld Sessies"
         }
     },
     "subscription": {

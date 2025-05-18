@@ -1,14 +1,9 @@
-import { FacilitiesPageContent } from "./FacilitiesPageContent"
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { ClassesPageContent } from "./ClassesPageContent";
 
-export const metadata = {
-    title: "Faciliteiten | AppointPro",
-    description: "Beheer al uw sportfaciliteiten",
-}
-
-async function getLocationsWithFacilities() { //TODO: refactor to one function to use this also in classes page
+async function getLocationsWithClasses() { //TODO: refactor to one function to use this also in classes page
     const session = await auth();
     
     if (!session?.user) {
@@ -34,7 +29,7 @@ async function getLocationsWithFacilities() { //TODO: refactor to one function t
                 organizationId: user.organization.id
             },
             include: {
-                facilities: {
+                classes: {
                     orderBy: {
                         name: 'asc'
                     }
@@ -52,8 +47,9 @@ async function getLocationsWithFacilities() { //TODO: refactor to one function t
     }
 }
 
-export default async function FacilitiesPage() {
-    const locationsWithFacilities = await getLocationsWithFacilities();
+
+export default async function ClassesPage() {
+    const locationsWithClasses = await getLocationsWithClasses();
     
-    return <FacilitiesPageContent initialLocations={locationsWithFacilities} />;
+    return <ClassesPageContent initialLocations={locationsWithClasses} />;
 }

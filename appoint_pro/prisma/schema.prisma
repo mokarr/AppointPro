@@ -70,6 +70,7 @@ model Location {
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
   facilities     Facility[]
+  classes        Class[]
   bookings       Booking[]
   updatedAt      DateTime     @updatedAt
   createdAt      DateTime     @default(now())
@@ -86,9 +87,25 @@ model Facility {
   location    Location  @relation(fields: [locationId], references: [id])
   bookings    Booking[]
   features    Feature[]
+  classes     Class[]
   type        FacilityType @default(PRIVATE)
   updatedAt   DateTime  @updatedAt
   createdAt   DateTime  @default(now())
+  Settings Settings?
+}
+
+model Class {
+  id String @id @default(cuid()) //TODO: this is the id of the classsession
+  classId String? //TODO: this is the id of the class
+  name String
+  description String
+  instructor String
+  locationId String
+  location Location @relation(fields: [locationId], references: [id])
+  facilityId String?
+  facility Facility? @relation(fields: [facilityId], references: [id])
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
   Settings Settings?
 }
 
@@ -108,6 +125,8 @@ model Settings {
   location       Location?      @relation(fields: [locationId], references: [id])
   facilityId     String?        @unique
   facility       Facility?      @relation(fields: [facilityId], references: [id])
+  classId        String?        @unique
+  class          Class?         @relation(fields: [classId], references: [id])
   data           Json           //settingspayload
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -117,6 +136,7 @@ enum SettingScope {
   ORGANIZATION
   LOCATION
   FACILITY
+  CLASS
 }
 
 model Feature {

@@ -14,7 +14,8 @@ import {
     MapPin,
     ChevronDown,
     ChevronUp,
-    Dumbbell
+    Dumbbell,
+    School
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -63,6 +64,11 @@ export default function DashboardSidebar() {
             href: '/dashboard/appointments',
             icon: Calendar,
             label: 'navigation.appointments'
+        },
+        {
+            href: '/dashboard/classes',
+            icon: School,
+            label: 'navigation.classes'
         },
         {
             href: '/dashboard/analytics',
