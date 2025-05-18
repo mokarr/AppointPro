@@ -128,10 +128,29 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
     // Simuleer een boekingsnummer
     const bookingNumber = Math.floor(10000000 + Math.random() * 90000000);
 
+    // Define brand colors with fallbacks
+    const primaryColor = organization.Settings?.data.branding.primaryColor || '#2563eb';
+    const secondaryColor = organization.Settings?.data.branding.secondaryColor || '#1d4ed8';
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6">Boek bij {organization.name}</h1>
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
+                        Boek bij {organization.name}
+                    </h1>
+                    {organization.Settings?.data.branding.logo && (
+                        <div className="h-12">
+                            <img
+                                src={'url' in organization.Settings.data.branding.logo 
+                                    ? organization.Settings.data.branding.logo.url 
+                                    : organization.Settings.data.branding.logo.base64Data}
+                                alt={`${organization.name} logo`}
+                                className="h-full w-auto object-contain"
+                            />
+                        </div>
+                    )}
+                </div>
 
                 {/* Booking Progress Indicator */}
                 <div className="mb-8">
@@ -152,17 +171,22 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                         </div>
                         <div className="h-1 flex-1 bg-green-500 mx-4"></div>
                         <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">4</div>
-                            <span className="mt-2 text-blue-600 font-medium">Bevestiging</span>
+                            <div 
+                                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                                style={{ backgroundColor: primaryColor }}
+                            >
+                                4
+                            </div>
+                            <span className="mt-2 font-medium" style={{ color: primaryColor }}>Bevestiging</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Confirmation Box */}
                 <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div className="bg-green-600 p-6 text-center">
+                    <div className="bg-orange-500 p-6 text-center">
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
@@ -178,7 +202,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
-                                <h3 className="text-lg font-semibold mb-3">Locatie</h3>
+                                <h3 className="text-lg font-semibold mb-3" style={{ color: primaryColor }}>Locatie</h3>
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <p className="font-medium text-gray-800">{selectedLocation.name}</p>
                                     <p className="text-gray-600">{selectedLocation.address}</p>
@@ -189,12 +213,12 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-semibold mb-3">Faciliteit</h3>
+                                <h3 className="text-lg font-semibold mb-3" style={{ color: primaryColor }}>Faciliteit</h3>
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <p className="font-medium text-gray-800">{selectedFacility.name}</p>
                                     <p className="text-gray-600">{selectedFacility.description}</p>
                                     {selectedFacility.price && (
-                                        <p className="text-blue-600 font-semibold mt-2">Prijs: €{selectedFacility.price.toFixed(2)}</p>
+                                        <p className="font-semibold mt-2" style={{ color: primaryColor }}>Prijs: €{selectedFacility.price.toFixed(2)}</p>
                                     )}
                                 </div>
                             </div>
@@ -202,10 +226,10 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
 
                         {/* Add datetime info */}
                         <div className="mb-8">
-                            <h3 className="text-lg font-semibold mb-3">Datum en tijd</h3>
+                            <h3 className="text-lg font-semibold mb-3" style={{ color: primaryColor }}>Datum en tijd</h3>
                             <div className="bg-gray-50 p-4 rounded-lg flex">
                                 <div className="mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: primaryColor }}>
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
@@ -227,6 +251,8 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                             dateTime={dateTime}
                             endDateTime={endDateTime}
                             duration={duration}
+                            primaryColor={primaryColor}
+                            secondaryColor={secondaryColor}
                         />
                     </div>
                 </div>

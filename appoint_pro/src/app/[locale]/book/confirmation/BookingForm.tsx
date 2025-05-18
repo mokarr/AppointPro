@@ -11,9 +11,11 @@ interface BookingFormProps {
     dateTime: string;
     endDateTime?: string;
     duration?: number;
+    primaryColor: string;
+    secondaryColor: string;
 }
 
-export default function BookingForm({ facilityId, locationId, bookingNumber, dateTime, endDateTime, duration }: BookingFormProps) {
+export default function BookingForm({ facilityId, locationId, bookingNumber, dateTime, endDateTime, duration, primaryColor, secondaryColor }: BookingFormProps) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -117,7 +119,7 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
                 </div>
             )}
 
-            <h3 className="text-lg font-semibold mb-4">Uw gegevens</h3>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: primaryColor }}>Uw gegevens</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -127,7 +129,8 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
                         id="firstName"
                         value={formData.firstName}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+                        style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                         required
                     />
                 </div>
@@ -138,7 +141,8 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
                         id="lastName"
                         value={formData.lastName}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+                        style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                         required
                     />
                 </div>
@@ -151,7 +155,8 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
                     id="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+                    style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                     required
                 />
             </div>
@@ -163,7 +168,8 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
                     id="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+                    style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                     required
                 />
             </div>
@@ -174,7 +180,8 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
                     id="notes"
                     value={formData.notes}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+                    style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                     rows={3}
                 ></textarea>
             </div>
@@ -182,7 +189,8 @@ export default function BookingForm({ facilityId, locationId, bookingNumber, dat
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <a
                     href={`/book/datetime?locationId=${locationId}&facilityId=${facilityId}`}
-                    className="text-blue-600 hover:text-blue-800 mb-4 md:mb-0"
+                    className="mb-4 md:mb-0"
+                    style={{ color: primaryColor }}
                 >
                     ← Terug naar tijd selectie
                 </a>

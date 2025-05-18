@@ -2,6 +2,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
+import OrganizationWithSettings from "@/models/Settings/OganizationWithSettings";
+import Image from "next/image";
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {
@@ -11,7 +13,7 @@ const getOrganizationData = cache(async (organizationId: string) => {
 
     try {
         const organization = await getOrganizationById(organizationId);
-        return organization;
+        return organization as OrganizationWithSettings;
     } catch (error) {
         console.error('Error fetching organization:', error);
         return null;
@@ -46,6 +48,10 @@ export default async function BookingPage() {
         );
     }
 
+    // Define brand colors with fallbacks
+    const primaryColor = organization.Settings?.data.branding.primaryColor || '#2563eb';
+    const secondaryColor = organization.Settings?.data.branding.secondaryColor || '#1d4ed8';
+
     // If there's only one location, redirect directly to facility selection for that location
     if (organization.locations && organization.locations.length === 1) {
         redirect(`/book/facilities?locationId=${organization.locations[0].id}`);
@@ -54,14 +60,34 @@ export default async function BookingPage() {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6">Boek bij {organization.name}</h1>
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
+                        Boek bij {organization.name}
+                    </h1>
+                    {organization.Settings?.data.branding.logo && (
+                        <div className="h-12">
+                            <img
+                                src={'url' in organization.Settings.data.branding.logo 
+                                    ? organization.Settings.data.branding.logo.url 
+                                    : organization.Settings.data.branding.logo.base64Data}
+                                alt={`${organization.name} logo`}
+                                className="h-full w-auto object-contain"
+                            />
+                        </div>
+                    )}
+                </div>
 
                 {/* Booking Progress Indicator */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                            <span className="mt-2 text-blue-600 font-medium">Locatie</span>
+                            <div 
+                                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                                style={{ backgroundColor: primaryColor }}
+                            >
+                                1
+                            </div>
+                            <span className="mt-2 font-medium" style={{ color: primaryColor }}>Locatie</span>
                         </div>
                         <div className="h-1 flex-1 bg-gray-300 mx-4"></div>
                         <div className="flex flex-col items-center">
@@ -81,7 +107,7 @@ export default async function BookingPage() {
                     </div>
                 </div>
 
-                <h2 className="text-xl font-semibold mb-6">Kies een locatie</h2>
+                <h2 className="text-xl font-semibold mb-6" style={{ color: primaryColor }}>Kies een locatie</h2>
 
                 {organization.locations && organization.locations.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -91,14 +117,15 @@ export default async function BookingPage() {
                                 className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg"
                             >
                                 <div className="p-6">
-                                    <h3 className="text-xl font-semibold mb-2">{location.name}</h3>
+                                    <h3 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>{location.name}</h3>
                                     <p className="text-gray-600 mb-4">{location.address}</p>
                                     {location.postalCode && (
                                         <p className="text-gray-500 text-sm mb-4">{location.postalCode}, {location.country || ''}</p>
                                     )}
                                     <a
                                         href={`/book/facilities?locationId=${location.id}`}
-                                        className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
+                                        className="inline-block w-full text-center text-white font-medium py-3 px-6 rounded-md transition-colors hover:opacity-90"
+                                        style={{ backgroundColor: primaryColor }}
                                     >
                                         Kies deze locatie
                                     </a>

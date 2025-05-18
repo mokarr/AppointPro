@@ -65,8 +65,11 @@ export default async function FacilitiesPage({
         redirect('/landing/user');
     }
 
+    
+
     // Get organization data
     const organization = await getOrganizationData(organizationId);
+
 
     if (!organization) {
         return (
@@ -82,6 +85,10 @@ export default async function FacilitiesPage({
             </div>
         );
     }
+
+      // Define brand colors with fallbacks
+    const primaryColor = organization.Settings?.data.branding.primaryColor || '#2563eb';
+    const secondaryColor = organization.Settings?.data.branding.secondaryColor || '#1d4ed8';
 
     // Find the selected location
     const selectedLocation = findLocationById(organization, locationId);
@@ -107,7 +114,22 @@ export default async function FacilitiesPage({
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6">Boek bij {organization.name}</h1>
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
+                        Boek bij {organization.name}
+                    </h1>
+                    {organization.Settings?.data.branding.logo && (
+                        <div className="h-12">
+                            <img
+                                src={'url' in organization.Settings.data.branding.logo 
+                                    ? organization.Settings.data.branding.logo.url 
+                                    : organization.Settings.data.branding.logo.base64Data}
+                                alt={`${organization.name} logo`}
+                                className="h-full w-auto object-contain"
+                            />
+                        </div>
+                    )}
+                </div>
 
                 {/* Booking Progress Indicator */}
                 <div className="mb-8">
@@ -118,8 +140,8 @@ export default async function FacilitiesPage({
                         </div>
                         <div className="h-1 flex-1 bg-green-500 mx-4"></div>
                         <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
-                            <span className="mt-2 text-blue-600 font-medium">Faciliteit</span>
+                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: primaryColor }}>2</div>
+                            <span className="mt-2 text-blue-600 font-medium" style={{ color: primaryColor }}>Faciliteit</span>
                         </div>
                         <div className="h-1 flex-1 bg-gray-300 mx-4"></div>
                         <div className="flex flex-col items-center">
@@ -160,7 +182,7 @@ export default async function FacilitiesPage({
                                 className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg"
                             >
                                 <div className="p-6">
-                                    <h3 className="text-xl font-semibold mb-2">{facility.name}</h3>
+                                    <h3 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>{facility.name}</h3>
                                     <p className="text-gray-600 mb-4">{facility.description}</p>
 
                                     {facility.price && (
@@ -173,6 +195,7 @@ export default async function FacilitiesPage({
                                     <a
                                         href={`/book/datetime?locationId=${locationId}&facilityId=${facility.id}`}
                                         className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
+                                        style={{ backgroundColor: primaryColor }}
                                     >
                                         Kies deze faciliteit
                                     </a>
