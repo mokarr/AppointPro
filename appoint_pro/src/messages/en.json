@@ -213,6 +213,7 @@
             "dashboard": "Dashboard",
             "organizations": "Organizations",
             "locations": "Locations",
+            "facilities": "Facilities",
             "customers": "Customers",
             "appointments": "Appointments",
             "analytics": "Analytics",

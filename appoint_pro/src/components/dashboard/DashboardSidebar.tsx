@@ -13,7 +13,8 @@ import {
     CreditCard,
     MapPin,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Dumbbell
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -47,6 +48,11 @@ export default function DashboardSidebar() {
             href: '/dashboard/locations',
             icon: MapPin,
             label: 'navigation.locations'
+        },
+        {
+            href: '/dashboard/facilities',
+            icon: Dumbbell,
+            label: 'navigation.facilities'
         },
         {
             href: '/dashboard/customers',

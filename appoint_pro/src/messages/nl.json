@@ -217,7 +217,8 @@
             "appointments": "Afspraken",
             "analytics": "Analyses",
             "subscription": "Abonnement",
-            "settings": "Instellingen"
+            "settings": "Instellingen",
+            "facilities": "Faciliteiten"
         },
         "welcome": "Welkom",
         "description": "Beheer uw afspraken en bedrijf vanaf één plek.",

@@ -9,6 +9,7 @@ import { LocationEditDialog } from "@/components/dashboard/locations/LocationEdi
 import { LocationDeleteDialog } from "@/components/dashboard/locations/LocationDeleteDialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LocationWithFacilities } from "@/models/location/locationWithFacilities";
+import { AddFacilityDialog } from "@/components/dashboard/facilities/AddFacilityDialog";
 
 export function LocationDetailsContent({ locationWithFacilities }: { locationWithFacilities: LocationWithFacilities }) {
     const t = useTranslations('dashboard.locations');
@@ -75,22 +76,28 @@ export function LocationDetailsContent({ locationWithFacilities }: { locationWit
                     <div className="space-y-6">
                         <div className="flex justify-between items-center">
                             <h2 className="text-xl font-semibold">{t('facilities')}</h2>
-                            <Button asChild size="sm">
-                                <Link href={`/dashboard/locations/${locationWithFacilities.id}/facilities/new`} className="flex items-center gap-2">
-                                    <Plus className="h-4 w-4" />
-                                    {t('addFacility')}
-                                </Link>
-                            </Button>
+                            <AddFacilityDialog 
+                                locationId={locationWithFacilities.id}
+                                trigger={
+                                    <Button size="sm" className="flex items-center gap-2">
+                                        <Plus className="h-4 w-4" />
+                                        {t('addFacility')}
+                                    </Button>
+                                }
+                            />
                         </div>
                         <div className="space-y-4">
                             {locationWithFacilities.facilities.length === 0 ? (
                                 <div className="text-center py-10">
                                     <p className="text-lg text-muted-foreground">{t('noFacilities')}</p>
-                                    <Button asChild variant="link" className="mt-2">
-                                        <Link href={`/dashboard/locations/${locationWithFacilities.id}/facilities/new`}>
-                                            {t('createFirstFacility')}
-                                        </Link>
-                                    </Button>
+                                    <AddFacilityDialog 
+                                        locationId={locationWithFacilities.id}
+                                        trigger={
+                                            <Button variant="link" className="mt-2">
+                                                {t('createFirstFacility')}
+                                            </Button>
+                                        }
+                                    />
                                 </div>
                             ) : (
                                 locationWithFacilities.facilities.map((facility) => (
