@@ -1,7 +1,7 @@
 'use client';
 
 import { ColorPicker } from './color-picker';
-import { OrganizationSettings } from '@/types/settings';
+import OrganizationSettings from '@/models/Settings/SettingModels/OrganizationSettings';
 
 interface BrandingSectionProps {
     settings: OrganizationSettings;

@@ -3,7 +3,7 @@
 import { executeAction } from "@/lib/executeAction";
 import { prisma } from "@/lib/prisma";
 import { Facility, FacilityType } from "@prisma/client";
-
+import FacilityWithSettings from "@/models/Settings/FacilityWithSettings";
 /**
  * Haal faciliteiten op voor een specifieke locatie
  */
@@ -26,15 +26,27 @@ export const getFacilitiesByLocationId = async (locationId: string): Promise<Fac
 /**
  * Haal een specifieke faciliteit op op basis van ID
  */
-export const getFacilityById = async (facilityId: string): Promise<Facility | null> => {
+export const getFacilityById = async (facilityId: string): Promise<FacilityWithSettings> => {
     try {
         const facility = await prisma.facility.findUnique({
-            where: { id: facilityId }
+            where: { id: facilityId },
+            include: {
+                Settings: {
+                    select: {
+                        data: true
+                    }
+                },
+            },
         });
-        return facility;
+
+        if (!facility) {
+            throw new Error("Faciliteit bestaat niet");
+        }
+
+        return facility as FacilityWithSettings;
     } catch (error) {
         console.error("Error fetching facility:", error);
-        return null;
+        throw error;
     }
 };
 

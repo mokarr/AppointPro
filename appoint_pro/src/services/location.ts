@@ -1,26 +1,24 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import LocationWithSettings from '@/models/Settings/LocationWithSettings';
+import LocationSettings from '@/models/Settings/SettingModels/LocationSettings';
+import { Location } from '@prisma/client';
 
-export interface Location {
-    id: string;
-    name: string;
-    address?: string;
-    phone?: string;
-    email?: string;
-    organizationId: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
 
-export const getLocationById = async (locationId: string): Promise<Location | null> => {
-    try {
+export const getLocationById = async (locationId: string): Promise<LocationWithSettings> => {
         const location = await prisma.location.findUnique({
             where: { id: locationId },
+        include: {
+            Settings: {
+                select: {
+                    data: true
+                }
+            }
+        }
         });
-        return location;
-    } catch (error) {
-        console.error('Error fetching location:', error);
-        return null;
-    }
+
+        if (!location) throw new Error('Location not found');
+
+        return location as LocationWithSettings;
 }; 

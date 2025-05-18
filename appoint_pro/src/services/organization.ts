@@ -2,7 +2,7 @@
 
 import { executeAction } from "@/lib/executeAction";
 import { prisma } from "@/lib/prisma";
-import { OrganizationSettings } from "@/types/settings";
+import OrganizationWithSettings from "@/models/Settings/OganizationWithSettings";
 
 /**
  * Controleer of een organisatie met de gegeven naam bestaat.
@@ -23,23 +23,6 @@ const checkOrganizationExists = async (organizationName: string) => {
     });
 };
 
-interface OrganizationWithSettings {
-    id: string;
-    name: string;
-    subdomain: string | null;
-    branche: string;
-    description: string;
-    locations: any[];
-    phone: string | null;
-    email: string | null;
-    updatedAt: Date;
-    createdAt: Date;
-    stripeCustomerId: string | null;
-    hasActiveSubscription: boolean;
-    Settings: {
-        data: OrganizationSettings;
-    } | null;
-}
 
 const getOrganizationById = async (organizationId: string): Promise<OrganizationWithSettings> => {
     const organization = await prisma.organization.findUnique({
@@ -53,6 +36,7 @@ const getOrganizationById = async (organizationId: string): Promise<Organization
             }
         }
     });
+
     if (!organization) {
         throw new Error("Organisatie bestaat niet");
     }

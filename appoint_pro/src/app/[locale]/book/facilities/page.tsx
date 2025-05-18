@@ -3,28 +3,9 @@ import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
 import { getFacilitiesByLocationId } from '@/services/facility';
-import type { OrganizationWithLocations, Location } from '@/types/organization';
-import { Facility } from '@prisma/client';
-import { OrganizationSettings } from '@/types/settings';
+import { Facility, Location } from '@prisma/client';
+import OrganizationWithSettings from '@/models/Settings/OganizationWithSettings';
 
-
-interface OrganizationWithSettings {
-    id: string;
-    name: string;
-    subdomain: string | null;
-    branche: string;
-    description: string;
-    locations: any[];
-    phone: string | null;
-    email: string | null;
-    updatedAt: Date;
-    createdAt: Date;
-    stripeCustomerId: string | null;
-    hasActiveSubscription: boolean;
-    Settings: {
-        data: OrganizationSettings;
-    } | null;
-}
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {

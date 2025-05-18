@@ -4,30 +4,10 @@ import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
 import { getFacilityById } from '@/services/facility';
 import BookingForm from '@/app/[locale]/book/confirmation/BookingForm';
-import type { OrganizationWithLocations, Location } from '@/types/organization';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
-import { Facility } from "@prisma/client";
-import { OrganizationSettings } from '@/types/settings';
-
-interface OrganizationWithSettings {
-    id: string;
-    name: string;
-    subdomain: string | null;
-    branche: string;
-    description: string;
-    locations: any[];
-    phone: string | null;
-    email: string | null;
-    updatedAt: Date;
-    createdAt: Date;
-    stripeCustomerId: string | null;
-    hasActiveSubscription: boolean;
-    Settings: {
-        data: OrganizationSettings;
-    } | null;
-}
-
+import { Facility, Location } from "@prisma/client";
+import OrganizationWithSettings from '@/models/Settings/OganizationWithSettings';
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {

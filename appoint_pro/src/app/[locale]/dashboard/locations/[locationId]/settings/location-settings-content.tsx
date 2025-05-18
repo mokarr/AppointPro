@@ -10,36 +10,15 @@ import { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { BusinessHoursSection } from '@/app/[locale]/dashboard/settings/components/business-hours-section';
 import { SaveButton } from '@/app/[locale]/dashboard/settings/components/save-button';
-import { OrganizationSettings } from '@/types/settings';
 import { Location } from "@prisma/client";
-
-interface OrganizationWithSettings {
-    id: string;
-    name: string;
-    subdomain: string | null;
-    branche: string;
-    description: string;
-    locations: any[];
-    phone: string | null;
-    email: string | null;
-    updatedAt: Date;
-    createdAt: Date;
-    stripeCustomerId: string | null;
-}
-
+import LocationSettings from "@/models/Settings/SettingModels/LocationSettings";
+import LocationWithSettings from "@/models/Settings/LocationWithSettings";
 interface LocationSettingsContentProps {
     _user: User;
-    _location: Location; //TODO: fix this
+    _location: LocationWithSettings;
 }
 
-interface LocationSettings {
-    openingHours: Array<{
-        day: string;
-        open: string;
-        close: string;
-        isClosed: boolean;
-    }>;
-}
+
 
 const defaultSettings: LocationSettings = {
     openingHours: [
@@ -55,32 +34,22 @@ const defaultSettings: LocationSettings = {
 
 export default function LocationSettingsContent({ _user, _location }: LocationSettingsContentProps) {
     const t = useTranslations('common');
-    const [settings, setSettings] = useState<LocationSettings>(defaultSettings);
-    const [originalSettings, setOriginalSettings] = useState<LocationSettings>(defaultSettings);
+    const [settings, setSettings] = useState<LocationSettings>(_location.Settings?.data || defaultSettings);
+    const [originalSettings, setOriginalSettings] = useState<LocationSettings>(_location.Settings?.data || defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [notFilled, setNotFilled] = useState(false);
 
     useEffect(() => {
-        fetchSettings();
+        setSettingsFromLocation();
     }, []);
 
-    const fetchSettings = async () => {
-        try {
-            const response = await fetch(`/api/location/${_location.id}/settings`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch settings');
-            }
-            const data = await response.json();
-            const settingsData = data.data as LocationSettings;
-            setSettings(settingsData);
-            setOriginalSettings(settingsData);
-        } catch (error) {
-            console.error('Error fetching settings:', error);
-            toast.error("Failed to load settings");
-        } finally {
-            setIsLoading(false);
-        }
+    useEffect(() => {
+        checkForChanges();
+    }, [settings, notFilled]);
+
+    const setSettingsFromLocation = async () => {
+            setSettings(_location.Settings?.data || defaultSettings);
+            setOriginalSettings(_location.Settings?.data || defaultSettings);
     };
 
     const handleOpeningHoursChange = (index: number, field: 'open' | 'close' | 'isClosed', value: string | boolean) => {
@@ -123,9 +92,7 @@ export default function LocationSettingsContent({ _user, _location }: LocationSe
         }
     };
 
-    useEffect(() => {
-        checkForChanges();
-    }, [settings, notFilled]);
+
 
     const saveSettings = async () => {
         try {
@@ -156,9 +123,6 @@ export default function LocationSettingsContent({ _user, _location }: LocationSe
         }
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <DashboardLayout>

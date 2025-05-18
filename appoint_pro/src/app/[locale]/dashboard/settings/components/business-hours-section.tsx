@@ -1,10 +1,10 @@
 'use client';
 
-import { OrganizationSettings } from '@/types/settings';
 import { Button } from "@/components/ui/button";
 import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
+import OrganizationSettings from "@/models/Settings/SettingModels/OrganizationSettings";
 
 interface BusinessHoursSectionProps {
     settings: OrganizationSettings;

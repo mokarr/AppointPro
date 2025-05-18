@@ -12,23 +12,12 @@ import { SaveButton } from '@/app/[locale]/dashboard/settings/components/save-bu
 import { FacilityType } from "@prisma/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface Facility {
-    id: string;
-    name: string;
-    description: string;
-    type: FacilityType;
-    locationId: string;
-}
+import FacilitySettings from "@/models/Settings/SettingModels/FacilitySettings";
+import FacilityWithSettings from "@/models/Settings/FacilityWithSettings";
 
 interface FacilitySettingsContentProps {
     _user: User;
-    _facility: Facility;
-}
-
-interface FacilitySettings {
-    type: FacilityType;
-    maxParticipants: number;
+    _facility: FacilityWithSettings ;
 }
 
 const defaultSettings: FacilitySettings = {
@@ -38,31 +27,21 @@ const defaultSettings: FacilitySettings = {
 
 export default function FacilitySettingsContent({ _user, _facility }: FacilitySettingsContentProps) {
     const t = useTranslations('common');
-    const [settings, setSettings] = useState<FacilitySettings>(defaultSettings);
-    const [originalSettings, setOriginalSettings] = useState<FacilitySettings>(defaultSettings);
+    const [settings, setSettings] = useState<FacilitySettings>(_facility.Settings?.data || defaultSettings);
+    const [originalSettings, setOriginalSettings] = useState<FacilitySettings>(_facility.Settings?.data || defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetchSettings();
+        setSettingsFromFacility();
     }, []);
 
-    const fetchSettings = async () => {
-        try {
-            const response = await fetch(`/api/facility/${_facility.id}/settings`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch settings');
-            }
-            const data = await response.json();
-            const settingsData = data.data as FacilitySettings;
-            setSettings(settingsData);
-            setOriginalSettings(settingsData);
-        } catch (error) {
-            console.error('Error fetching settings:', error);
-            toast.error("Failed to load settings");
-        } finally {
-            setIsLoading(false);
-        }
+    useEffect(() => {
+        checkForChanges();
+    }, [settings]);
+
+    const setSettingsFromFacility = async () => {
+            setSettings(_facility.Settings?.data || defaultSettings);
+            setOriginalSettings(_facility.Settings?.data || defaultSettings);
     };
 
     const handleTypeChange = (value: FacilityType) => {
@@ -83,9 +62,7 @@ export default function FacilitySettingsContent({ _user, _facility }: FacilitySe
         }
     };
 
-    useEffect(() => {
-        checkForChanges();
-    }, [settings]);
+
 
     const saveSettings = async () => {
         try {
@@ -116,9 +93,6 @@ export default function FacilitySettingsContent({ _user, _facility }: FacilitySe
         }
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <DashboardLayout>

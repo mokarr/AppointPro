@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { SettingsPayload, OrganizationSettings } from '@/types/settings';
+import OrganizationSettingsDto from '@/models/Settings/DTOs/OrganizationSettingsDto';
 import { uploadFileToS3 } from '@/lib/s3';
 
 const defaultSettings = {
@@ -68,7 +68,7 @@ export async function PATCH(request: Request) {
             );
         }
 
-        const payload: SettingsPayload = await request.json();
+        const dto: OrganizationSettingsDto = await request.json();
         let currentSettings = await prisma.settings.findUnique({
             where: {
                 organizationId: session.user.organizationId,
@@ -90,22 +90,22 @@ export async function PATCH(request: Request) {
         const updatedData = { ...currentData };
 
         // Handle branding updates
-        if (payload.branding) {
+        if (dto.branding) {
             // Handle logo changes
-            if (payload.branding.logo !== undefined) {
+            if (dto.branding.logo !== undefined) {
                 // If there's a new logo (base64 data)
-                if (payload.branding.logo && 'base64Data' in payload.branding.logo) {
+                if (dto.branding.logo && 'base64Data' in dto.branding.logo) {
                     // Convert base64 to buffer
-                    const base64Data = payload.branding.logo.base64Data.replace(/^data:image\/\w+;base64,/, '');
+                    const base64Data = dto.branding.logo.base64Data.replace(/^data:image\/\w+;base64,/, '');
                     const buffer = Buffer.from(base64Data, 'base64');
                     
                     // Get file extension from base64 data
-                    const contentType = payload.branding.logo.base64Data.split(';')[0].split('/')[1];
+                    const contentType = dto.branding.logo.base64Data.split(';')[0].split('/')[1];
                     
                     // Upload to S3
                     const { key, url } = await uploadFileToS3(
                         buffer,
-                        payload.branding.logo.originalName,
+                        dto.branding.logo.originalName,
                         contentType
                     );
 
@@ -116,7 +116,7 @@ export async function PATCH(request: Request) {
                             url
                         },
                     };
-                } else if (payload.branding.logo === null) {
+                } else if (dto.branding.logo === null) {
                     // If logo is being removed
                     updatedData.branding = {
                         ...updatedData.branding,
@@ -126,23 +126,23 @@ export async function PATCH(request: Request) {
             }
 
             // Handle other branding updates
-            if (payload.branding.primaryColor !== undefined) {
+            if (dto.branding.primaryColor !== undefined) {
                 updatedData.branding = {
                     ...updatedData.branding,
-                    primaryColor: payload.branding.primaryColor,
+                    primaryColor: dto.branding.primaryColor,
                 };
             }
-            if (payload.branding.secondaryColor !== undefined) {
+            if (dto.branding.secondaryColor !== undefined) {
                 updatedData.branding = {
                     ...updatedData.branding,
-                    secondaryColor: payload.branding.secondaryColor,
+                    secondaryColor: dto.branding.secondaryColor,
                 };
             }
         }
 
         // Handle opening hours updates
-        if (payload.openingHours) {
-            updatedData.openingHours = payload.openingHours;
+        if (dto.openingHours) {
+            updatedData.openingHours = dto.openingHours;
         }
 
         // Update settings in database

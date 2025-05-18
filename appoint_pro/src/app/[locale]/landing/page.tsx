@@ -3,8 +3,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getOrganizationById } from '@/services/organization';
 import { cache } from 'react';
-import { Settings } from "@prisma/client";
-import { OrganizationSettings } from "@/types/settings";
+import OrganizationWithSettings from "@/models/Settings/OganizationWithSettings";
 
 interface Location {
     id: string;
@@ -16,25 +15,6 @@ interface Location {
     createdAt?: Date;
     updatedAt?: Date;
 }
-
-interface OrganizationWithSettings {
-    id: string;
-    name: string;
-    subdomain: string | null;
-    branche: string;
-    description: string;
-    locations: any[];
-    phone: string | null;
-    email: string | null;
-    updatedAt: Date;
-    createdAt: Date;
-    stripeCustomerId: string | null;
-    hasActiveSubscription: boolean;
-    Settings: {
-        data: OrganizationSettings;
-    } | null;
-}
-
 // Cached function to get organization data - will only run once per request
 const getOrganizationData = cache(async (organizationId: string) => {
     if (!organizationId) {

@@ -4,30 +4,25 @@ import {
     DashboardHeader,
     DashboardLayout
 } from "@/components/dashboard/dashboard-layout";
-import { Button } from "@/components/ui/button";
 import { User } from "next-auth";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from 'react';
-import { OrganizationSettings, SettingsPayload } from '@/types/settings';
+import OrganizationSettingsDto from '@/models/Settings/DTOs/OrganizationSettingsDto';
 import { toast } from "sonner"
 import { BrandingSection } from './components/branding-section';
 import { BusinessHoursSection } from './components/business-hours-section';
 import { SaveButton } from './components/save-button';
-
+import OrganizationSettings from "@/models/Settings/SettingModels/OrganizationSettings";
+import OrganizationWithSettings from "@/models/Settings/OganizationWithSettings";
 declare global {
     interface Window {
         beforeUnloadHandler: (event: BeforeUnloadEvent) => void;
     }
 }
 
-interface Organization {
-    id: string;
-    name: string;
-}
-
 interface SettingsPageContentProps {
     _user: User;
-    _organization: Organization;
+    _organization: OrganizationWithSettings;
 }
 
 const defaultSettings: OrganizationSettings = {
@@ -49,17 +44,14 @@ const defaultSettings: OrganizationSettings = {
 
 export default function SettingsPageContent({ _user, _organization }: SettingsPageContentProps) {
     const t = useTranslations('common');
-    const [settings, setSettings] = useState<OrganizationSettings>(defaultSettings);
-    const [originalSettings, setOriginalSettings] = useState<OrganizationSettings>(defaultSettings);
+    const [settings, setSettings] = useState<OrganizationSettings>(_organization.Settings?.data || defaultSettings);
+    const [originalSettings, setOriginalSettings] = useState<OrganizationSettings>(_organization.Settings?.data || defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [notFilled, setNotFilled] = useState(false);
 
   
     useEffect(() => {
-        fetchSettings();
-
-      
+        setSettingsFromOrganization();  
         // this must be done to be able to remove the beforeunload handler
         window.beforeUnloadHandler = (event: BeforeUnloadEvent) => {
             event.preventDefault();
@@ -68,24 +60,13 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
         };
     }, []);
 
+    useEffect(() => {
+        checkForChanges();
+    }, [settings, notFilled]);
 
-
-    const fetchSettings = async () => {
-        try {
-            const response = await fetch('/api/organization/settings');
-            if (!response.ok) {
-                throw new Error('Failed to fetch settings');
-            }
-            const data = await response.json();
-            const settingsData = data.data as OrganizationSettings;
-            setSettings(settingsData);
-            setOriginalSettings(settingsData);
-        } catch (error) {
-            console.error('Error fetching settings:', error);
-            toast.error("Failed to load settings");
-        } finally {
-            setIsLoading(false);
-        }
+    const setSettingsFromOrganization = async () => {
+            setSettings(_organization.Settings?.data || defaultSettings);
+            setOriginalSettings(_organization.Settings?.data || defaultSettings);
     };
 
     const handleOpeningHoursChange = (index: number, field: 'open' | 'close' | 'isClosed', value: string | boolean) => {
@@ -188,38 +169,36 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
     };
 
 
-    useEffect(() => {
-        checkForChanges();
-    }, [settings, notFilled]);
+
 
     const saveSettings = async () => {
         try {
-            const payload: SettingsPayload = {};
+            const dto: OrganizationSettingsDto = {};
 
             if (JSON.stringify(settings.branding) !== JSON.stringify(originalSettings.branding)) {
-                payload.branding = {};
+                dto.branding = {};
                 if (settings.branding.primaryColor !== originalSettings.branding.primaryColor) {
-                    payload.branding.primaryColor = settings.branding.primaryColor;
+                    dto.branding.primaryColor = settings.branding.primaryColor;
                 }
                 if (settings.branding.secondaryColor !== originalSettings.branding.secondaryColor) {
-                    payload.branding.secondaryColor = settings.branding.secondaryColor;
+                    dto.branding.secondaryColor = settings.branding.secondaryColor;
                 }
                 if (JSON.stringify(settings.branding.logo) !== JSON.stringify(originalSettings.branding.logo)) {
                     if (settings.branding.logo && 'base64Data' in settings.branding.logo) {
-                        payload.branding.logo = {
+                        dto.branding.logo = {
                             base64Data: settings.branding.logo.base64Data,
                             originalName: settings.branding.logo.originalName
                         };
                     } else if (settings.branding.logo && 'url' in settings.branding.logo) {
-                        payload.branding.logo = null;
+                        dto.branding.logo = null;
                     } else {
-                        payload.branding.logo = null;
+                        dto.branding.logo = null;
                     }
                 }
             }
 
             if (JSON.stringify(settings.openingHours) !== JSON.stringify(originalSettings.openingHours)) {
-                payload.openingHours = settings.openingHours;
+                dto.openingHours = settings.openingHours;
             }
 
             const response = await fetch('/api/organization/settings', {
@@ -227,7 +206,7 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(dto),
             });
 
             if (!response.ok) {
@@ -244,10 +223,6 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
             toast.error("Failed to save settings");
         }
     };
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <DashboardLayout>
