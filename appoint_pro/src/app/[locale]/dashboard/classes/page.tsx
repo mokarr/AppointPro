@@ -23,10 +23,12 @@ async function getLocationsWithClasses() { //TODO: refactor to one function to u
             throw new Error("No organization found for user");
         }
 
+        console.log(session.user.organizationId);
+
         // Then get locations for that organization
         const locations = await prisma.location.findMany({
             where: {
-                organizationId: user.organization.id
+                organizationId: session.user.organizationId
             },
             include: {
                 classes: {
@@ -42,7 +44,7 @@ async function getLocationsWithClasses() { //TODO: refactor to one function to u
 
         return locations;
     } catch (error) {
-        console.error('Error fetching locations with facilities:', error);
+        console.error('Error fetching locations with classes:', error);
         return [];
     }
 }

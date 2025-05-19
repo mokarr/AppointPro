@@ -314,7 +314,27 @@
             "sunday": "Zondag",
             "endDate": "Einddatum",
             "pickEndDate": "Kies een einddatum",
-            "previewSessions": "Voorbeeld Sessies"
+            "previewSessions": "Voorbeeld Sessies",
+            "inFacility": "In Faciliteit",
+            "inFacilityDescription": "Geef aan of deze les in een faciliteit wordt gegeven",
+            "facilityWarning": "Wanneer een faciliteit is geselecteerd, is deze niet beschikbaar voor reguliere afspraken tijdens de lestijd",
+            "selectFacility": "Selecteer Faciliteit",
+            "selectFacilityPlaceholder": "Kies een faciliteit...",
+            "bookingConflicts": {
+                "title": "Conflicterende Afspraken",
+                "description": "Er zijn bestaande afspraken die conflicteren met je lesrooster. Als je doorgaat, worden deze afspraken geannuleerd.",
+                "confirm": "Ik ben er zeker van dat ik deze afspraken wil annuleren",
+                "cancelled": "Conflicterende afspraken zijn geannuleerd",
+                "cancelError": "Kon conflicterende afspraken niet annuleren"
+            },
+            "classConflicts": {
+                "title": "Lesrooster Conflicten",
+                "description": "Er zijn bestaande lessen die conflicteren met je rooster. Je moet deze lessen verwijderen of een andere faciliteit selecteren.",
+                "close": "Sluiten"
+            },
+            "availabilityCheckError": "Kon beschikbaarheid van faciliteit niet controleren",
+            "created": "Les succesvol aangemaakt",
+            "createError": "Kon les niet aanmaken"
         }
     },
     "subscription": {

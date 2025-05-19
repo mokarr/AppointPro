@@ -2,88 +2,64 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from "next-intl";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { format, addDays, addWeeks, addMonths } from 'date-fns';
-import { CalendarIcon } from "lucide-react";
+import { addDays, addWeeks, addMonths } from 'date-fns';
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { nl } from 'date-fns/locale';
-
-const daysOfWeek = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday"
-] as const;
-type DayOfWeek = typeof daysOfWeek[number];
-
-const formSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    instructor: z.string().optional(),
-    maxParticipants: z.coerce.number().min(1, "Must have at least 1 participant"),
-    startDate: z.date({ required_error: "Start date is required" }),
-    startTime: z.string().min(1, "Start time is required"),
-    duration: z.coerce.number().min(1, "Duration must be at least 1 minute"),
-    isRecurring: z.boolean(),
-    recurrencePattern: z.enum(["daily", "weekly", "biweekly", "triweekly", "monthly", "bimonthly", "trimonthly"]).optional(),
-    skipDay: z.array(z.enum(daysOfWeek)).optional(),
-    endDate: z.date().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { Form } from "@/components/ui/form";
+import { formSchema, FormValues } from "./schema";
+import { BasicInfoFields } from "./components/BasicInfoFields";
+import { DateTimeFields } from "./components/DateTimeFields";
+import { RecurringOptions } from "./components/RecurringOptions";
+import { PreviewSessions } from "./components/PreviewSessions";
+import { FacilityOption } from "./components/FacilityOption";
+import { BookingConflictModal } from "./components/BookingConflictModal";
+import { ClassConflictModal } from "./components/ClassConflictModal";
 
 interface AddClassFormProps {
     locationId: string;
+    facilities: {
+        id: string;
+        name: string;
+        description: string;
+        type: string;
+    }[];
 }
 
-export function AddClassForm({ locationId }: AddClassFormProps) {
+export function AddClassForm({ locationId, facilities }: AddClassFormProps) {
     const t = useTranslations('dashboard');
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    if (!locationId) {
+        router.push('/dashboard');
+        return null;
+    }
+
     const [previewSessions, setPreviewSessions] = useState<Date[]>([]);
+    const [bookingConflicts, setBookingConflicts] = useState<any[]>([]);
+    const [classConflicts, setClassConflicts] = useState<any[]>([]);
+    const [showBookingConflictModal, setShowBookingConflictModal] = useState(false);
+    const [showClassConflictModal, setShowClassConflictModal] = useState(false);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
+            description: "",
             instructor: "",
             maxParticipants: 10,
             startDate: undefined,
             startTime: "09:00",
             duration: 60,
             isRecurring: false,
-            skipDay: [] as DayOfWeek[],
+            skipDay: [],
+            isInFacility: false,
+            facilityId: undefined,
         },
     });
 
@@ -105,7 +81,7 @@ export function AddClassForm({ locationId }: AddClassFormProps) {
 
         while (currentDate <= end) {
             const dayOfWeek = currentDate.getDay();
-            const skipDayIndexes = (skipDay as DayOfWeek[] | undefined)?.map(day => ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(day)) ?? [];
+            const skipDayIndexes = (skipDay as string[] | undefined)?.map(day => ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(day)) ?? [];
 
             if (!skipDayIndexes.includes(dayOfWeek)) {
                 sessions.push(new Date(currentDate));
@@ -137,11 +113,123 @@ export function AddClassForm({ locationId }: AddClassFormProps) {
         }
 
         setPreviewSessions(sessions);
-    }, [isRecurring, recurrencePattern, endDate, skipDay as unknown as string[], startDate]);
+    }, [isRecurring, recurrencePattern, endDate, skipDay, startDate]);
 
-    const onSubmit = (data: FormValues) => {
-        // TODO: Implement backend submission
-        console.log({ ...data, locationId });
+    const handleBookingConflictConfirm = async () => {
+        try {
+            // TODO: Implement the API call to cancel conflicting bookings
+            const response = await fetch('/api/bookings/cancel-conflicts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bookingIds: bookingConflicts.map(conflict => conflict.id)
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to cancel conflicting bookings');
+            }
+
+            toast.success(t('classes.bookingConflicts.cancelled'));
+            setShowBookingConflictModal(false);
+            // Continue with class creation
+            await submitClass(form.getValues());
+        } catch (error) {
+            console.error('Error cancelling conflicting bookings:', error);
+            toast.error(t('classes.bookingConflicts.cancelError'));
+        }
+    };
+
+    const submitClass = async (data: FormValues) => {
+        try {
+            const response = await fetch('/api/class', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    description: data.description,
+                    instructor: data.instructor,
+                    maxParticipants: data.maxParticipants,
+                    locationId: locationId,
+                    facilityId: data.isInFacility ? data.facilityId : undefined,
+                    startTime: data.startTime,
+                    duration: data.duration,
+                    sessions: previewSessions.map(session => ({
+                        date: session.toISOString().split('T')[0],
+                        startTime: data.startTime,
+                        endTime: new Date(session.setHours(
+                            parseInt(data.startTime.split(':')[0]),
+                            parseInt(data.startTime.split(':')[1]) + data.duration
+                        )).toTimeString().slice(0, 5)
+                    }))
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create class');
+            }
+
+            const result = await response.json();
+            console.log('Class created successfully:', result);
+            toast.success(t('classes.created'));
+            router.push('/dashboard/classes');
+        } catch (error) {
+            console.error('Error creating class:', error);
+            toast.error(t('classes.createError'));
+        }
+    };
+
+    const onSubmit = async (data: FormValues) => {
+        if (data.isInFacility && data.facilityId) {
+            try {
+                const response = await fetch('/api/bookings/check-facility-availability', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        facilityId: data.facilityId,
+                        sessions: previewSessions.map(session => ({
+                            startTime: new Date(session.setHours(
+                                parseInt(data.startTime.split(':')[0]),
+                                parseInt(data.startTime.split(':')[1])
+                            )),
+                            endTime: new Date(session.setHours(
+                                parseInt(data.startTime.split(':')[0]),
+                                parseInt(data.startTime.split(':')[1]) + data.duration
+                            ))
+                        }))
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.conflictStatus) {
+                    setBookingConflicts(result.conflicts);
+                    setShowBookingConflictModal(true);
+                    return;
+                }
+
+                if (result.classConflictsStatus) {
+                    setClassConflicts(result.classConflicts);
+                    setShowClassConflictModal(true);
+                    return;
+                }
+
+                // If no conflicts, proceed with class creation
+                await submitClass(data);
+            } catch (error) {
+                console.error('Error checking facility availability:', error);
+                toast.error(t('classes.availabilityCheckError'));
+            }
+        } else {
+            // If no facility selected, proceed with class creation
+            await submitClass(data);
+        }
     };
 
     return (
@@ -158,278 +246,14 @@ export function AddClassForm({ locationId }: AddClassFormProps) {
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('classes.name')}</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                        <BasicInfoFields form={form} />
+                        <DateTimeFields form={form} />
+                        <FacilityOption form={form} facilities={facilities} />
+                        <RecurringOptions form={form} />
+                        <PreviewSessions 
+                            previewSessions={previewSessions} 
+                            startTime={form.getValues("startTime")} 
                         />
-
-                        <FormField
-                            control={form.control}
-                            name="instructor"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('classes.instructor')}</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="maxParticipants"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('classes.maxParticipants')}</FormLabel>
-                                    <FormControl>
-                                        <Input type="number" min="1" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="startDate"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('classes.startDate') ?? 'Startdatum'}</FormLabel>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "w-full pl-3 text-left font-normal",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value ? format(field.value, "PPP", { locale: nl }) : t('classes.pickStartDate') ?? 'Kies een startdatum'}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0 bg-white" align="start">
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={(date) => date < new Date()}
-                                                initialFocus
-                                                locale={nl} 
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="startTime"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('classes.startTime')}</FormLabel>
-                                        <FormControl>
-                                            <Input type="time" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="duration"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('classes.duration')}</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" min="1" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <FormField
-                            control={form.control}
-                            name="isRecurring"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                                    <div className="space-y-0.5">
-                                        <FormLabel>{t('classes.recurring')}</FormLabel>
-                                        <FormDescription>
-                                            {t('classes.recurringDescription')}
-                                        </FormDescription>
-                                    </div>
-                                    <FormControl>
-                                        <Switch
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                            className="border border-gray-400 data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-white w-14 h-8 relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-6 after:h-6 after:rounded-full after:bg-white after:transition-transform after:duration-200 data-[state=checked]:after:translate-x-6 after:shadow-md"
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-
-                        {isRecurring && (
-                            <>
-                                <FormField
-                                    control={form.control}
-                                    name="recurrencePattern"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('classes.recurrencePattern')}</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder={t('classes.selectPattern')} />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    <SelectItem value="daily">{t('classes.daily')}</SelectItem>
-                                                    <SelectItem value="weekly">{t('classes.weekly')}</SelectItem>
-                                                    <SelectItem value="biweekly">{t('classes.biweekly')}</SelectItem>
-                                                    <SelectItem value="triweekly">{t('classes.triweekly')}</SelectItem>
-                                                    <SelectItem value="monthly">{t('classes.monthly')}</SelectItem>
-                                                    <SelectItem value="bimonthly">{t('classes.bimonthly')}</SelectItem>
-                                                    <SelectItem value="trimonthly">{t('classes.trimonthly')}</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="skipDay"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('classes.skipDay')}</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        className={cn(
-                                                            "w-full justify-start",
-                                                            !field.value || field.value.length === 0 ? "text-muted-foreground" : ""
-                                                        )}
-                                                    >
-                                                        {field.value && field.value.length > 0
-                                                            ? (field.value as DayOfWeek[]).map((day) => t(`classes.${day}`)).join(', ')
-                                                            : t('classes.selectSkipDay')}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-56 bg-white">
-                                                    <div className="flex flex-col gap-2">
-                                                        {daysOfWeek.map((day) => (
-                                                            <label key={day} className="flex items-center gap-2 cursor-pointer">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={field.value?.includes(day)}
-                                                                    onChange={() => {
-                                                                        const newValue = field.value ? [...field.value] as DayOfWeek[] : [];
-                                                                        if (newValue.includes(day)) {
-                                                                            field.onChange(newValue.filter((d) => d !== day));
-                                                                        } else {
-                                                                            newValue.push(day);
-                                                                            field.onChange(newValue);
-                                                                        }
-                                                                    }}
-                                                                />
-                                                                <span>{t(`classes.${day}`)}</span>
-                                                            </label>
-                                                        ))}
-                                                    </div>
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="endDate"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>{t('classes.endDate')}</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full pl-3 text-left font-normal",
-                                                                !field.value && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "PPP", { locale: nl })
-                                                            ) : (
-                                                                <span>{t('classes.pickEndDate')}</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-white" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={field.onChange}
-                                                        disabled={(date) => {
-                                                            const oneYearFromNow = new Date();
-                                                            oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
-                                                            return date < new Date() || date > oneYearFromNow;
-                                                        }}
-                                                        initialFocus
-                                                        locale={nl}
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </>
-                        )}
-
-                        {previewSessions.length > 0 && (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>{t('classes.previewSessions')}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-2">
-                                        {previewSessions.map((date, index) => (
-                                            <div key={index} className="flex items-center justify-between p-2 bg-muted/50 rounded">
-                                                <span>{format(date, "PPP")}</span>
-                                                <span>{form.getValues("startTime")}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        )}
 
                         <div className="flex justify-end space-x-4">
                             <Button
@@ -446,6 +270,19 @@ export function AddClassForm({ locationId }: AddClassFormProps) {
                     </form>
                 </Form>
             </div>
+
+            <BookingConflictModal
+                isOpen={showBookingConflictModal}
+                onClose={() => setShowBookingConflictModal(false)}
+                onConfirm={handleBookingConflictConfirm}
+                conflicts={bookingConflicts}
+            />
+
+            <ClassConflictModal
+                isOpen={showClassConflictModal}
+                onClose={() => setShowClassConflictModal(false)}
+                conflicts={classConflicts}
+            />
         </div>
     );
 } 

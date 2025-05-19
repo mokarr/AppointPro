@@ -28,6 +28,9 @@ async function getLocation(locationId: string) {
             where: {
                 id: locationId,
                 organizationId: user.organization.id
+            },
+            include: {
+                facilities: true
             }
         });
 
@@ -38,23 +41,17 @@ async function getLocation(locationId: string) {
     }
 }
 
-export default async function AddClassPage({
-    searchParams,
-}: {
-    searchParams: Promise<{ location?: string }>
-}) {
+export default async function AddClassPage({ searchParams }: { searchParams: Promise<{ location: string }> }) {
     const resolvedParams = await searchParams;
-    const locationId = resolvedParams.location;
-
-    if (!locationId) {
-        redirect("/dashboard/classes");
+    if (!resolvedParams.location) {
+        redirect("/dashboard");
     }
 
-    const location = await getLocation(locationId);
+    const location = await getLocation(resolvedParams.location);
 
     if (!location) {
-        redirect("/dashboard/classes");
+        redirect("/dashboard");
     }
 
-    return <AddClassForm locationId={locationId} />;
+    return <AddClassForm locationId={location.id} facilities={location.facilities} />;
 }

@@ -87,8 +87,8 @@ export default function DashboardSidebar() {
         }
     ];
 
-    const currentItem = navItems.find(item => pathname === item.href);
-    const filteredNavItems = navItems.filter(item => item.href !== pathname);
+    const currentItem = navItems.find(item => pathname.startsWith(item.href));
+    const filteredNavItems = navItems.filter(item => !item.href.startsWith(pathname));
 
     return (
         <div className="p-2 md:p-4 flex items-center md:items-start justify-center md:justify-start">

@@ -96,7 +96,6 @@ model Facility {
 
 model Class {
   id String @id @default(cuid()) //TODO: this is the id of the classsession
-  classId String? //TODO: this is the id of the class
   name String
   description String
   instructor String
@@ -107,6 +106,18 @@ model Class {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
   Settings Settings?
+  classSessions ClassSession[]
+}
+
+model ClassSession {
+  id String @id @default(cuid())
+  classId String
+  class Class @relation(fields: [classId], references: [id])
+  bookings Booking[]
+  startTime DateTime
+  endTime DateTime
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 enum FacilityType {
@@ -158,6 +169,8 @@ model Booking {
   facility      Facility @relation(fields: [facilityId], references: [id])
   locationId    String
   location      Location @relation(fields: [locationId], references: [id])
+  classSessionId String?
+  classSession ClassSession? @relation(fields: [classSessionId], references: [id])
   status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -166,6 +179,12 @@ model Booking {
   customerPhone String?
   notes         String?
   emailSent     Boolean  @default(false)
+  type          BookingType @default(NORMAL)
+}
+
+enum BookingType {
+  NORMAL
+  CLASSES
 }
 
 //REGION USER AUTHENTICATION and AUTHORIZATION

@@ -314,7 +314,27 @@
             "sunday": "Sunday",
             "endDate": "End Date",
             "pickEndDate": "Pick an end date",
-            "previewSessions": "Preview Sessions"
+            "previewSessions": "Preview Sessions",
+            "inFacility": "In Facility",
+            "inFacilityDescription": "Indicate if this class will be held in a facility",
+            "facilityWarning": "When a facility is selected, it will not be available for regular appointments during the class time",
+            "selectFacility": "Select Facility",
+            "selectFacilityPlaceholder": "Choose a facility...",
+            "bookingConflicts": {
+                "title": "Conflicting Bookings",
+                "description": "There are existing bookings that conflict with your class schedule. If you proceed, these bookings will be cancelled.",
+                "confirm": "I am sure I want to cancel these bookings",
+                "cancelled": "Conflicting bookings have been cancelled",
+                "cancelError": "Failed to cancel conflicting bookings"
+            },
+            "classConflicts": {
+                "title": "Class Schedule Conflicts",
+                "description": "There are existing classes that conflict with your schedule. You need to either remove these classes or select a different facility.",
+                "close": "Close"
+            },
+            "availabilityCheckError": "Failed to check facility availability",
+            "created": "Class created successfully",
+            "createError": "Failed to create class"
         }
     },
     "subscription": {
