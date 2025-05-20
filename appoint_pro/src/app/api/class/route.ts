@@ -25,55 +25,60 @@ export async function POST(request: NextRequest) {
         const validatedData = createClassSchema.parse(body);
 
         // Create the class and its sessions in a transaction
-        const result = await prisma.$transaction(async (tx) => {
-            // Create the class
-            const newClass = await tx.class.create({
-                data: {
-                    name: validatedData.name,
-                    description: validatedData.description,
-                    instructor: validatedData.instructor,
-                    locationId: validatedData.locationId,
-                    facilityId: validatedData.facilityId
-                }
-            });
+        const result = await prisma.$transaction(
+            async (tx) => {
+                // Create the class
+                const newClass = await tx.class.create({
+                    data: {
+                        name: validatedData.name,
+                        description: validatedData.description,
+                        instructor: validatedData.instructor,
+                        locationId: validatedData.locationId,
+                        facilityId: validatedData.facilityId
+                    }
+                });
 
-            // Create class sessions and their associated bookings
-            const sessions = await Promise.all(
-                validatedData.sessions.map(async (session) => {
-                    // Create the class session
-                    const classSession = await tx.classSession.create({
-                        data: {
-                            classId: newClass.id,
-                            startTime: new Date(`${session.date}T${session.startTime}`),
-                            endTime: new Date(`${session.date}T${session.endTime}`)
-                        }
-                    });
-
-                    // If a facility is selected, create a booking for the session
-                    if (validatedData.facilityId) {
-                        await tx.booking.create({
+                // Create class sessions and their associated bookings
+                const sessions = await Promise.all(
+                    validatedData.sessions.map(async (session) => {
+                        // Create the class session
+                        const classSession = await tx.classSession.create({
                             data: {
+                                classId: newClass.id,
                                 startTime: new Date(`${session.date}T${session.startTime}`),
-                                endTime: new Date(`${session.date}T${session.endTime}`),
-                                facilityId: validatedData.facilityId,
-                                locationId: validatedData.locationId,
-                                classSessionId: classSession.id,
-                                status: 'CONFIRMED',
-                                type: 'CLASSES',
-                                customerName: validatedData.instructor
+                                endTime: new Date(`${session.date}T${session.endTime}`)
                             }
                         });
-                    }
 
-                    return classSession;
-                })
-            );
+                        // If a facility is selected, create a booking for the session
+                        if (validatedData.facilityId) {
+                            await tx.booking.create({
+                                data: {
+                                    startTime: new Date(`${session.date}T${session.startTime}`),
+                                    endTime: new Date(`${session.date}T${session.endTime}`),
+                                    facilityId: validatedData.facilityId,
+                                    locationId: validatedData.locationId,
+                                    classSessionId: classSession.id,
+                                    status: 'CONFIRMED',
+                                    type: 'CLASSES',
+                                    customerName: validatedData.instructor
+                                }
+                            });
+                        }
 
-            return {
-                class: newClass,
-                sessions
-            };
-        });
+                        return classSession;
+                    })
+                );
+
+                return {
+                    class: newClass,
+                    sessions
+                };
+            },
+            {
+                timeout: 30000 // 30 seconds timeout because of the large number of sessions
+            }
+        );
 
         return NextResponse.json({
             status: 'success',
