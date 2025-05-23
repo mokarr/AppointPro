@@ -334,7 +334,14 @@
             },
             "availabilityCheckError": "Failed to check facility availability",
             "created": "Class created successfully",
-            "createError": "Failed to create class"
+            "createError": "Failed to create class",
+            "location": "Location",
+            "schedule": "Schedule",
+            "sessions": "Sessions",
+            "totalSessions": "Total {count} sessions",
+            "participants": "participants",
+            "creating": "Creating class...",
+            "noSessions": "No sessions scheduled for this class"
         }
     },
     "subscription": {

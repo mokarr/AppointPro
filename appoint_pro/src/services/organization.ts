@@ -29,7 +29,7 @@ const getOrganizationById = async (organizationId: string): Promise<Organization
         where: { id: organizationId },
         include: {
             locations: true,
-            Settings: {
+            OrganizationSettings: {
                 select: {
                     data: true
                 }

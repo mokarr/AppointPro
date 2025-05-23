@@ -31,7 +31,7 @@ export async function GET(request: Request) {
             );
         }
 
-        let settings = await prisma.settings.findUnique({
+        let settings = await prisma.organizationSettings.findUnique({
             where: {
                 organizationId: session.user.organizationId,
             },
@@ -39,9 +39,8 @@ export async function GET(request: Request) {
 
         if (!settings) {
             // Create default settings if they don't exist
-            settings = await prisma.settings.create({
+            settings = await prisma.organizationSettings.create({
                 data: {
-                    type: 'ORGANIZATION',
                     organizationId: session.user.organizationId,
                     data: defaultSettings as any
                 }
@@ -69,7 +68,7 @@ export async function PATCH(request: Request) {
         }
 
         const dto: OrganizationSettingsDto = await request.json();
-        let currentSettings = await prisma.settings.findUnique({
+        let currentSettings = await prisma.organizationSettings.findUnique({
             where: {
                 organizationId: session.user.organizationId,
             },
@@ -77,9 +76,8 @@ export async function PATCH(request: Request) {
 
         if (!currentSettings) {
             // Create default settings if they don't exist
-            currentSettings = await prisma.settings.create({
+            currentSettings = await prisma.organizationSettings.create({
                 data: {
-                    type: 'ORGANIZATION',
                     organizationId: session.user.organizationId,
                     data: defaultSettings as any
                 }
@@ -146,7 +144,7 @@ export async function PATCH(request: Request) {
         }
 
         // Update settings in database
-        const updatedSettings = await prisma.settings.update({
+        const updatedSettings = await prisma.organizationSettings.update({
             where: {
                 id: currentSettings.id,
             },

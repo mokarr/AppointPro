@@ -14,7 +14,7 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const settings = await prisma.settings.findUnique({
+        const settings = await prisma.facilitySettings.findUnique({
             where: {
                 facilityId: resolvedParams.facilityId,
             },
@@ -48,7 +48,7 @@ export async function PATCH(
 
         const body = await request.json();
 
-        const settings = await prisma.settings.upsert({
+        const settings = await prisma.facilitySettings.upsert({
             where: {
                 facilityId: resolvedParams.facilityId,
             },
@@ -57,7 +57,6 @@ export async function PATCH(
             },
             create: {
                 facilityId: resolvedParams.facilityId,
-                type: "FACILITY",
                 data: body,
             },
         });

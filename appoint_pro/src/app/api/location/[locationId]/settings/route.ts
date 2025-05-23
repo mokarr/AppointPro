@@ -13,7 +13,7 @@ export async function GET(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const settings = await prisma.settings.findUnique({
+        const settings = await prisma.locationSettings.findUnique({
             where: {
                 locationId: resolvedParams.locationId,
             },
@@ -55,7 +55,7 @@ export async function PATCH(
 
         const body = await request.json();
 
-        const settings = await prisma.settings.upsert({
+        const settings = await prisma.locationSettings.upsert({
             where: {
                 locationId: resolvedParams.locationId,
             },
@@ -64,7 +64,6 @@ export async function PATCH(
             },
             create: {
                 locationId: resolvedParams.locationId,
-                type: "LOCATION",
                 data: body,
             },
         });

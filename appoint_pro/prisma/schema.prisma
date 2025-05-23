@@ -28,7 +28,7 @@ model Organization {
   hasActiveSubscription Boolean        @default(false)
   subscriptions         Subscription[]
 
-  Settings Settings?
+  OrganizationSettings OrganizationSettings?
 }
 
 // Subscription model
@@ -75,7 +75,7 @@ model Location {
   updatedAt      DateTime     @updatedAt
   createdAt      DateTime     @default(now())
 
-  Settings Settings?
+  LocationSettings LocationSettings?
 }
 
 model Facility {
@@ -91,7 +91,7 @@ model Facility {
   type        FacilityType @default(PRIVATE)
   updatedAt   DateTime  @updatedAt
   createdAt   DateTime  @default(now())
-  Settings Settings?
+  FacilitySettings FacilitySettings?
 }
 
 model Class {
@@ -105,7 +105,7 @@ model Class {
   facility Facility? @relation(fields: [facilityId], references: [id])
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
-  Settings Settings?
+  ClassSettings ClassSettings?
   classSessions ClassSession[]
 }
 
@@ -118,6 +118,7 @@ model ClassSession {
   endTime DateTime
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
+  ClassSessionSettings ClassSessionSettings?
 }
 
 enum FacilityType {
@@ -127,21 +128,68 @@ enum FacilityType {
 }
 
 
-model Settings {
-  id             String         @id @default(cuid())
-  type           SettingScope   // Enum om aan te geven op welk niveau de settings gelden
-  organizationId String?        @unique
-  organization   Organization?  @relation(fields: [organizationId], references: [id])
-  locationId     String?        @unique
-  location       Location?      @relation(fields: [locationId], references: [id])
-  facilityId     String?        @unique
-  facility       Facility?      @relation(fields: [facilityId], references: [id])
-  classId        String?        @unique
-  class          Class?         @relation(fields: [classId], references: [id])
+// model Settings {
+//   id             String         @id @default(cuid())
+//   type           SettingScope   // Enum om aan te geven op welk niveau de settings gelden
+//   organizationId String?        @unique
+//   organization   Organization?  @relation(fields: [organizationId], references: [id])
+//   locationId     String?        @unique
+//   location       Location?      @relation(fields: [locationId], references: [id])
+//   facilityId     String?        @unique
+//   facility       Facility?      @relation(fields: [facilityId], references: [id])
+//   classId        String?        @unique
+//   class          Class?         @relation(fields: [classId], references: [id])
+//   data           Json           //settingspayload
+//   createdAt      DateTime       @default(now())
+//   updatedAt      DateTime       @updatedAt
+// }
+
+
+model OrganizationSettings {
+  id String @id @default(cuid())
+  organizationId String @unique
+  organization Organization @relation(fields: [organizationId], references: [id])
+   data           Json           //settingspayload
+   createdAt      DateTime       @default(now())
+   updatedAt      DateTime       @updatedAt
+}
+
+model LocationSettings {
+  id String @id @default(cuid())
+  locationId String @unique
+  location Location @relation(fields: [locationId], references: [id])
   data           Json           //settingspayload
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
+
+model FacilitySettings {
+  id String @id @default(cuid())
+  facilityId String @unique
+  facility Facility @relation(fields: [facilityId], references: [id])
+  data           Json           //settingspayload
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model ClassSettings {
+  id String @id @default(cuid())
+  classId String @unique
+  class Class @relation(fields: [classId], references: [id])
+  data           Json           //settingspayload
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model ClassSessionSettings {
+  id String @id @default(cuid())
+  classSessionId String @unique
+  classSession ClassSession @relation(fields: [classSessionId], references: [id])
+  data           Json           //settingspayload
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
 
 enum SettingScope {
   ORGANIZATION

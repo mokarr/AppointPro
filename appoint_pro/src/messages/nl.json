@@ -334,7 +334,14 @@
             },
             "availabilityCheckError": "Kon beschikbaarheid van faciliteit niet controleren",
             "created": "Les succesvol aangemaakt",
-            "createError": "Kon les niet aanmaken"
+            "createError": "Kon les niet aanmaken",
+            "location": "Locatie",
+            "schedule": "Schema",
+            "sessions": "Sessies",
+            "totalSessions": "Totaal {count} sessies",
+            "participants": "deelnemers",
+            "creating": "Les wordt aangemaakt...",
+            "noSessions": "Geen sessies gepland voor deze les"
         }
     },
     "subscription": {

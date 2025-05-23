@@ -44,8 +44,8 @@ const defaultSettings: OrganizationSettings = {
 
 export default function SettingsPageContent({ _user, _organization }: SettingsPageContentProps) {
     const t = useTranslations('common');
-    const [settings, setSettings] = useState<OrganizationSettings>(_organization.Settings?.data || defaultSettings);
-    const [originalSettings, setOriginalSettings] = useState<OrganizationSettings>(_organization.Settings?.data || defaultSettings);
+    const [settings, setSettings] = useState<OrganizationSettings>(_organization.OrganizationSettings?.data || defaultSettings);
+    const [originalSettings, setOriginalSettings] = useState<OrganizationSettings>(_organization.OrganizationSettings?.data || defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
     const [notFilled, setNotFilled] = useState(false);
 
@@ -65,8 +65,8 @@ export default function SettingsPageContent({ _user, _organization }: SettingsPa
     }, [settings, notFilled]);
 
     const setSettingsFromOrganization = async () => {
-            setSettings(_organization.Settings?.data || defaultSettings);
-            setOriginalSettings(_organization.Settings?.data || defaultSettings);
+            setSettings(_organization.OrganizationSettings?.data || defaultSettings);
+            setOriginalSettings(_organization.OrganizationSettings?.data || defaultSettings);
     };
 
     const handleOpeningHoursChange = (index: number, field: 'open' | 'close' | 'isClosed', value: string | boolean) => {

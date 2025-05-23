@@ -143,6 +143,7 @@ export function AddClassForm({ locationId, facilities }: AddClassFormProps) {
     };
 
     const submitClass = async (data: FormValues) => {
+        const loadingToast = toast.loading(t('classes.creating'));
         try {
             const response = await fetch('/api/class', {
                 method: 'POST',
@@ -175,10 +176,12 @@ export function AddClassForm({ locationId, facilities }: AddClassFormProps) {
 
             const result = await response.json();
             console.log('Class created successfully:', result);
+            toast.dismiss(loadingToast);
             toast.success(t('classes.created'));
             router.push('/dashboard/classes');
         } catch (error) {
             console.error('Error creating class:', error);
+            toast.dismiss(loadingToast);
             toast.error(t('classes.createError'));
         }
     };

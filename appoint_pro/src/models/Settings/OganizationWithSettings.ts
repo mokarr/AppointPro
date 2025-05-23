@@ -3,7 +3,7 @@ import { Organization, Location } from "@prisma/client";
 
 interface OrganizationWithSettings extends Organization {
     locations: Location[];
-    Settings: {
+    OrganizationSettings: {
         data: OrganizationSettings;
     } | null;
 }

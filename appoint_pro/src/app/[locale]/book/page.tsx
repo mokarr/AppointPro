@@ -49,8 +49,8 @@ export default async function BookingPage() {
     }
 
     // Define brand colors with fallbacks
-    const primaryColor = organization.Settings?.data.branding.primaryColor || '#2563eb';
-    const secondaryColor = organization.Settings?.data.branding.secondaryColor || '#1d4ed8';
+    const primaryColor = organization.OrganizationSettings?.data.branding.primaryColor || '#2563eb';
+    const secondaryColor = organization.OrganizationSettings?.data.branding.secondaryColor || '#1d4ed8';
 
     // If there's only one location, redirect directly to facility selection for that location
     if (organization.locations && organization.locations.length === 1) {
@@ -64,12 +64,12 @@ export default async function BookingPage() {
                     <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
                         Boek bij {organization.name}
                     </h1>
-                    {organization.Settings?.data.branding.logo && (
+                    {organization.OrganizationSettings?.data.branding.logo && (
                         <div className="h-12">
                             <img
-                                src={'url' in organization.Settings.data.branding.logo 
-                                    ? organization.Settings.data.branding.logo.url 
-                                    : organization.Settings.data.branding.logo.base64Data}
+                                src={'url' in organization.OrganizationSettings.data.branding.logo 
+                                    ? organization.OrganizationSettings.data.branding.logo.url 
+                                    : organization.OrganizationSettings.data.branding.logo.base64Data}
                                 alt={`${organization.name} logo`}
                                 className="h-full w-auto object-contain"
                             />

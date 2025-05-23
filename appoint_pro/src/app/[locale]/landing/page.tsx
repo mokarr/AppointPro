@@ -103,8 +103,8 @@ export default async function LandingPage() {
     }
 
     // Define brand colors with fallbacks
-    const primaryColor = organization.Settings?.data.branding.primaryColor || '#2563eb';
-    const secondaryColor = organization.Settings?.data.branding.secondaryColor || '#1d4ed8';
+    const primaryColor = organization.OrganizationSettings?.data.branding.primaryColor || '#2563eb';
+    const secondaryColor = organization.OrganizationSettings?.data.branding.secondaryColor || '#1d4ed8';
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -129,12 +129,12 @@ export default async function LandingPage() {
                 style={{ backgroundColor: primaryColor }}
             >
                 <div className="container mx-auto px-4 text-center">
-                    {organization.Settings?.data.branding.logo && (
+                    {organization.OrganizationSettings?.data.branding.logo && (
                         <div className="mb-8 flex justify-center">
                             <img
-                                src={'url' in organization.Settings.data.branding.logo 
-                                    ? organization.Settings.data.branding.logo.url 
-                                    : organization.Settings.data.branding.logo.base64Data}
+                                src={'url' in organization.OrganizationSettings.data.branding.logo 
+                                    ? organization.OrganizationSettings.data.branding.logo.url 
+                                    : organization.OrganizationSettings.data.branding.logo.base64Data}
                                 alt={`${organization.name} logo`}
                                 className="h-24 w-auto object-contain"
                             />
@@ -168,12 +168,12 @@ export default async function LandingPage() {
                 </section>
 
                 {/* Opening Hours Section */}
-                {organization.Settings?.data.openingHours && (
+                {organization.OrganizationSettings?.data.openingHours && (
                     <section className="mb-16">
                         <h3 className="text-2xl font-bold mb-6" style={{ color: primaryColor }}>Opening Hours</h3>
                         <div className="bg-white rounded-lg shadow-md p-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {organization.Settings.data.openingHours.map((hours, index) => (
+                                {organization.OrganizationSettings.data.openingHours.map((hours, index) => (
                                     <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
                                         <span className="font-medium text-gray-700">{hours.day}</span>
                                         {hours.isClosed ? (
