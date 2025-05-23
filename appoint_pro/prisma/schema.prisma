@@ -128,23 +128,6 @@ enum FacilityType {
 }
 
 
-// model Settings {
-//   id             String         @id @default(cuid())
-//   type           SettingScope   // Enum om aan te geven op welk niveau de settings gelden
-//   organizationId String?        @unique
-//   organization   Organization?  @relation(fields: [organizationId], references: [id])
-//   locationId     String?        @unique
-//   location       Location?      @relation(fields: [locationId], references: [id])
-//   facilityId     String?        @unique
-//   facility       Facility?      @relation(fields: [facilityId], references: [id])
-//   classId        String?        @unique
-//   class          Class?         @relation(fields: [classId], references: [id])
-//   data           Json           //settingspayload
-//   createdAt      DateTime       @default(now())
-//   updatedAt      DateTime       @updatedAt
-// }
-
-
 model OrganizationSettings {
   id String @id @default(cuid())
   organizationId String @unique
@@ -214,7 +197,7 @@ model Booking {
   userId        String?
   user          User?    @relation(fields: [userId], references: [id])
   facilityId    String
-  facility      Facility @relation(fields: [facilityId], references: [id])
+  facility      Facility? @relation(fields: [facilityId], references: [id])
   locationId    String
   location      Location @relation(fields: [locationId], references: [id])
   classSessionId String?

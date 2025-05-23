@@ -187,6 +187,11 @@ export function AddClassForm({ locationId, facilities }: AddClassFormProps) {
     };
 
     const onSubmit = async (data: FormValues) => {
+        if (previewSessions.length > 200) {
+            toast.error(t('classes.tooManySessions', { max: 200 }));
+            return;
+        }
+
         if (data.isInFacility && data.facilityId) {
             try {
                 const response = await fetch('/api/bookings/check-facility-availability', {
@@ -248,7 +253,16 @@ export function AddClassForm({ locationId, facilities }: AddClassFormProps) {
                 </div>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <form 
+                        onSubmit={form.handleSubmit(onSubmit)} 
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                //prevent submitting on enter
+                                e.preventDefault();
+                            }
+                        }}
+                        className="space-y-8"
+                    >
                         <BasicInfoFields form={form} />
                         <DateTimeFields form={form} />
                         <FacilityOption form={form} facilities={facilities} />

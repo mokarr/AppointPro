@@ -31,7 +31,7 @@ export const getFacilityById = async (facilityId: string): Promise<FacilityWithS
         const facility = await prisma.facility.findUnique({
             where: { id: facilityId },
             include: {
-                Settings: {
+                FacilitySettings: {
                     select: {
                         data: true
                     }

@@ -22,7 +22,7 @@ import { useTranslations } from 'next-intl';
 export default function DashboardSidebar() {
     const t = useTranslations('dashboard');
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -33,6 +33,15 @@ export default function DashboardSidebar() {
         mediaQuery.addEventListener('change', handler);
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
+
+    const handleCollapse = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
+    // Reset collapse state when pathname changes
+    useEffect(() => {
+        setIsCollapsed(true);
+    }, [pathname]);
 
     const navItems = [
         {
@@ -87,8 +96,18 @@ export default function DashboardSidebar() {
         }
     ];
 
-    const currentItem = navItems.find(item => pathname.startsWith(item.href));
-    const filteredNavItems = navItems.filter(item => !item.href.startsWith(pathname));
+    // Find the most specific matching route
+    const currentItem = navItems.reduce((bestMatch, item) => {
+        if (pathname.startsWith(item.href)) {
+            // If no match yet or this match is more specific (longer path)
+            if (!bestMatch || item.href.length > bestMatch.href.length) {
+                return item;
+            }
+        }
+        return bestMatch;
+    }, null as typeof navItems[0] | null);
+
+    const filteredNavItems = navItems.filter(item => item !== currentItem);
 
     return (
         <div className="p-2 md:p-4 flex items-center md:items-start justify-center md:justify-start">
@@ -96,7 +115,7 @@ export default function DashboardSidebar() {
                 {/* Mobile Collapsible Header */}
                 <div className="md:hidden">
                     <button
-                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        onClick={handleCollapse}
                         className="w-full flex items-center justify-center gap-2 p-2 rounded-md hover:bg-accent transition-colors mb-2"
                     >
                         {currentItem && (

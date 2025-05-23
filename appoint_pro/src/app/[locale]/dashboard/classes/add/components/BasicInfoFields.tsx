@@ -77,6 +77,7 @@ export function BasicInfoFields({ form }: BasicInfoFieldsProps) {
                                 {...field} 
                                 onBlur={field.onBlur}
                                 onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                max={200}
                             />
                         </FormControl>
                         <FormMessage />

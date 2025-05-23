@@ -72,7 +72,6 @@ export async function generateMetadata(
 
 export default async function LandingPage() {
     // Read the organization ID from the custom header set by middleware
-    console.log('🔍 LandingPage');
     const headersList = await headers();
     const organizationId = headersList.get('x-organizationSubdomainId');
 

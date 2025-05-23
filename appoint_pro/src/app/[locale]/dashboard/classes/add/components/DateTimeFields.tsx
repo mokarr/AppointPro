@@ -49,7 +49,7 @@ export function DateTimeFields({ form }: DateTimeFieldsProps) {
                                         )}
                                     >
                                         {field.value ? (
-                                            format(field.value, "PPP")
+                                            format(field.value, "PPP", { locale: nl })
                                         ) : (
                                             <span>{t('classes.selectDate')}</span>
                                         )}
@@ -57,7 +57,7 @@ export function DateTimeFields({ form }: DateTimeFieldsProps) {
                                     </Button>
                                 </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent className="w-auto p-0 bg-white" align="start">
                                 <Calendar
                                     mode="single"
                                     selected={field.value}
@@ -66,6 +66,7 @@ export function DateTimeFields({ form }: DateTimeFieldsProps) {
                                         date < new Date()
                                     }
                                     initialFocus
+                                    locale={nl}
                                 />
                             </PopoverContent>
                         </Popover>

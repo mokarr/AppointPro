@@ -4,7 +4,6 @@ import { routing } from './routing';
 
 // Function to load messages
 const getMessages = async (locale: string) => {
-    console.log('getMessages', locale);
     try {
         // Use a more explicit path with the Next.js public directory approach
         return (await import(`@/messages/${locale}.json`)).default;

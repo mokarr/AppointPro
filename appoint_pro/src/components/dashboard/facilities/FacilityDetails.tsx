@@ -22,7 +22,7 @@ export default function FacilityDetails({ facility }: FacilityDetailsProps) {
         <div className="container mx-auto py-8 px-4">
             <div className="space-y-8">
                 {/* Header Section */}
-                <div className="flex justify-between items-start border-b pb-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start border-b pb-6 gap-4">
                     <div className="space-y-2">
                         <h1 className="text-3xl font-bold tracking-tight">
                             {facility.name}
@@ -31,7 +31,7 @@ export default function FacilityDetails({ facility }: FacilityDetailsProps) {
                             <p className="text-muted-foreground">{facility.description}</p>
                         )}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                         <Button variant="outline" onClick={() => setIsEditFacilityOpen(true)}>
                             <Edit className="h-4 w-4 mr-2" />
                             {t('edit')}

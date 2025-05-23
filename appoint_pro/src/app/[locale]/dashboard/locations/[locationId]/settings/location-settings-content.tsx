@@ -34,8 +34,8 @@ const defaultSettings: LocationSettings = {
 
 export default function LocationSettingsContent({ _user, _location }: LocationSettingsContentProps) {
     const t = useTranslations('common');
-    const [settings, setSettings] = useState<LocationSettings>(_location.Settings?.data || defaultSettings);
-    const [originalSettings, setOriginalSettings] = useState<LocationSettings>(_location.Settings?.data || defaultSettings);
+    const [settings, setSettings] = useState<LocationSettings>(_location.LocationSettings?.data || defaultSettings);
+    const [originalSettings, setOriginalSettings] = useState<LocationSettings>(_location.LocationSettings?.data || defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
     const [notFilled, setNotFilled] = useState(false);
 
@@ -48,8 +48,8 @@ export default function LocationSettingsContent({ _user, _location }: LocationSe
     }, [settings, notFilled]);
 
     const setSettingsFromLocation = async () => {
-            setSettings(_location.Settings?.data || defaultSettings);
-            setOriginalSettings(_location.Settings?.data || defaultSettings);
+            setSettings(_location.LocationSettings?.data || defaultSettings);
+            setOriginalSettings(_location.LocationSettings?.data || defaultSettings);
     };
 
     const handleOpeningHoursChange = (index: number, field: 'open' | 'close' | 'isClosed', value: string | boolean) => {

@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
                     id: booking.id,
                     startTime: booking.startTime,
                     endTime: booking.endTime,
-                    facilityName: booking.facility.name,
+                    facilityName: booking.facility!.name,   
                     customerName: booking.customerName
                 }));
 
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
                     id: booking.id,
                     startTime: booking.startTime,
                     endTime: booking.endTime,
-                    facilityName: booking.facility.name,
+                    facilityName: booking.facility!.name,
                     className: booking.classSession?.class.name,
                     instructor: booking.classSession?.class.instructor
                 }));

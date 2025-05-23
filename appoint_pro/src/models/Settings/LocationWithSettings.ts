@@ -3,7 +3,7 @@ import { Location } from "@prisma/client";
 
 
 interface LocationWithSettings extends Location {
-    Settings: {
+    LocationSettings: {
         data: LocationSettings;
     } | null;
 }

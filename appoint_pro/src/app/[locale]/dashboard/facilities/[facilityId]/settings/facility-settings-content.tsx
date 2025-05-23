@@ -27,8 +27,8 @@ const defaultSettings: FacilitySettings = {
 
 export default function FacilitySettingsContent({ _user, _facility }: FacilitySettingsContentProps) {
     const t = useTranslations('common');
-    const [settings, setSettings] = useState<FacilitySettings>(_facility.Settings?.data || defaultSettings);
-    const [originalSettings, setOriginalSettings] = useState<FacilitySettings>(_facility.Settings?.data || defaultSettings);
+    const [settings, setSettings] = useState<FacilitySettings>(_facility.FacilitySettings?.data || defaultSettings);
+    const [originalSettings, setOriginalSettings] = useState<FacilitySettings>(_facility.FacilitySettings?.data || defaultSettings);
     const [hasChanges, setHasChanges] = useState(false);
 
     useEffect(() => {
@@ -40,8 +40,8 @@ export default function FacilitySettingsContent({ _user, _facility }: FacilitySe
     }, [settings]);
 
     const setSettingsFromFacility = async () => {
-            setSettings(_facility.Settings?.data || defaultSettings);
-            setOriginalSettings(_facility.Settings?.data || defaultSettings);
+            setSettings(_facility.FacilitySettings?.data || defaultSettings);
+            setOriginalSettings(_facility.FacilitySettings?.data || defaultSettings);
     };
 
     const handleTypeChange = (value: FacilityType) => {

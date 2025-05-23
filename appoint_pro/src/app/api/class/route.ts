@@ -24,6 +24,15 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const validatedData = createClassSchema.parse(body);
 
+        // Check if number of sessions exceeds 200
+        if (validatedData.sessions.length > 200) {
+            return NextResponse.json({
+                status: 'error',
+                error: 'Too many sessions',
+                message: 'Maximum 200 sessions can be created at once. Please create up to 200 sessions now and add more later.'
+            }, { status: 400 });
+        }
+
         // Create the class and its sessions in a transaction
         const result = await prisma.$transaction(
             async (tx) => {

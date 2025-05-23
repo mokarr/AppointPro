@@ -10,7 +10,7 @@ export const getLocationById = async (locationId: string): Promise<LocationWithS
         const location = await prisma.location.findUnique({
             where: { id: locationId },
         include: {
-            Settings: {
+            LocationSettings: {
                 select: {
                     data: true
                 }

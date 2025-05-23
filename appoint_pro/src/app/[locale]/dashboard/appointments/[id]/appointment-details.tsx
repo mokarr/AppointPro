@@ -60,7 +60,7 @@ import { useTranslations } from 'next-intl';
 
 // Define extended appointment type with included relations
 interface AppointmentWithRelations extends Booking {
-    facility: Facility;
+    facility: Facility | null;
     location: Location;
 }
 

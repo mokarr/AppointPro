@@ -12,7 +12,6 @@ interface ClassDetailContentProps {
 }
 
 export function ClassDetailContent({ classData }: ClassDetailContentProps) {
-    console.log("classData", classData);
     const t = useTranslations('dashboard');
     const router = useRouter();
 

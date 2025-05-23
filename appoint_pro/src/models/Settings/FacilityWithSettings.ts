@@ -4,7 +4,7 @@ import FacilitySettings from "./SettingModels/FacilitySettings";
 
 
 interface FacilityWithSettings extends Facility {
-    Settings: {
+    FacilitySettings: {
         data: FacilitySettings;
     } | null;
 }
