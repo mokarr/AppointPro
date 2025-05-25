@@ -24,7 +24,7 @@ const SignUpPage = () => {
             const res = await signUp(data);
 
             if (res.success) {
-                router.push(`/sign-in`);
+                router.push(`/sign-in?emailSent=true`);
             } else {
                 setError(res.message || "Er is een fout opgetreden bij het registreren");
             }

@@ -15,11 +15,13 @@ import { useTranslations } from "next-intl";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
     emailConfirmed?: boolean;
+    emailSent?: boolean;
 }
 
 export function LoginForm({
     className,
     emailConfirmed,
+    emailSent,
     ...props
 }: LoginFormProps) {
     const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +71,14 @@ export function LoginForm({
                                     </AlertDescription>
                                 </Alert>
                             )}
-                            
+
+                            {emailSent && (
+                                <Alert className="bg-green-50 text-green-800 border-green-200">
+                                    <AlertDescription>
+                                        Uw bevestigingslink is verstuurd naar uw e-mailadres.
+                                    </AlertDescription>
+                                </Alert>
+                            )}
                             {error && (
                                 <Alert variant="destructive">
                                     <AlertDescription>{error}</AlertDescription>
