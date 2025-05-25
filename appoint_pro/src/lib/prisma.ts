@@ -1,5 +1,5 @@
 // lib/prisma.ts
-import { PrismaClient } from '../../prisma/app/generated/prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 // Ensure this code only runs on the server
 export function ensureServerSide() {
