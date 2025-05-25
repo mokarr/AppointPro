@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../../../prisma/app/generated/prisma/client'
 import { ensureServerSide } from '@/lib/prisma'
 
 // Ensure this code only runs on the server
