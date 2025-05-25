@@ -3,20 +3,23 @@ import { prisma } from '@/lib/prisma';
 export interface BookingCreateInput {
     startTime: Date;
     endTime: Date;
-    facilityId: string;
+    facilityId?: string;
+    classSessionId?: string;
     locationId: string;
     userId?: string;
     customerName?: string;
     customerEmail?: string;
     customerPhone?: string;
     notes?: string;
+    type?: 'NORMAL' | 'CLASSES';
 }
 
 export interface BookingResponse {
     id: string;
     startTime: Date;
     endTime: Date;
-    facilityId: string;
+    facilityId?: string | null;
+    classSessionId?: string | null;
     locationId: string;
     status: string;
     customerName?: string | null;
@@ -24,6 +27,8 @@ export interface BookingResponse {
     customerPhone?: string | null;
     notes?: string | null;
     createdAt: Date;
+    type: 'NORMAL' | 'CLASSES' | 'CLASS_SESSION';
+    personCount?: number | null;
 }
 
 export async function createBooking(data: BookingCreateInput): Promise<BookingResponse> {
@@ -33,19 +38,22 @@ export async function createBooking(data: BookingCreateInput): Promise<BookingRe
                 startTime: data.startTime,
                 endTime: data.endTime,
                 facilityId: data.facilityId,
+                classSessionId: data.classSessionId,
                 locationId: data.locationId,
                 userId: data.userId,
                 customerName: data.customerName,
                 customerEmail: data.customerEmail,
                 customerPhone: data.customerPhone,
                 notes: data.notes,
-                status: 'CONFIRMED', // By default, set status to CONFIRMED
+                status: 'CONFIRMED',
+                type: data.type || 'NORMAL'
             },
             select: {
                 id: true,
                 startTime: true,
                 endTime: true,
                 facilityId: true,
+                classSessionId: true,
                 locationId: true,
                 status: true,
                 customerName: true,
@@ -53,6 +61,7 @@ export async function createBooking(data: BookingCreateInput): Promise<BookingRe
                 customerPhone: true,
                 notes: true,
                 createdAt: true,
+                type: true
             },
         });
 
@@ -72,6 +81,7 @@ export async function getBookingById(id: string): Promise<BookingResponse | null
                 startTime: true,
                 endTime: true,
                 facilityId: true,
+                classSessionId: true,
                 locationId: true,
                 status: true,
                 customerName: true,
@@ -79,6 +89,8 @@ export async function getBookingById(id: string): Promise<BookingResponse | null
                 customerPhone: true,
                 notes: true,
                 createdAt: true,
+                type: true,
+                personCount: true
             },
         });
 
@@ -98,6 +110,7 @@ export async function getBookingsByFacility(facilityId: string): Promise<Booking
                 startTime: true,
                 endTime: true,
                 facilityId: true,
+                classSessionId: true,
                 locationId: true,
                 status: true,
                 customerName: true,
@@ -105,6 +118,8 @@ export async function getBookingsByFacility(facilityId: string): Promise<Booking
                 customerPhone: true,
                 notes: true,
                 createdAt: true,
+                type: true,
+                personCount: true
             },
         });
 

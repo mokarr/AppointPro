@@ -21,6 +21,8 @@ export const sendBookingConfirmationEmailServer = async (
     const booking = await prisma.booking.findUnique({
         where: { id: input.bookingId },
     });
+
+    console.log('booking', booking);
     if (!booking) {
         console.log('Booking not found.');
         return { success: false, message: 'Booking not found.' };
@@ -31,7 +33,10 @@ export const sendBookingConfirmationEmailServer = async (
     }
 
     // Fetch facility, location, and organization info
-    const facility = await getFacilityById(input.facilityId);
+    let facility;
+    if (input.facilityId) {
+        facility = await getFacilityById(input.facilityId);
+    }
     const location = await getLocationById(input.locationId);
     const organization = location?.organizationId
         ? await getOrganizationById(location.organizationId)

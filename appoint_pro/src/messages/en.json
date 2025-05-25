@@ -129,7 +129,10 @@
         "upcomingAppointments": "",
         "totalCustomers": "",
         "revenue": "",
-        "view": ""
+        "view": "",
+        "pageNotFound": "Page Not Found",
+        "pageNotFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+        "backToHome": "Back to Home"
     },
     "auth": {
         "email": "Email",
@@ -341,7 +344,16 @@
             "totalSessions": "Total {count} sessions",
             "participants": "participants",
             "creating": "Creating class...",
-            "noSessions": "No sessions scheduled for this class"
+            "noSessions": "No sessions scheduled for this class",
+            "filters": {
+                "all": "All Sessions",
+                "future": "Future Sessions",
+                "selectSettings": "Filter by settings",
+                "withCustomSettings": "With Custom Settings",
+                "withoutCustomSettings": "Without Custom Settings",
+                "default": "Default Settings",
+                "placeholder": "Choose a filter option"
+            }
         }
     },
     "subscription": {

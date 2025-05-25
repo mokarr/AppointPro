@@ -32,11 +32,13 @@ interface LayoutProps {
 
 export default function Layout({ children, session }: LayoutProps) {
     const t = useTranslations('common');
+    const pathname = usePathname();
 
     // Check if we're in the dashboard section
-    const isDashboard = usePathname()?.startsWith('/dashboard');
+    const isDashboard = pathname?.startsWith('/dashboard');
+    // Check if we're in the booking process
+    const isBookingProcess = pathname?.startsWith('/book');
 
-  
     const getInitials = (name?: string | null) => {
         if (!name) return "U";
         return name
@@ -57,7 +59,7 @@ export default function Layout({ children, session }: LayoutProps) {
                                 {t('appName')}
                             </Link>
 
-                            {session && (
+                            {session && !isBookingProcess && (
                                 <NavigationMenu>
                                     <NavigationMenuList>
                                         {/* Navigation items */}
@@ -66,6 +68,7 @@ export default function Layout({ children, session }: LayoutProps) {
                             )}
                         </div>
 
+                        {!isBookingProcess && (
                         <div className="flex items-center gap-4">
                             <LocaleSwitcher />
                             {session ? (
@@ -119,6 +122,7 @@ export default function Layout({ children, session }: LayoutProps) {
                                 </div>
                             )}
                         </div>
+                        )}
                     </div>
                 </div>
             </nav>

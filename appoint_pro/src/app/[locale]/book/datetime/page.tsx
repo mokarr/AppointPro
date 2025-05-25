@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
 import OrganizationWithSettings from "@/models/Settings/OganizationWithSettings";
 import DateTimeContent from './DateTimeContent';
+import { BookingIndicator } from '@/components/booking/BookingIndicatior';
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {
@@ -20,7 +21,25 @@ const getOrganizationData = cache(async (organizationId: string) => {
     }
 });
 
-export default async function DateTimePage() {
+export default async function DateTimePage({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+    // Get locationId and booking type from query params
+    const resolvedSearchParams = await searchParams;
+    const locationId = typeof resolvedSearchParams.locationId === 'string' ? resolvedSearchParams.locationId : '';
+    const facilityId = typeof resolvedSearchParams.facilityId === 'string' ? resolvedSearchParams.facilityId : '';
+    const classId = typeof resolvedSearchParams.classId === 'string' ? resolvedSearchParams.classId : '';
+
+    // Determine booking type and validate required parameters
+    const isClassBooking = !!classId;
+    const isFacilityBooking = !!facilityId;
+
+    if (!locationId || (!isClassBooking && !isFacilityBooking)) {
+        redirect('/book');
+    }
+
     // Read the organization ID from the custom header set by middleware
     const headersList = await headers();
     const organizationId = headersList.get('x-organizationSubdomainId');
@@ -72,40 +91,20 @@ export default async function DateTimePage() {
                     )}
                 </div>
 
-                {/* Booking Progress Indicator */}
-                <div className="mb-8">
-                    <div className="flex items-center justify-between">
-                    <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">✓</div>
-                            <span className="mt-2 text-green-600 font-medium">Locatie</span>
-                        </div>
-                        <div className="h-1 flex-1 bg-gray-300 mx-4"></div>
-                        <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">✓</div>
-                            <span className="mt-2 text-green-600 font-medium">Faciliteit</span>
-                        </div>
-                        <div className="h-1 flex-1 bg-gray-300 mx-4"></div>
-                        <div className="flex flex-col items-center">
-                            <div 
-                                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                                style={{ backgroundColor: primaryColor }}
-                            >
-                                3
-                            </div>
-                            <span className="mt-2 font-medium" style={{ color: primaryColor }}>Tijdslot</span>
-                        </div>
-                        <div className="h-1 flex-1 bg-gray-300 mx-4"></div>
-                        <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">4</div>
-                            <span className="mt-2 text-gray-600">Bevestiging</span>
-                        </div>
-                    </div>
-                </div>
+                <BookingIndicator 
+                    primaryColor={primaryColor}
+                    currentStep={4}
+                    isClassBooking={isClassBooking}
+                />
 
                 <DateTimeContent 
                     organization={organization}
                     primaryColor={primaryColor}
                     secondaryColor={secondaryColor}
+                    locationId={locationId}
+                    facilityId={facilityId}
+                    classId={classId}
+                    isClassBooking={isClassBooking}
                 />
             </div>
         </div>

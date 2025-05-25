@@ -6,6 +6,12 @@ import { sendBookingConfirmationEmailServer } from '@/services/email';
 import { BookingConfirmationInput } from '@/models/BookingConfirmationInput';
 import { headers } from 'next/headers';
 
+
+declare global {
+    interface Window {
+    }
+}
+
 export default async function BookingSuccessPage({
     searchParams,
 }: {
@@ -95,10 +101,11 @@ export default async function BookingSuccessPage({
             bookingDate: formattedDate,
             startTime: `${formattedStartTime}`,
             endTime: `${formattedEndTime}`,
-            facilityId: booking.facilityId,
+            facilityId: booking.facilityId || '',
             locationId: booking.locationId,
             notes: booking.notes || '',
             bookingLink: bookingLink,
+            personCount: booking.personCount || null,
         }
         await sendBookingConfirmationEmailServer(bookingData);
     }

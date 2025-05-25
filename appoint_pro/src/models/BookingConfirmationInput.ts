@@ -10,4 +10,5 @@ export type BookingConfirmationInput = {
     endTime: string;
     notes?: string;
     bookingLink: string;
+    personCount: number | null;
 }; 

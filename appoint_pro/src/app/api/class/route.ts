@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { BookingType } from '@prisma/client';
 
 // Schema validation for class creation
 const createClassSchema = z.object({
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
                             }
                         });
 
-                        // If a facility is selected, create a booking for the session
+                        // If a facility is selected, create a booking for the class this so the facility cant be booked for other things on that time
                         if (validatedData.facilityId) {
                             await tx.booking.create({
                                 data: {
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
                                     locationId: validatedData.locationId,
                                     classSessionId: classSession.id,
                                     status: 'CONFIRMED',
-                                    type: 'CLASSES',
+                                    type: BookingType.CLASSES,
                                     customerName: validatedData.instructor
                                 }
                             });

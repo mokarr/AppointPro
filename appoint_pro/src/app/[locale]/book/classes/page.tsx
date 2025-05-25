@@ -2,11 +2,10 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
-import { getFacilitiesByLocationId } from '@/services/facility';
-import { Facility, Location } from '@prisma/client';
+import { getClassesByLocationId } from '@/services/class';
+import { Class, Location } from '@prisma/client';
 import OrganizationWithSettings from '@/models/Settings/OganizationWithSettings';
 import { BookingIndicator } from '@/components/booking/BookingIndicatior';
-
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {
@@ -23,17 +22,17 @@ const getOrganizationData = cache(async (organizationId: string) => {
     }
 });
 
-// Cached function to get facilities for a location
-const getLocationFacilities = cache(async (locationId: string) => {
+// Cached function to get classes for a location
+const getLocationClasses = cache(async (locationId: string) => {
     if (!locationId) {
         return [];
     }
 
     try {
-        const facilities = await getFacilitiesByLocationId(locationId);
-        return facilities || [];
+        const classes = await getClassesByLocationId(locationId);
+        return classes || [];
     } catch (error) {
-        console.error('Error fetching facilities:', error);
+        console.error('Error fetching classes:', error);
         return [];
     }
 });
@@ -44,7 +43,7 @@ const findLocationById = (organization: OrganizationWithSettings, locationId: st
     return organization.locations.find((loc: Location) => loc.id === locationId) || null;
 };
 
-export default async function FacilitiesPage({
+export default async function ClassesPage({
     searchParams,
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -54,7 +53,7 @@ export default async function FacilitiesPage({
     const locationId = typeof resolvedSearchParams.locationId === 'string' ? resolvedSearchParams.locationId : '';
 
     if (!locationId) {
-        redirect('/book');
+        redirect('/book/type/class');
     }
 
     // Read the organization ID from the custom header set by middleware
@@ -66,11 +65,8 @@ export default async function FacilitiesPage({
         redirect('/landing/user');
     }
 
-    
-
     // Get organization data
     const organization = await getOrganizationData(organizationId);
-
 
     if (!organization) {
         return (
@@ -87,7 +83,7 @@ export default async function FacilitiesPage({
         );
     }
 
-      // Define brand colors with fallbacks
+    // Define brand colors with fallbacks
     const primaryColor = organization.OrganizationSettings?.data.branding.primaryColor || '#2563eb';
     const secondaryColor = organization.OrganizationSettings?.data.branding.secondaryColor || '#1d4ed8';
 
@@ -100,7 +96,7 @@ export default async function FacilitiesPage({
                 <h1 className="text-2xl font-bold text-red-600 mb-4">Locatie niet gevonden</h1>
                 <p className="mb-4">De geselecteerde locatie bestaat niet of is niet toegankelijk.</p>
                 <a
-                    href="/book"
+                    href="/book/type/class"
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors"
                 >
                     Terug naar locatie keuze
@@ -109,15 +105,15 @@ export default async function FacilitiesPage({
         );
     }
 
-    // Get facilities for the selected location
-    const facilities = await getLocationFacilities(locationId);
+    // Get classes for the selected location
+    const classes = await getLocationClasses(locationId);
 
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
-                        Boek bij {organization.name}
+                        Boek een les bij {organization.name}
                     </h1>
                     {organization.OrganizationSettings?.data.branding.logo && (
                         <div className="h-12">
@@ -135,7 +131,7 @@ export default async function FacilitiesPage({
                 <BookingIndicator 
                     primaryColor={primaryColor}
                     currentStep={3}
-                    isClassBooking={false}
+                    isClassBooking={true}
                 />
 
                 {/* Selected Location Info */}
@@ -146,7 +142,7 @@ export default async function FacilitiesPage({
                             <p className="text-blue-700">{selectedLocation.name} - {selectedLocation.address}</p>
                         </div>
                         <a
-                            href="/book"
+                            href="/book/type/class"
                             className="text-blue-600 hover:text-blue-800 font-medium"
                         >
                             Wijzigen
@@ -154,32 +150,32 @@ export default async function FacilitiesPage({
                     </div>
                 </div>
 
-                <h2 className="text-xl font-semibold mb-6">Kies een faciliteit</h2>
+                <h2 className="text-xl font-semibold mb-6">Kies een les</h2>
 
-                {facilities && facilities.length > 0 ? (
+                {classes && classes.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {facilities.map((facility: Facility) => (
+                        {classes.map((classItem: Class) => (
                             <div
-                                key={facility.id}
+                                key={classItem.id}
                                 className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg"
                             >
                                 <div className="p-6">
-                                    <h3 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>{facility.name}</h3>
-                                    <p className="text-gray-600 mb-4">{facility.description}</p>
+                                    <h3 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>{classItem.name}</h3>
+                                    <p className="text-gray-600 mb-4">{classItem.description}</p>
 
-                                    {facility.price && (
+                                    {/* {classItem.price && (
                                         <div className="flex justify-between items-center mb-4">
                                             <span className="text-gray-600">Prijs:</span>
-                                            <span className="font-semibold">€{facility.price.toFixed(2)}</span>
+                                            <span className="font-semibold">€{classItem.price.toFixed(2)}</span>
                                         </div>
-                                    )}
+                                    )} */}
 
                                     <a
-                                        href={`/book/datetime?locationId=${locationId}&facilityId=${facility.id}`}
+                                        href={`/book/datetime?locationId=${locationId}&classId=${classItem.id}`}
                                         className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition-colors"
                                         style={{ backgroundColor: primaryColor }}
                                     >
-                                        Kies deze faciliteit
+                                        Kies deze les
                                     </a>
                                 </div>
                             </div>
@@ -188,7 +184,7 @@ export default async function FacilitiesPage({
                 ) : (
                     <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
                         <p className="text-yellow-700">
-                            Er zijn geen faciliteiten beschikbaar voor deze locatie.
+                            Er zijn geen lessen beschikbaar voor deze locatie.
                         </p>
                     </div>
                 )}

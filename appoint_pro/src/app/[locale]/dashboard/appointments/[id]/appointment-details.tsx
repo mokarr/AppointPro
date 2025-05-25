@@ -138,7 +138,7 @@ export default function AppointmentDetails({
             startTime: format(new Date(_appointment.startTime), "yyyy-MM-dd'T'HH:mm"),
             endTime: format(new Date(_appointment.endTime), "yyyy-MM-dd'T'HH:mm"),
             locationId: _appointment.locationId,
-            facilityId: _appointment.facilityId,
+            facilityId: _appointment.facilityId || "",
         },
     });
 

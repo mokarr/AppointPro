@@ -4,6 +4,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  output   = "app/generated/prisma/client"
 }
 
 datasource db {
@@ -196,7 +197,7 @@ model Booking {
   endTime       DateTime
   userId        String?
   user          User?    @relation(fields: [userId], references: [id])
-  facilityId    String
+  facilityId    String?
   facility      Facility? @relation(fields: [facilityId], references: [id])
   locationId    String
   location      Location @relation(fields: [locationId], references: [id])
@@ -209,13 +210,15 @@ model Booking {
   customerName  String?
   customerPhone String?
   notes         String?
+  personCount   Int?
   emailSent     Boolean  @default(false)
   type          BookingType @default(NORMAL)
 }
 
 enum BookingType {
-  NORMAL
-  CLASSES
+  NORMAL //normal bookings like tennis court or pool
+  CLASSES // this bookings are not real bookings but are used to block timeslots for classes
+  CLASS_SESSION // this bookings are real bookings for a class session
 }
 
 //REGION USER AUTHENTICATION and AUTHORIZATION

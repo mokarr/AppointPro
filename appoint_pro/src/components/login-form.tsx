@@ -39,8 +39,11 @@ export function LoginForm({
                 setError(t('passwordOrEmailIncorrect'));
             }
         } catch (error) {
-            console.error('Sign-in error:', error);
-            setError(t('error'));
+            //if error is next redirect error dont show error message TODO: check this
+            if (error instanceof Error && !error.message.includes('NEXT_REDIRECT')) {
+                console.error('Sign-in error:', error);
+                setError(t('error'));
+            }
         } finally {
             setIsLoading(false);
         }

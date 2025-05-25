@@ -129,7 +129,10 @@
         "upcomingAppointments": "Aankomende Afspraken",
         "totalCustomers": "Totaal Klanten",
         "revenue": "Omzet",
-        "view": "Bekijk"
+        "view": "Bekijk",
+        "pageNotFound": "Pagina Niet Gevonden",
+        "pageNotFoundDescription": "De pagina die u zoekt bestaat niet of is verplaatst.",
+        "backToHome": "Terug naar Home"
     },
     "auth": {
         "email": "E-mail",
@@ -341,7 +344,16 @@
             "totalSessions": "Totaal {count} sessies",
             "participants": "deelnemers",
             "creating": "Les wordt aangemaakt...",
-            "noSessions": "Geen sessies gepland voor deze les"
+            "noSessions": "Geen sessies gepland voor deze les",
+            "filters": {
+                "all": "Alle Sessies",
+                "future": "Toekomstige Sessies",
+                "selectSettings": "Filter op instellingen",
+                "withCustomSettings": "Met Aangepaste Instellingen",
+                "withoutCustomSettings": "Zonder Aangepaste Instellingen",
+                "default": "Standaard Instellingen",
+                "placeholder": "Kies een filter optie"
+            }
         }
     },
     "subscription": {

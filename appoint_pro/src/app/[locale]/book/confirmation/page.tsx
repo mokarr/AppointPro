@@ -3,11 +3,13 @@ import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
 import { getFacilityById } from '@/services/facility';
+import { getClassById } from '@/services/class';
 import BookingForm from '@/app/[locale]/book/confirmation/BookingForm';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
-import { Facility, Location } from "@prisma/client";
+import { Facility, Location, Class } from "@prisma/client";
 import OrganizationWithSettings from '@/models/Settings/OganizationWithSettings';
+import { BookingIndicator } from '@/components/booking/BookingIndicatior';
 
 // Cached function to get organization data
 const getOrganizationData = cache(async (organizationId: string) => {
@@ -41,11 +43,18 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
     const resolvedSearchParams = await searchParams;
     const locationId = typeof resolvedSearchParams.locationId === 'string' ? resolvedSearchParams.locationId : '';
     const facilityId = typeof resolvedSearchParams.facilityId === 'string' ? resolvedSearchParams.facilityId : '';
+    const classId = typeof resolvedSearchParams.classId === 'string' ? resolvedSearchParams.classId : '';
+    const classSessionId = typeof resolvedSearchParams.classSessionId === 'string' ? resolvedSearchParams.classSessionId : '';
     const dateTime = typeof resolvedSearchParams.dateTime === 'string' ? resolvedSearchParams.dateTime : '';
     const endDateTime = typeof resolvedSearchParams.endDateTime === 'string' ? resolvedSearchParams.endDateTime : '';
     const duration = typeof resolvedSearchParams.duration === 'string' ? parseInt(resolvedSearchParams.duration) : undefined;
+    const personCount = typeof resolvedSearchParams.personCount === 'string' ? parseInt(resolvedSearchParams.personCount) : 1;
 
-    if (!locationId || !facilityId || !dateTime) {
+    // Determine booking type and validate required parameters
+    const isClassBooking = !!classId;
+    const isFacilityBooking = !!facilityId;
+
+    if (!locationId || (!isClassBooking && !isFacilityBooking) || !dateTime) {
         redirect('/book');
     }
 
@@ -106,20 +115,30 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
         );
     }
 
-    // Get the selected facility
-    const facilityResponse = await getFacilityById(facilityId);
-    const selectedFacility = facilityResponse as Facility;
+    // Get the selected facility or class
+    let selectedItem: Facility | Class | null = null;
+    let itemType = '';
 
-    if (!selectedFacility) {
+    if (isClassBooking) {
+        const classResponse = await getClassById(classId);
+        selectedItem = classResponse as Class;
+        itemType = 'Les';
+    } else {
+        const facilityResponse = await getFacilityById(facilityId);
+        selectedItem = facilityResponse as Facility;
+        itemType = 'Faciliteit';
+    }
+
+    if (!selectedItem) {
         return (
             <div className="container mx-auto px-4 py-8 text-center">
-                <h1 className="text-2xl font-bold text-red-600 mb-4">Faciliteit niet gevonden</h1>
-                <p className="mb-4">De geselecteerde faciliteit bestaat niet of is niet toegankelijk.</p>
+                <h1 className="text-2xl font-bold text-red-600 mb-4">{itemType} niet gevonden</h1>
+                <p className="mb-4">De geselecteerde {itemType.toLowerCase()} bestaat niet of is niet toegankelijk.</p>
                 <a
-                    href={`/book/facilities?locationId=${locationId}`}
+                    href={isClassBooking ? `/book/classes?locationId=${locationId}` : `/book/facilities?locationId=${locationId}`}
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors"
                 >
-                    Terug naar faciliteit keuze
+                    Terug naar {isClassBooking ? 'les' : 'faciliteit'} keuze
                 </a>
             </div>
         );
@@ -152,35 +171,11 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                     )}
                 </div>
 
-                {/* Booking Progress Indicator */}
-                <div className="mb-8">
-                    <div className="flex items-center justify-between">
-                        <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">✓</div>
-                            <span className="mt-2 text-green-600 font-medium">Locatie</span>
-                        </div>
-                        <div className="h-1 flex-1 bg-green-500 mx-4"></div>
-                        <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">✓</div>
-                            <span className="mt-2 text-green-600 font-medium">Faciliteit</span>
-                        </div>
-                        <div className="h-1 flex-1 bg-green-500 mx-4"></div>
-                        <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">✓</div>
-                            <span className="mt-2 text-green-600 font-medium">Tijdslot</span>
-                        </div>
-                        <div className="h-1 flex-1 bg-green-500 mx-4"></div>
-                        <div className="flex flex-col items-center">
-                            <div 
-                                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                                style={{ backgroundColor: primaryColor }}
-                            >
-                                4
-                            </div>
-                            <span className="mt-2 font-medium" style={{ color: primaryColor }}>Bevestiging</span>
-                        </div>
-                    </div>
-                </div>
+                <BookingIndicator 
+                    primaryColor={primaryColor}
+                    currentStep={5}
+                    isClassBooking={isClassBooking}
+                />
 
                 {/* Confirmation Box */}
                 <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -213,12 +208,12 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-semibold mb-3" style={{ color: primaryColor }}>Faciliteit</h3>
+                                <h3 className="text-lg font-semibold mb-3" style={{ color: primaryColor }}>{itemType}</h3>
                                 <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="font-medium text-gray-800">{selectedFacility.name}</p>
-                                    <p className="text-gray-600">{selectedFacility.description}</p>
-                                    {selectedFacility.price && (
-                                        <p className="font-semibold mt-2" style={{ color: primaryColor }}>Prijs: €{selectedFacility.price.toFixed(2)}</p>
+                                    <p className="font-medium text-gray-800">{selectedItem.name}</p>
+                                    <p className="text-gray-600">{selectedItem.description}</p>
+                                    {'price' in selectedItem && selectedItem.price && (
+                                        <p className="font-semibold mt-2" style={{ color: primaryColor }}>Prijs: €{selectedItem.price.toFixed(2)}</p>
                                     )}
                                 </div>
                             </div>
@@ -239,6 +234,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                                     {duration && (
                                         <p className="text-gray-600 text-sm">Duur: {duration} minuten</p>
                                     )}
+                                    <p className="text-gray-600 text-sm">Aantal personen: {personCount}</p>
                                 </div>
                             </div>
                         </div>
@@ -246,13 +242,15 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
                         {/* Use BookingForm component with the updated parameters */}
                         <BookingForm
                             facilityId={facilityId}
+                            classId={classId}
+                            classSessionId={classSessionId}
                             locationId={locationId}
                             bookingNumber={bookingNumber}
                             dateTime={dateTime}
                             endDateTime={endDateTime}
                             duration={duration}
-                            primaryColor={primaryColor}
-                            secondaryColor={secondaryColor}
+                            isClassBooking={isClassBooking}
+                            personCount={personCount}
                         />
                     </div>
                 </div>

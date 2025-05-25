@@ -28,6 +28,7 @@ async function getClassWithDetails(classId: string) {
                     },
                     include: {
                         bookings: true,
+                        ClassSessionSettings: true
                     }
                 }
             }

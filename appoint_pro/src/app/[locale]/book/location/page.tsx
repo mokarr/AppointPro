@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { getOrganizationById } from '@/services/organization';
 import OrganizationWithSettings from "@/models/Settings/OganizationWithSettings";
-import Image from "next/image";
 import { BookingIndicator } from '@/components/booking/BookingIndicatior';
 
 // Cached function to get organization data
@@ -21,7 +20,14 @@ const getOrganizationData = cache(async (organizationId: string) => {
     }
 });
 
-export default async function BookingPage() {
+export default async function LocationPage({
+    searchParams,
+}: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+    const { type } = await searchParams;
+    const isClassBooking = type === 'class';
+
     // Read the organization ID from the custom header set by middleware
     const headersList = await headers();
     const organizationId = headersList.get('x-organizationSubdomainId');
@@ -53,12 +59,17 @@ export default async function BookingPage() {
     const primaryColor = organization.OrganizationSettings?.data.branding.primaryColor || '#2563eb';
     const secondaryColor = organization.OrganizationSettings?.data.branding.secondaryColor || '#1d4ed8';
 
+    // If there's only one location, redirect directly to the appropriate selection page
+    if (organization.locations && organization.locations.length === 1) {
+        redirect(`/book/${isClassBooking ? 'classes' : 'facilities'}?locationId=${organization.locations[0].id}`);
+    }
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
-                        Boek bij {organization.name}
+                        Boek {isClassBooking ? 'een les' : 'een faciliteit'} bij {organization.name}
                     </h1>
                     {organization.OrganizationSettings?.data.branding.logo && (
                         <div className="h-12">
@@ -75,40 +86,43 @@ export default async function BookingPage() {
 
                 <BookingIndicator 
                     primaryColor={primaryColor}
-                    currentStep={1}
+                    currentStep={2}
+                    isClassBooking={isClassBooking}
                 />
 
-                <h2 className="text-xl font-semibold mb-6" style={{ color: primaryColor }}>Kies een type boeking</h2>
+                <h2 className="text-xl font-semibold mb-6" style={{ color: primaryColor }}>Kies een locatie</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg">
-                        <div className="p-6">
-                            <h3 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>Faciliteit Boeking</h3>
-                            <p className="text-gray-600 mb-4">Boek een faciliteit zoals een tennisbaan, zwembad of vergaderruimte.</p>
-                            <a
-                                href={`/book/location?type=facility`}
-                                className="inline-block w-full text-center text-white font-medium py-3 px-6 rounded-md transition-colors hover:opacity-90"
-                                style={{ backgroundColor: primaryColor }}
+                {organization.locations && organization.locations.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {organization.locations.map((location) => (
+                            <div
+                                key={location.id}
+                                className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg"
                             >
-                                Faciliteit Boeken
-                            </a>
-                        </div>
+                                <div className="p-6">
+                                    <h3 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>{location.name}</h3>
+                                    <p className="text-gray-600 mb-4">{location.address}</p>
+                                    {location.postalCode && (
+                                        <p className="text-gray-500 text-sm mb-4">{location.postalCode}, {location.country || ''}</p>
+                                    )}
+                                    <a
+                                        href={`/book/${isClassBooking ? 'classes' : 'facilities'}?locationId=${location.id}`}
+                                        className="inline-block w-full text-center text-white font-medium py-3 px-6 rounded-md transition-colors hover:opacity-90"
+                                        style={{ backgroundColor: primaryColor }}
+                                    >
+                                        Kies deze locatie
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-
-                    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg">
-                        <div className="p-6">
-                            <h3 className="text-xl font-semibold mb-2" style={{ color: primaryColor }}>Les Boeking</h3>
-                            <p className="text-gray-600 mb-4">Boek een les of activiteit zoals yoga, fitness of een workshop.</p>
-                            <a
-                                href={'/book/location?type=class'}
-                                className="inline-block w-full text-center text-white font-medium py-3 px-6 rounded-md transition-colors hover:opacity-90"
-                                style={{ backgroundColor: primaryColor }}
-                            >
-                                Les Boeken
-                            </a>
-                        </div>
+                ) : (
+                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <p className="text-yellow-700">
+                            Er zijn geen locaties beschikbaar voor deze organisatie.
+                        </p>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

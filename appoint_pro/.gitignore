@@ -51,4 +51,5 @@ Desktop.ini
 *.temp
 .cache/
 .vscode
+prisma/app
 
