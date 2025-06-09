@@ -787,5 +787,71 @@
         "error": "An error occurred during sign in",
         "passwordOrEmailIncorrect": "Password or email incorrect",
         "termsOfService": "By continuing, you agree to our <termsLink>Terms of Service</termsLink> and <privacyLink>Privacy Policy</privacyLink>."
+    },
+    "Help": {
+        "title": "Help Center",
+        "welcomeHeader": "Hi. How can we help you?",
+        "searchPlaceholder": "Search for an article...",
+        "contactUs": "Contact Us",
+        "footerText": "© 2024 AppointPro. All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "welcome": "How can we help you?",
+        "tableOfContents": "Table of Contents",
+        "findAnswer": "Find an Answer",
+        "gettingStarted": {
+            "title": "Getting Started",
+            "description": "Learn the basics of using AppointPro"
+        },
+        "appointments": {
+            "title": "Appointments",
+            "description": "Manage and schedule appointments"
+        },
+        "account": {
+            "title": "Account Settings",
+            "description": "Configure your account preferences"
+        },
+        "team": {
+            "title": "Team Management",
+            "description": "Manage your team members and roles"
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Access and manage your documents"
+        },
+        "support": {
+            "title": "Support",
+            "description": "Get help from our support team"
+        },
+        "Contact": {
+            "askTeam": {
+                "title": "Questions? Our team is ready to help!",
+                "description": "In the Help Center you will find answers to the most frequently asked questions. Can't find what you're looking for? Our team will gladly help you further. Contact us via the chat icon on the bottom right of this page, the contact form or call one of our employees (+1 555 123 4567)."
+            },
+            "contactInfo": {
+                "title": "Contact Information",
+                "email": "Email",
+                "phone": "Phone",
+                "hours": "Support Hours",
+                "hoursValue": "Monday - Friday: 9:00 AM - 6:00 PM"
+            },
+            "holidays": {
+                "title": "On the following public holidays we are closed:",
+                "newYearsDay": "New Year's Day",
+                "easter": "Easter",
+                "kingsDay": "King's Day",
+                "ascensionDay": "Ascension Day",
+                "whitMonday": "Whit Monday",
+                "christmas": "Christmas"
+            },
+            "form": {
+                "title": "Send us a Message",
+                "name": "Your Name",
+                "email": "Your Email",
+                "subject": "Subject",
+                "message": "Your Message",
+                "submit": "Send Message"
+            }
+        }
     }
 }

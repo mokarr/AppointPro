@@ -1,8 +1,11 @@
 import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
 import createNextIntlPlugin from 'next-intl/plugin';
+import createMDX from '@next/mdx';
+import rehypeSlug from 'rehype-slug';
 
 const withNextIntl = createNextIntlPlugin();
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
     webpack: (config, { isServer }) => {
 
@@ -29,6 +32,13 @@ const nextConfig = {
     eslint: {
         ignoreDuringBuilds: true,
     },
+    pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 };
 
-export default withNextIntl(nextConfig); 
+const withMDX = createMDX({
+  options: {
+    rehypePlugins: [rehypeSlug],
+  },
+});
+
+export default withNextIntl(withMDX(nextConfig)); 

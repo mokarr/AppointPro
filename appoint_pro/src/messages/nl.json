@@ -789,5 +789,71 @@
         "error": "Er is een fout opgetreden tijdens het inloggen",
         "passwordOrEmailIncorrect": "Wachtwoord of e-mailadres incorrect",
         "termsOfService": "Door door te gaan, gaat u akkoord met onze <termsLink>Algemene Voorwaarden</termsLink> en <privacyLink>Privacybeleid</privacyLink>."
+    },
+    "Help": {
+        "title": "Helpcentrum",
+        "welcomeHeader": "Hoi. Hoe kunnen we je helpen?",
+        "searchPlaceholder": "Zoek een artikel...",
+        "contactUs": "Neem Contact Op",
+        "footerText": "© 2024 AppointPro. Alle rechten voorbehouden.",
+        "privacy": "Privacybeleid",
+        "terms": "Servicevoorwaarden",
+        "welcome": "Hoe kunnen we u helpen?",
+        "tableOfContents": "Inhoudsopgave",
+        "findAnswer": "Vind een antwoord",
+        "gettingStarted": {
+            "title": "Aan de Slag",
+            "description": "Leer de basis van AppointPro"
+        },
+        "appointments": {
+            "title": "Afspraken",
+            "description": "Beheer en plan afspraken"
+        },
+        "account": {
+            "title": "Accountinstellingen",
+            "description": "Configureer uw accountvoorkeuren"
+        },
+        "team": {
+            "title": "Teambeheer",
+            "description": "Beheer uw teamleden en rollen"
+        },
+        "documents": {
+            "title": "Documenten",
+            "description": "Toegang tot en beheer van uw documenten"
+        },
+        "support": {
+            "title": "Ondersteuning",
+            "description": "Krijg hulp van ons ondersteuningsteam"
+        },
+        "Contact": {
+            "askTeam": {
+                "title": "Vragen? Ons team staat klaar om je te helpen!",
+                "description": "In het Helpcentrum vind je de antwoorden op de meest gestelde vragen. Vind je niet wat je zoekt? Ons team helpt je graag verder. Neem contact met ons op via het chat icoontje rechtsonderin op deze pagina, het contactformulier of bel met een van onze medewerkers (+31 208932386)."
+            },
+            "contactInfo": {
+                "title": "Contactgegevens",
+                "email": "E-mail",
+                "phone": "Telefoon",
+                "hours": "Ondersteuningsuren",
+                "hoursValue": "Maandag - Vrijdag: 9:00 - 18:00"
+            },
+            "holidays": {
+                "title": "Op de volgende feestdagen zijn wij gesloten:",
+                "newYearsDay": "Nieuwjaarsdag",
+                "easter": "Pasen",
+                "kingsDay": "Koningsdag",
+                "ascensionDay": "Hemelvaartsdag",
+                "whitMonday": "Pinksteren",
+                "christmas": "Kerstmis"
+            },
+            "form": {
+                "title": "Stuur ons een Bericht",
+                "name": "Jouw naam",
+                "email": "Jouw e-mail",
+                "subject": "Onderwerp",
+                "message": "Jouw bericht",
+                "submit": "Verstuur"
+            }
+        }
     }
 }
